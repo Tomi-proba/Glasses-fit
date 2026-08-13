@@ -18,7 +18,7 @@ const SHAPE_ICONS: Record<FaceShape, string> = {
   square: '◼️',
   heart: '💗',
   diamond: '💎',
-  oblong: '▯',
+  oblong: '📏',
 }
 
 export function StepPhoto({ onComplete, onBack }: Props) {
