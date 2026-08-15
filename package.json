@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:standalone": "tsc -b && vite build --config vite.config.artifact.ts",
+    "build:artifact": "tsc -b && vite build --config vite.config.artifact.ts",
+    "build:standalone": "node scripts/generate-embedded-assets.mjs && tsc -b && vite build --config vite.config.standalone.ts",
     "lint": "oxlint",
     "preview": "vite preview"
   },

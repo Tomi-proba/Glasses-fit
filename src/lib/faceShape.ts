@@ -6,9 +6,42 @@ import type { FaceMeasurements, FaceShape } from '../types'
 const WASM_BASE = `${import.meta.env.BASE_URL}mediapipe/wasm`
 const MODEL_URL = `${import.meta.env.BASE_URL}models/face_landmarker.task`
 
+// The standalone build (vite.config.artifact.ts) has no separate files to
+// fetch — everything ships as base64 inside the JS bundle itself and is
+// turned into blob: URLs at runtime, so it works from a double-clicked
+// index.html with no server (fetch() of sibling files is blocked under
+// file://, but blob: URLs always work).
+const STANDALONE = import.meta.env.VITE_STANDALONE === 'true'
+
+function base64ToBytes(base64: string): Uint8Array<ArrayBuffer> {
+  const binary = atob(base64)
+  const bytes = new Uint8Array(new ArrayBuffer(binary.length))
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
+  return bytes
+}
+
 let landmarkerPromise: Promise<FaceLandmarker> | null = null
 
 async function createLandmarker(delegate: 'GPU' | 'CPU') {
+  if (STANDALONE) {
+    const { WASM_JS_B64, WASM_BINARY_B64, MODEL_B64 } = await import('../generated/embeddedAssets')
+    const wasmLoaderPath = URL.createObjectURL(
+      new Blob([base64ToBytes(WASM_JS_B64)], { type: 'text/javascript' }),
+    )
+    const wasmBinaryPath = URL.createObjectURL(
+      new Blob([base64ToBytes(WASM_BINARY_B64)], { type: 'application/wasm' }),
+    )
+    return FaceLandmarker.createFromOptions(
+      { wasmLoaderPath, wasmBinaryPath },
+      {
+        baseOptions: { modelAssetBuffer: base64ToBytes(MODEL_B64), delegate },
+        outputFaceBlendshapes: false,
+        runningMode: 'IMAGE',
+        numFaces: 1,
+      },
+    )
+  }
+
   const fileset = await FilesetResolver.forVisionTasks(WASM_BASE)
   return FaceLandmarker.createFromOptions(fileset, {
     baseOptions: { modelAssetPath: MODEL_URL, delegate },
