@@ -1,53 +1,78 @@
-export type GlassesType = 'sunglasses' | 'regular'
-
-export type Look = 'everyday' | 'classic' | 'flashy' | 'sporty'
-
-export type FaceShape = 'oval' | 'round' | 'square' | 'heart' | 'diamond' | 'oblong'
-
-export type FrameShape =
-  | 'round'
-  | 'square'
-  | 'rectangle'
-  | 'aviator'
-  | 'cat-eye'
-  | 'browline'
-  | 'oversized'
-  | 'geometric'
-  | 'rimless'
-
-export interface Brand {
-  id: string
-  name: string
-  tagline: string
-  accent: string
+export interface Personal {
+  fullName: string
+  title: string
+  email: string
+  phone: string
+  location: string
+  website: string
+  summary: string
+  photo: string | null
 }
 
-export interface Frame {
+export interface Experience {
   id: string
-  brand: string
-  name: string
-  type: GlassesType
-  looks: Look[]
-  frameShape: FrameShape
-  suitedFor: FaceShape[]
-  color: string
-  accentColor: string
-  material: string
-  price: number
-  blurb: string
+  role: string
+  company: string
+  location: string
+  start: string
+  end: string
+  current: boolean
+  bullets: string[]
 }
 
-export interface LookOption {
-  id: Look
+export interface Education {
+  id: string
+  school: string
+  degree: string
+  location: string
+  start: string
+  end: string
+  details: string
+}
+
+export interface SkillGroup {
+  id: string
   label: string
-  description: string
-  icon: string
+  items: string[]
 }
 
-export type AppStep = 'brand' | 'type' | 'look' | 'photo' | 'results'
+export interface Project {
+  id: string
+  name: string
+  link: string
+  description: string
+}
 
-export interface FaceMeasurements {
-  widthToHeight: number
-  jawToCheek: number
-  foreheadToCheek: number
+export interface Language {
+  id: string
+  name: string
+  level: string
+}
+
+export interface CVData {
+  personal: Personal
+  experience: Experience[]
+  education: Education[]
+  skills: SkillGroup[]
+  projects: Project[]
+  languages: Language[]
+}
+
+export type TemplateId =
+  | 'minimal'
+  | 'classic'
+  | 'sidebar'
+  | 'creative'
+  | 'timeline'
+  | 'corporate'
+  | 'darktech'
+  | 'elegant'
+  | 'compact'
+  | 'academic'
+
+export interface TemplateMeta {
+  id: TemplateId
+  name: string
+  description: string
+  accent: string
 }

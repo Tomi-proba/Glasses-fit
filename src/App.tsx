@@ -1,97 +1,60 @@
-import { useState } from 'react'
-import type { AppStep, FaceShape, GlassesType, Look } from './types'
-import { ProgressSteps } from './components/ProgressSteps'
-import { StepBrand } from './components/StepBrand'
-import { StepType } from './components/StepType'
-import { StepLook } from './components/StepLook'
-import { StepPhoto } from './components/StepPhoto'
-import { Results } from './components/Results'
-
-interface Selection {
-  brandId: string | null
-  type: GlassesType | null
-  look: Look | null
-  photo: string | null
-  faceShape: FaceShape | null
-}
-
-const INITIAL_SELECTION: Selection = {
-  brandId: null,
-  type: null,
-  look: null,
-  photo: null,
-  faceShape: null,
-}
+import { useLocalStorage } from './hooks/useLocalStorage'
+import { SAMPLE_CV, EMPTY_CV } from './data/sampleData'
+import { TEMPLATES } from './data/templates'
+import { Editor } from './components/editor/Editor'
+import { TemplateGallery } from './components/TemplateGallery'
+import { PreviewPane } from './components/PreviewPane'
+import type { CVData, TemplateId } from './types'
 
 function App() {
-  const [step, setStep] = useState<AppStep>('brand')
-  const [selection, setSelection] = useState<Selection>(INITIAL_SELECTION)
+  const [data, setData] = useLocalStorage<CVData>('cv-builder:data', SAMPLE_CV)
+  const [templateId, setTemplateId] = useLocalStorage<TemplateId>('cv-builder:template', 'minimal')
 
-  function restart() {
-    setSelection(INITIAL_SELECTION)
-    setStep('brand')
-  }
+  const activeTemplate = TEMPLATES.find((t) => t.id === templateId)
 
   return (
-    <div className="min-h-screen px-4 py-10 sm:py-16">
-      <header className="mx-auto mb-10 max-w-3xl text-center">
-        <p className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-500 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
-          👓 Glasses Fit
-        </p>
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
+      <header className="no-print border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+          <div>
+            <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">CV Builder</h1>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              {activeTemplate?.name} template — everything stays in your browser
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                if (confirm('Clear all your CV data and start from a blank template?')) setData(EMPTY_CV)
+              }}
+              className="rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-800"
+            >
+              Start blank
+            </button>
+            <button
+              onClick={() => window.print()}
+              className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700"
+            >
+              Save as PDF
+            </button>
+          </div>
+        </div>
       </header>
 
-      <ProgressSteps current={step} />
+      <div className="no-print border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
+        <div className="mx-auto max-w-7xl">
+          <TemplateGallery selected={templateId} onSelect={setTemplateId} />
+        </div>
+      </div>
 
-      {step === 'brand' && (
-        <StepBrand
-          onSelect={(brandId) => {
-            setSelection((s) => ({ ...s, brandId }))
-            setStep('type')
-          }}
-        />
-      )}
-
-      {step === 'type' && (
-        <StepType
-          onBack={() => setStep('brand')}
-          onSelect={(type) => {
-            setSelection((s) => ({ ...s, type }))
-            setStep('look')
-          }}
-        />
-      )}
-
-      {step === 'look' && (
-        <StepLook
-          onBack={() => setStep('type')}
-          onSelect={(look) => {
-            setSelection((s) => ({ ...s, look }))
-            setStep('photo')
-          }}
-        />
-      )}
-
-      {step === 'photo' && (
-        <StepPhoto
-          onBack={() => setStep('look')}
-          onComplete={(photo, faceShape) => {
-            setSelection((s) => ({ ...s, photo, faceShape }))
-            setStep('results')
-          }}
-        />
-      )}
-
-      {step === 'results' && selection.brandId && selection.type && selection.look && (
-        <Results
-          brandId={selection.brandId}
-          type={selection.type}
-          look={selection.look}
-          faceShape={selection.faceShape}
-          photo={selection.photo}
-          onRestart={restart}
-          onChangeShape={() => setStep('photo')}
-        />
-      )}
+      <main className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-6 py-6 lg:grid-cols-2">
+        <div className="no-print max-h-[calc(100vh-220px)] overflow-y-auto pr-1">
+          <Editor data={data} onChange={setData} />
+        </div>
+        <div className="lg:sticky lg:top-6 lg:max-h-[calc(100vh-220px)]">
+          <PreviewPane data={data} templateId={templateId} />
+        </div>
+      </main>
     </div>
   )
 }

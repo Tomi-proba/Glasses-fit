@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - claude/glasses-recommendation-app-yb3i0v
+      - claude/cv-builder-app
   workflow_dispatch:
 
 permissions:

@@ -1,24 +1,24 @@
-# Glasses Fit
+# CV Builder
 
-Take a photo, pick a brand, and get sunglasses or eyeglasses recommendations matched to your face shape and the look you're going for.
+Fill in your details once, preview them instantly across 10 differently-styled resume templates, and export straight to PDF.
 
 ## How it works
 
-1. **Pick a brand** — recommendations are scoped to that brand's catalog.
-2. **Sunglasses or regular glasses.**
-3. **Pick a look** — Everyday, Classic, Flashy, or Sporty (capped at four by design).
-4. **Add a photo** — via webcam or file upload. A face-shape estimate (oval, round, square, heart, diamond, or oblong) is computed **entirely in the browser** using on-device face landmark detection ([MediaPipe Face Landmarker](https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker)). No photo is ever uploaded to a server. If detection fails (or you'd rather skip the photo), you can pick your face shape manually.
-5. **Results** — frames from the chosen brand/type/look, ranked by fit for your face shape, with a short explanation of why each shape works.
+1. **Edit** — fill in personal info, experience, education, skills, projects, and languages in the form.
+2. **Pick a look** — the gallery shows all 10 templates as live thumbnails; click one to switch the preview.
+3. **Export** — "Save as PDF" opens the browser's print dialog with the CV formatted as a clean A4 page (choose "Save as PDF" as the destination).
 
-The face-shape → frame-shape matching follows standard optician heuristics (e.g. angular frames for round faces, rounded frames for square faces) defined in `src/data/faceShapeFit.ts`.
+Everything runs client-side — your data is saved to `localStorage` in your own browser and never leaves your machine.
 
-Frame artwork is procedurally drawn SVG (`src/components/FrameGlyph.tsx`), not real product photography, since the catalog is illustrative rather than a live retail feed.
+## Templates
+
+Minimal, Classic, Sidebar, Creative, Timeline, Corporate, Dark Tech, Elegant, Compact, and Academic — each a distinct layout, typography, and color treatment over the same underlying data (`src/components/templates/`).
 
 ## Stack
 
 - React + TypeScript + Vite
 - Tailwind CSS
-- `@mediapipe/tasks-vision` for on-device face landmark detection — the WASM runtime and model weights are self-hosted under `public/mediapipe` and `public/models` so detection works fully offline and without any third-party CDN dependency.
+- No backend, no build-time data — everything is client-side state persisted to `localStorage`
 
 ## Development
 
@@ -33,14 +33,15 @@ npm run lint      # oxlint
 
 ```
 src/
-  types.ts              shared types
+  types.ts                  CVData / template types
   data/
-    brands.ts            brand list
-    looks.ts              the 4 "look" options
-    faceShapeFit.ts        face-shape ↔ frame-shape heuristics + labels
-    catalog.ts             the frame catalog
-  lib/
-    faceShape.ts           on-device face landmark detection + shape classification
-    recommend.ts            filtering/ranking logic
-  components/               step screens + UI
+    sampleData.ts             default/sample CV content
+    templates.ts               the 10 template definitions (id, name, accent)
+  components/
+    editor/                    the CV editing form
+    templates/                 the 10 template components + registry
+    TemplateGallery.tsx         live-thumbnail template picker
+    PreviewPane.tsx              on-screen + print preview
+  hooks/useLocalStorage.ts     persistence
+  lib/format.ts                 shared formatting helpers
 ```
