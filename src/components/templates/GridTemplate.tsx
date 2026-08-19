@@ -1,10 +1,12 @@
 import { formatRange } from '../../lib/format'
+import { useLocale } from '../../i18n/LocaleContext'
 import type { TemplateProps } from './shared'
 
 const ACCENT = '#0f766e'
 
 export function GridTemplate({ data }: TemplateProps) {
   const { personal, experience, education, skills, projects, languages } = data
+  const { t } = useLocale()
   return (
     <div className="cv-page bg-white px-14 py-12 text-neutral-900" style={{ fontFamily: 'system-ui, sans-serif' }}>
       <header className="mb-8 border-b-4 pb-4" style={{ borderColor: ACCENT }}>
@@ -26,12 +28,12 @@ export function GridTemplate({ data }: TemplateProps) {
       <div className="grid grid-cols-2 gap-x-10">
         <div className="flex flex-col gap-7 border-r border-neutral-200 pr-10">
           {experience.length > 0 && (
-            <Section title="Experience">
+            <Section title={t.experienceSection}>
               {experience.map((exp) => (
                 <div key={exp.id} className="mb-5">
                   <div className="flex items-baseline justify-between">
                     <h3 className="text-sm font-bold">{exp.role}</h3>
-                    <span className="text-xs text-neutral-400">{formatRange(exp.start, exp.end, exp.current)}</span>
+                    <span className="text-xs text-neutral-400">{formatRange(exp.start, exp.end, exp.current, t.present)}</span>
                   </div>
                   <p className="text-xs text-neutral-500">{exp.company}</p>
                   <ul className="mt-1.5 space-y-1">
@@ -47,7 +49,7 @@ export function GridTemplate({ data }: TemplateProps) {
           )}
 
           {projects.length > 0 && (
-            <Section title="Projects">
+            <Section title={t.projectsSection}>
               {projects.map((p) => (
                 <div key={p.id} className="mb-3">
                   <h3 className="text-sm font-bold">{p.name}</h3>
@@ -60,12 +62,12 @@ export function GridTemplate({ data }: TemplateProps) {
 
         <div className="flex flex-col gap-7">
           {education.length > 0 && (
-            <Section title="Education">
+            <Section title={t.educationSection}>
               {education.map((edu) => (
                 <div key={edu.id} className="mb-3">
                   <div className="flex items-baseline justify-between">
                     <h3 className="text-sm font-bold">{edu.school}</h3>
-                    <span className="text-xs text-neutral-400">{formatRange(edu.start, edu.end)}</span>
+                    <span className="text-xs text-neutral-400">{formatRange(edu.start, edu.end, false, t.present)}</span>
                   </div>
                   <p className="text-xs text-neutral-500">{edu.degree}</p>
                 </div>
@@ -74,7 +76,7 @@ export function GridTemplate({ data }: TemplateProps) {
           )}
 
           {skills.length > 0 && (
-            <Section title="Skills">
+            <Section title={t.skillsSection}>
               {skills.map((g) => (
                 <p key={g.id} className="mb-1 text-sm text-neutral-700">
                   <span className="font-semibold">{g.label}: </span>
@@ -85,7 +87,7 @@ export function GridTemplate({ data }: TemplateProps) {
           )}
 
           {languages.length > 0 && (
-            <Section title="Languages">
+            <Section title={t.languagesSection}>
               {languages.map((l) => (
                 <p key={l.id} className="text-sm text-neutral-700">
                   {l.name} — {l.level}

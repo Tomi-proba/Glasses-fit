@@ -1,8 +1,10 @@
 import { formatRange } from '../../lib/format'
+import { useLocale } from '../../i18n/LocaleContext'
 import type { TemplateProps } from './shared'
 
 export function SidebarTemplate({ data }: TemplateProps) {
   const { personal, experience, education, skills, projects, languages } = data
+  const { t } = useLocale()
   return (
     <div className="cv-page flex bg-white text-neutral-900" style={{ fontFamily: 'system-ui, sans-serif' }}>
       <aside className="w-[34%] shrink-0 px-8 py-12 text-white" style={{ backgroundColor: '#1e3a5f' }}>
@@ -13,7 +15,7 @@ export function SidebarTemplate({ data }: TemplateProps) {
         {personal.title && <p className="mt-1 text-sm text-blue-200">{personal.title}</p>}
 
         <div className="mt-8">
-          <SideHeading>Contact</SideHeading>
+          <SideHeading>{t.contactSection}</SideHeading>
           <div className="flex flex-col gap-1.5 text-xs text-blue-100">
             {[personal.email, personal.phone, personal.location, personal.website].filter(Boolean).map((item) => (
               <span key={item}>{item}</span>
@@ -23,7 +25,7 @@ export function SidebarTemplate({ data }: TemplateProps) {
 
         {skills.length > 0 && (
           <div className="mt-8">
-            <SideHeading>Skills</SideHeading>
+            <SideHeading>{t.skillsSection}</SideHeading>
             <div className="flex flex-col gap-3">
               {skills.map((g) => (
                 <div key={g.id}>
@@ -37,7 +39,7 @@ export function SidebarTemplate({ data }: TemplateProps) {
 
         {languages.length > 0 && (
           <div className="mt-8">
-            <SideHeading>Languages</SideHeading>
+            <SideHeading>{t.languagesSection}</SideHeading>
             <div className="flex flex-col gap-1">
               {languages.map((l) => (
                 <p key={l.id} className="text-xs text-blue-100">
@@ -53,12 +55,12 @@ export function SidebarTemplate({ data }: TemplateProps) {
         {personal.summary && <p className="mb-8 text-sm leading-relaxed text-neutral-700">{personal.summary}</p>}
 
         {experience.length > 0 && (
-          <Section title="Experience">
+          <Section title={t.experienceSection}>
             {experience.map((exp) => (
               <div key={exp.id} className="mb-5">
                 <div className="flex items-baseline justify-between">
                   <h3 className="text-sm font-semibold">{exp.role}</h3>
-                  <span className="text-xs text-neutral-400">{formatRange(exp.start, exp.end, exp.current)}</span>
+                  <span className="text-xs text-neutral-400">{formatRange(exp.start, exp.end, exp.current, t.present)}</span>
                 </div>
                 <p className="text-xs text-neutral-500">{exp.company}</p>
                 <ul className="mt-1.5 space-y-1">
@@ -74,12 +76,12 @@ export function SidebarTemplate({ data }: TemplateProps) {
         )}
 
         {education.length > 0 && (
-          <Section title="Education">
+          <Section title={t.educationSection}>
             {education.map((edu) => (
               <div key={edu.id} className="mb-3">
                 <div className="flex items-baseline justify-between">
                   <h3 className="text-sm font-semibold">{edu.school}</h3>
-                  <span className="text-xs text-neutral-400">{formatRange(edu.start, edu.end)}</span>
+                  <span className="text-xs text-neutral-400">{formatRange(edu.start, edu.end, false, t.present)}</span>
                 </div>
                 <p className="text-xs text-neutral-500">{edu.degree}</p>
               </div>
@@ -88,7 +90,7 @@ export function SidebarTemplate({ data }: TemplateProps) {
         )}
 
         {projects.length > 0 && (
-          <Section title="Projects">
+          <Section title={t.projectsSection}>
             {projects.map((p) => (
               <div key={p.id} className="mb-3">
                 <h3 className="text-sm font-semibold">{p.name}</h3>

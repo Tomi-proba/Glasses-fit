@@ -1,10 +1,12 @@
 import { formatRange } from '../../lib/format'
+import { useLocale } from '../../i18n/LocaleContext'
 import type { TemplateProps } from './shared'
 
 const ACCENT = '#a16207'
 
 export function ElegantTemplate({ data }: TemplateProps) {
   const { personal, experience, education, skills, projects, languages } = data
+  const { t } = useLocale()
   return (
     <div
       className="cv-page px-16 py-14 text-neutral-800"
@@ -30,12 +32,12 @@ export function ElegantTemplate({ data }: TemplateProps) {
       {personal.summary && <p className="mb-8 text-center text-sm leading-relaxed text-neutral-700">{personal.summary}</p>}
 
       {experience.length > 0 && (
-        <Section title="Experience">
+        <Section title={t.experienceSection}>
           {experience.map((exp) => (
             <div key={exp.id} className="mb-5">
               <div className="flex items-baseline justify-between">
                 <h3 className="text-sm font-semibold italic">{exp.role}</h3>
-                <span className="text-xs text-neutral-500">{formatRange(exp.start, exp.end, exp.current)}</span>
+                <span className="text-xs text-neutral-500">{formatRange(exp.start, exp.end, exp.current, t.present)}</span>
               </div>
               <p className="text-xs" style={{ color: ACCENT }}>
                 {exp.company}
@@ -53,12 +55,12 @@ export function ElegantTemplate({ data }: TemplateProps) {
       )}
 
       {education.length > 0 && (
-        <Section title="Education">
+        <Section title={t.educationSection}>
           {education.map((edu) => (
             <div key={edu.id} className="mb-3">
               <div className="flex items-baseline justify-between">
                 <h3 className="text-sm font-semibold italic">{edu.school}</h3>
-                <span className="text-xs text-neutral-500">{formatRange(edu.start, edu.end)}</span>
+                <span className="text-xs text-neutral-500">{formatRange(edu.start, edu.end, false, t.present)}</span>
               </div>
               <p className="text-xs" style={{ color: ACCENT }}>
                 {edu.degree}
@@ -69,7 +71,7 @@ export function ElegantTemplate({ data }: TemplateProps) {
       )}
 
       {skills.length > 0 && (
-        <Section title="Skills">
+        <Section title={t.skillsSection}>
           {skills.map((g) => (
             <p key={g.id} className="mb-1 text-sm text-neutral-700">
               <span className="font-semibold">{g.label}: </span>
@@ -80,7 +82,7 @@ export function ElegantTemplate({ data }: TemplateProps) {
       )}
 
       {projects.length > 0 && (
-        <Section title="Projects">
+        <Section title={t.projectsSection}>
           {projects.map((p) => (
             <div key={p.id} className="mb-2">
               <h3 className="text-sm font-semibold italic">{p.name}</h3>
@@ -91,7 +93,7 @@ export function ElegantTemplate({ data }: TemplateProps) {
       )}
 
       {languages.length > 0 && (
-        <Section title="Languages">
+        <Section title={t.languagesSection}>
           <p className="text-sm text-neutral-700">{languages.map((l) => `${l.name} (${l.level})`).join('  ·  ')}</p>
         </Section>
       )}

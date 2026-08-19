@@ -1,8 +1,10 @@
 import { formatRange } from '../../lib/format'
+import { useLocale } from '../../i18n/LocaleContext'
 import type { TemplateProps } from './shared'
 
 export function NewspaperTemplate({ data }: TemplateProps) {
   const { personal, experience, education, skills, projects, languages } = data
+  const { t } = useLocale()
   return (
     <div className="cv-page bg-white px-14 py-10 text-neutral-900" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
       <header className="border-b-4 border-double border-neutral-900 pb-3 text-center">
@@ -20,12 +22,12 @@ export function NewspaperTemplate({ data }: TemplateProps) {
       <div className="mt-4 grid grid-cols-2 gap-x-8">
         <div className="flex flex-col gap-6 border-r border-neutral-300 pr-8">
           {experience.length > 0 && (
-            <Section title="Experience">
+            <Section title={t.experienceSection}>
               {experience.map((exp) => (
                 <div key={exp.id} className="mb-4">
                   <div className="flex items-baseline justify-between">
                     <h3 className="text-sm font-bold">{exp.role}</h3>
-                    <span className="text-xs text-neutral-500">{formatRange(exp.start, exp.end, exp.current)}</span>
+                    <span className="text-xs text-neutral-500">{formatRange(exp.start, exp.end, exp.current, t.present)}</span>
                   </div>
                   <p className="text-xs italic text-neutral-500">{exp.company}</p>
                   <ul className="mt-1 space-y-1">
@@ -41,7 +43,7 @@ export function NewspaperTemplate({ data }: TemplateProps) {
           )}
 
           {projects.length > 0 && (
-            <Section title="Projects">
+            <Section title={t.projectsSection}>
               {projects.map((p) => (
                 <div key={p.id} className="mb-2">
                   <h3 className="text-sm font-bold">{p.name}</h3>
@@ -54,19 +56,19 @@ export function NewspaperTemplate({ data }: TemplateProps) {
 
         <div className="flex flex-col gap-6">
           {education.length > 0 && (
-            <Section title="Education">
+            <Section title={t.educationSection}>
               {education.map((edu) => (
                 <div key={edu.id} className="mb-2">
                   <h3 className="text-sm font-bold">{edu.school}</h3>
                   <p className="text-xs italic text-neutral-500">{edu.degree}</p>
-                  <p className="text-xs text-neutral-400">{formatRange(edu.start, edu.end)}</p>
+                  <p className="text-xs text-neutral-400">{formatRange(edu.start, edu.end, false, t.present)}</p>
                 </div>
               ))}
             </Section>
           )}
 
           {skills.length > 0 && (
-            <Section title="Skills">
+            <Section title={t.skillsSection}>
               {skills.map((g) => (
                 <p key={g.id} className="mb-1 text-sm text-neutral-700">
                   <span className="font-bold">{g.label}: </span>
@@ -77,7 +79,7 @@ export function NewspaperTemplate({ data }: TemplateProps) {
           )}
 
           {languages.length > 0 && (
-            <Section title="Languages">
+            <Section title={t.languagesSection}>
               <p className="text-sm text-neutral-700">{languages.map((l) => `${l.name} (${l.level})`).join(', ')}</p>
             </Section>
           )}

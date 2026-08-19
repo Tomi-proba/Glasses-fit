@@ -1,10 +1,12 @@
 import { formatRange } from '../../lib/format'
+import { useLocale } from '../../i18n/LocaleContext'
 import type { TemplateProps } from './shared'
 
 const RED = '#d90429'
 
 export function SwissTemplate({ data }: TemplateProps) {
   const { personal, experience, education, skills, projects, languages } = data
+  const { t } = useLocale()
   const visibleSections = [
     experience.length > 0 && 'experience',
     education.length > 0 && 'education',
@@ -30,10 +32,10 @@ export function SwissTemplate({ data }: TemplateProps) {
       {personal.summary && <p className="mb-10 max-w-xl text-sm leading-relaxed text-neutral-700">{personal.summary}</p>}
 
       {experience.length > 0 && (
-        <Section n={numberOf("experience")} title="Experience">
+        <Section n={numberOf("experience")} title={t.experienceSection}>
           {experience.map((exp) => (
             <div key={exp.id} className="mb-6 grid grid-cols-4 gap-4">
-              <span className="col-span-1 text-xs font-bold uppercase text-neutral-400">{formatRange(exp.start, exp.end, exp.current)}</span>
+              <span className="col-span-1 text-xs font-bold uppercase text-neutral-400">{formatRange(exp.start, exp.end, exp.current, t.present)}</span>
               <div className="col-span-3">
                 <h3 className="text-sm font-bold uppercase">{exp.role}</h3>
                 <p className="text-xs" style={{ color: RED }}>
@@ -53,10 +55,10 @@ export function SwissTemplate({ data }: TemplateProps) {
       )}
 
       {education.length > 0 && (
-        <Section n={numberOf("education")} title="Education">
+        <Section n={numberOf("education")} title={t.educationSection}>
           {education.map((edu) => (
             <div key={edu.id} className="mb-3 grid grid-cols-4 gap-4">
-              <span className="col-span-1 text-xs font-bold uppercase text-neutral-400">{formatRange(edu.start, edu.end)}</span>
+              <span className="col-span-1 text-xs font-bold uppercase text-neutral-400">{formatRange(edu.start, edu.end, false, t.present)}</span>
               <div className="col-span-3">
                 <h3 className="text-sm font-bold uppercase">{edu.school}</h3>
                 <p className="text-xs text-neutral-500">{edu.degree}</p>
@@ -67,7 +69,7 @@ export function SwissTemplate({ data }: TemplateProps) {
       )}
 
       {skills.length > 0 && (
-        <Section n={numberOf("skills")} title="Skills">
+        <Section n={numberOf("skills")} title={t.skillsSection}>
           <div className="grid grid-cols-4 gap-4">
             <div className="col-span-1" />
             <div className="col-span-3">
@@ -83,7 +85,7 @@ export function SwissTemplate({ data }: TemplateProps) {
       )}
 
       {projects.length > 0 && (
-        <Section n={numberOf("projects")} title="Projects">
+        <Section n={numberOf("projects")} title={t.projectsSection}>
           <div className="grid grid-cols-4 gap-4">
             <div className="col-span-1" />
             <div className="col-span-3">
@@ -99,7 +101,7 @@ export function SwissTemplate({ data }: TemplateProps) {
       )}
 
       {languages.length > 0 && (
-        <Section n={numberOf("languages")} title="Languages">
+        <Section n={numberOf("languages")} title={t.languagesSection}>
           <div className="grid grid-cols-4 gap-4">
             <div className="col-span-1" />
             <p className="col-span-3 text-sm text-neutral-700">{languages.map((l) => `${l.name} — ${l.level}`).join('   ')}</p>

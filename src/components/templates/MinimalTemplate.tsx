@@ -1,8 +1,10 @@
 import { formatRange } from '../../lib/format'
+import { useLocale } from '../../i18n/LocaleContext'
 import type { TemplateProps } from './shared'
 
 export function MinimalTemplate({ data }: TemplateProps) {
   const { personal, experience, education, skills, projects, languages } = data
+  const { t } = useLocale()
   return (
     <div className="cv-page bg-white px-16 py-14 text-neutral-900" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
       <header className="mb-10">
@@ -18,12 +20,12 @@ export function MinimalTemplate({ data }: TemplateProps) {
       {personal.summary && <p className="mb-10 max-w-2xl text-sm leading-relaxed text-neutral-700">{personal.summary}</p>}
 
       {experience.length > 0 && (
-        <Section title="Experience">
+        <Section title={t.experienceSection}>
           {experience.map((exp) => (
             <div key={exp.id} className="mb-6">
               <div className="flex items-baseline justify-between">
                 <h3 className="text-sm font-semibold">{exp.role}</h3>
-                <span className="text-xs text-neutral-400">{formatRange(exp.start, exp.end, exp.current)}</span>
+                <span className="text-xs text-neutral-400">{formatRange(exp.start, exp.end, exp.current, t.present)}</span>
               </div>
               <p className="text-xs text-neutral-500">
                 {exp.company}
@@ -42,12 +44,12 @@ export function MinimalTemplate({ data }: TemplateProps) {
       )}
 
       {education.length > 0 && (
-        <Section title="Education">
+        <Section title={t.educationSection}>
           {education.map((edu) => (
             <div key={edu.id} className="mb-4">
               <div className="flex items-baseline justify-between">
                 <h3 className="text-sm font-semibold">{edu.school}</h3>
-                <span className="text-xs text-neutral-400">{formatRange(edu.start, edu.end)}</span>
+                <span className="text-xs text-neutral-400">{formatRange(edu.start, edu.end, false, t.present)}</span>
               </div>
               <p className="text-xs text-neutral-500">{edu.degree}</p>
               {edu.details && <p className="mt-1 text-sm text-neutral-700">{edu.details}</p>}
@@ -57,7 +59,7 @@ export function MinimalTemplate({ data }: TemplateProps) {
       )}
 
       {skills.length > 0 && (
-        <Section title="Skills">
+        <Section title={t.skillsSection}>
           <div className="space-y-1">
             {skills.map((g) => (
               <p key={g.id} className="text-sm text-neutral-700">
@@ -70,7 +72,7 @@ export function MinimalTemplate({ data }: TemplateProps) {
       )}
 
       {projects.length > 0 && (
-        <Section title="Projects">
+        <Section title={t.projectsSection}>
           {projects.map((p) => (
             <div key={p.id} className="mb-3">
               <h3 className="text-sm font-semibold">
@@ -84,7 +86,7 @@ export function MinimalTemplate({ data }: TemplateProps) {
       )}
 
       {languages.length > 0 && (
-        <Section title="Languages">
+        <Section title={t.languagesSection}>
           <p className="text-sm text-neutral-700">{languages.map((l) => `${l.name} (${l.level})`).join('  ·  ')}</p>
         </Section>
       )}

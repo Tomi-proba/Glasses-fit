@@ -1,10 +1,12 @@
 import { formatRange } from '../../lib/format'
+import { useLocale } from '../../i18n/LocaleContext'
 import type { TemplateProps } from './shared'
 
 const ACCENT = '#22d3ee'
 
 export function DarkTechTemplate({ data }: TemplateProps) {
   const { personal, experience, education, skills, projects, languages } = data
+  const { t } = useLocale()
   return (
     <div
       className="cv-page px-14 py-12 text-neutral-200"
@@ -38,7 +40,7 @@ export function DarkTechTemplate({ data }: TemplateProps) {
               <div className="flex items-baseline justify-between">
                 <h3 className="text-sm font-bold text-white">{exp.role}</h3>
                 <span className="text-xs" style={{ color: ACCENT }}>
-                  {formatRange(exp.start, exp.end, exp.current)}
+                  {formatRange(exp.start, exp.end, exp.current, t.present)}
                 </span>
               </div>
               <p className="text-xs text-neutral-500">{exp.company}</p>
@@ -76,7 +78,7 @@ export function DarkTechTemplate({ data }: TemplateProps) {
               <div className="flex items-baseline justify-between">
                 <h3 className="text-sm font-bold text-white">{edu.school}</h3>
                 <span className="text-xs" style={{ color: ACCENT }}>
-                  {formatRange(edu.start, edu.end)}
+                  {formatRange(edu.start, edu.end, false, t.present)}
                 </span>
               </div>
               <p className="text-xs text-neutral-500">{edu.degree}</p>

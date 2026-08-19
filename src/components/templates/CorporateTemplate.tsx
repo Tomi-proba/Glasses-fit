@@ -1,10 +1,12 @@
 import { formatRange } from '../../lib/format'
+import { useLocale } from '../../i18n/LocaleContext'
 import type { TemplateProps } from './shared'
 
 const ACCENT = '#1e40af'
 
 export function CorporateTemplate({ data }: TemplateProps) {
   const { personal, experience, education, skills, projects, languages } = data
+  const { t } = useLocale()
   return (
     <div className="cv-page bg-white text-neutral-900" style={{ fontFamily: 'system-ui, sans-serif' }}>
       <div className="h-2 w-full" style={{ backgroundColor: ACCENT }} />
@@ -23,17 +25,17 @@ export function CorporateTemplate({ data }: TemplateProps) {
 
         {personal.summary && (
           <section className="mb-8">
-            <SectionTitle>Profile</SectionTitle>
+            <SectionTitle>{t.profileSection}</SectionTitle>
             <p className="text-sm leading-relaxed text-neutral-700">{personal.summary}</p>
           </section>
         )}
 
         {experience.length > 0 && (
           <section className="mb-8">
-            <SectionTitle>Experience</SectionTitle>
+            <SectionTitle>{t.experienceSection}</SectionTitle>
             {experience.map((exp) => (
               <div key={exp.id} className="mb-5 grid grid-cols-4 gap-4">
-                <div className="col-span-1 text-xs font-medium text-neutral-400">{formatRange(exp.start, exp.end, exp.current)}</div>
+                <div className="col-span-1 text-xs font-medium text-neutral-400">{formatRange(exp.start, exp.end, exp.current, t.present)}</div>
                 <div className="col-span-3">
                   <h3 className="text-sm font-bold">{exp.role}</h3>
                   <p className="text-xs text-neutral-500">
@@ -55,10 +57,10 @@ export function CorporateTemplate({ data }: TemplateProps) {
 
         {education.length > 0 && (
           <section className="mb-8">
-            <SectionTitle>Education</SectionTitle>
+            <SectionTitle>{t.educationSection}</SectionTitle>
             {education.map((edu) => (
               <div key={edu.id} className="mb-3 grid grid-cols-4 gap-4">
-                <div className="col-span-1 text-xs font-medium text-neutral-400">{formatRange(edu.start, edu.end)}</div>
+                <div className="col-span-1 text-xs font-medium text-neutral-400">{formatRange(edu.start, edu.end, false, t.present)}</div>
                 <div className="col-span-3">
                   <h3 className="text-sm font-bold">{edu.school}</h3>
                   <p className="text-xs text-neutral-500">{edu.degree}</p>
@@ -71,7 +73,7 @@ export function CorporateTemplate({ data }: TemplateProps) {
         <div className="grid grid-cols-2 gap-8">
           {skills.length > 0 && (
             <section>
-              <SectionTitle>Skills</SectionTitle>
+              <SectionTitle>{t.skillsSection}</SectionTitle>
               {skills.map((g) => (
                 <p key={g.id} className="mb-1 text-sm text-neutral-700">
                   <span className="font-semibold">{g.label}: </span>
@@ -82,7 +84,7 @@ export function CorporateTemplate({ data }: TemplateProps) {
           )}
           {languages.length > 0 && (
             <section>
-              <SectionTitle>Languages</SectionTitle>
+              <SectionTitle>{t.languagesSection}</SectionTitle>
               {languages.map((l) => (
                 <p key={l.id} className="text-sm text-neutral-700">
                   {l.name} — {l.level}
@@ -94,7 +96,7 @@ export function CorporateTemplate({ data }: TemplateProps) {
 
         {projects.length > 0 && (
           <section className="mt-8">
-            <SectionTitle>Projects</SectionTitle>
+            <SectionTitle>{t.projectsSection}</SectionTitle>
             {projects.map((p) => (
               <div key={p.id} className="mb-3">
                 <h3 className="text-sm font-bold">{p.name}</h3>

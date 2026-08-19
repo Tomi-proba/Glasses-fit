@@ -1,8 +1,10 @@
 import { formatRange } from '../../lib/format'
+import { useLocale } from '../../i18n/LocaleContext'
 import type { TemplateProps } from './shared'
 
 export function GradientTemplate({ data }: TemplateProps) {
   const { personal, experience, education, skills, projects, languages } = data
+  const { t } = useLocale()
   return (
     <div className="cv-page text-neutral-900" style={{ backgroundColor: '#f5f3ff', fontFamily: 'system-ui, sans-serif' }}>
       <header
@@ -33,12 +35,12 @@ export function GradientTemplate({ data }: TemplateProps) {
         )}
 
         {experience.length > 0 && (
-          <Card title="Experience">
+          <Card title={t.experienceSection}>
             {experience.map((exp) => (
               <div key={exp.id} className="mb-4 last:mb-0">
                 <div className="flex items-baseline justify-between">
                   <h3 className="text-sm font-bold">{exp.role}</h3>
-                  <span className="text-xs font-medium text-violet-600">{formatRange(exp.start, exp.end, exp.current)}</span>
+                  <span className="text-xs font-medium text-violet-600">{formatRange(exp.start, exp.end, exp.current, t.present)}</span>
                 </div>
                 <p className="text-xs text-neutral-500">{exp.company}</p>
                 <ul className="mt-1.5 space-y-1">
@@ -55,19 +57,19 @@ export function GradientTemplate({ data }: TemplateProps) {
 
         <div className="grid grid-cols-2 gap-4">
           {education.length > 0 && (
-            <Card title="Education">
+            <Card title={t.educationSection}>
               {education.map((edu) => (
                 <div key={edu.id} className="mb-2 last:mb-0">
                   <h3 className="text-sm font-bold">{edu.school}</h3>
                   <p className="text-xs text-neutral-500">{edu.degree}</p>
-                  <p className="text-xs text-neutral-400">{formatRange(edu.start, edu.end)}</p>
+                  <p className="text-xs text-neutral-400">{formatRange(edu.start, edu.end, false, t.present)}</p>
                 </div>
               ))}
             </Card>
           )}
 
           {skills.length > 0 && (
-            <Card title="Skills">
+            <Card title={t.skillsSection}>
               {skills.map((g) => (
                 <div key={g.id} className="mb-2 last:mb-0">
                   <p className="mb-1 text-xs font-bold text-neutral-800">{g.label}</p>
@@ -85,7 +87,7 @@ export function GradientTemplate({ data }: TemplateProps) {
         </div>
 
         {projects.length > 0 && (
-          <Card title="Projects">
+          <Card title={t.projectsSection}>
             {projects.map((p) => (
               <div key={p.id} className="mb-2 last:mb-0">
                 <h3 className="text-sm font-bold">{p.name}</h3>
@@ -96,7 +98,7 @@ export function GradientTemplate({ data }: TemplateProps) {
         )}
 
         {languages.length > 0 && (
-          <Card title="Languages">
+          <Card title={t.languagesSection}>
             <p className="text-sm text-neutral-700">{languages.map((l) => `${l.name} (${l.level})`).join('  ·  ')}</p>
           </Card>
         )}

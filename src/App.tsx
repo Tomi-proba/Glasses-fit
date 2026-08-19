@@ -4,38 +4,42 @@ import { TEMPLATES } from './data/templates'
 import { Editor } from './components/editor/Editor'
 import { TemplateGallery } from './components/TemplateGallery'
 import { PreviewPane } from './components/PreviewPane'
+import { LanguageSwitcher } from './components/LanguageSwitcher'
+import { useLocale } from './i18n/LocaleContext'
 import type { CVData, TemplateId } from './types'
 
 function App() {
   const [data, setData] = useLocalStorage<CVData>('cv-builder:data', SAMPLE_CV)
   const [templateId, setTemplateId] = useLocalStorage<TemplateId>('cv-builder:template', 'minimal')
+  const { locale, setLocale, t } = useLocale()
 
-  const activeTemplate = TEMPLATES.find((t) => t.id === templateId)
+  const activeTemplate = TEMPLATES.find((tpl) => tpl.id === templateId)
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
       <header className="no-print border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <div>
-            <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">CV Builder</h1>
+            <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">{t.appName}</h1>
             <p className="text-xs text-neutral-500 dark:text-neutral-400">
-              {activeTemplate?.name} template — everything stays in your browser
+              {activeTemplate?.name} · {t.stayInBrowser}
             </p>
           </div>
           <div className="flex gap-2">
+            <LanguageSwitcher value={locale} onChange={setLocale} />
             <button
               onClick={() => {
-                if (confirm('Clear all your CV data and start from a blank template?')) setData(EMPTY_CV)
+                if (confirm(t.startBlankConfirm)) setData(EMPTY_CV)
               }}
               className="rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-800"
             >
-              Start blank
+              {t.startBlank}
             </button>
             <button
               onClick={() => window.print()}
               className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700"
             >
-              Save as PDF
+              {t.savePdf}
             </button>
           </div>
         </div>

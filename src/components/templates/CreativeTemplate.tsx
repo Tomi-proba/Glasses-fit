@@ -1,8 +1,10 @@
 import { formatRange } from '../../lib/format'
+import { useLocale } from '../../i18n/LocaleContext'
 import type { TemplateProps } from './shared'
 
 export function CreativeTemplate({ data }: TemplateProps) {
   const { personal, experience, education, skills, projects, languages } = data
+  const { t } = useLocale()
   return (
     <div className="cv-page bg-white text-neutral-900" style={{ fontFamily: 'system-ui, sans-serif' }}>
       <header className="px-14 py-10 text-white" style={{ backgroundColor: '#e11d48' }}>
@@ -20,12 +22,12 @@ export function CreativeTemplate({ data }: TemplateProps) {
           {personal.summary && <p className="mb-8 text-sm leading-relaxed text-neutral-700">{personal.summary}</p>}
 
           {experience.length > 0 && (
-            <Section title="Experience">
+            <Section title={t.experienceSection}>
               {experience.map((exp) => (
                 <div key={exp.id} className="mb-6">
                   <div className="flex items-baseline justify-between">
                     <h3 className="text-sm font-bold">{exp.role}</h3>
-                    <span className="text-xs font-medium text-rose-500">{formatRange(exp.start, exp.end, exp.current)}</span>
+                    <span className="text-xs font-medium text-rose-500">{formatRange(exp.start, exp.end, exp.current, t.present)}</span>
                   </div>
                   <p className="text-xs text-neutral-500">{exp.company}</p>
                   <ul className="mt-2 space-y-1">
@@ -41,7 +43,7 @@ export function CreativeTemplate({ data }: TemplateProps) {
           )}
 
           {projects.length > 0 && (
-            <Section title="Projects">
+            <Section title={t.projectsSection}>
               {projects.map((p) => (
                 <div key={p.id} className="mb-3">
                   <h3 className="text-sm font-bold">{p.name}</h3>
@@ -54,7 +56,7 @@ export function CreativeTemplate({ data }: TemplateProps) {
 
         <div className="col-span-1">
           {skills.length > 0 && (
-            <Section title="Skills">
+            <Section title={t.skillsSection}>
               <div className="flex flex-col gap-3">
                 {skills.map((g) => (
                   <div key={g.id}>
@@ -73,19 +75,19 @@ export function CreativeTemplate({ data }: TemplateProps) {
           )}
 
           {education.length > 0 && (
-            <Section title="Education">
+            <Section title={t.educationSection}>
               {education.map((edu) => (
                 <div key={edu.id} className="mb-3">
                   <h3 className="text-sm font-bold">{edu.school}</h3>
                   <p className="text-xs text-neutral-500">{edu.degree}</p>
-                  <p className="text-xs text-neutral-400">{formatRange(edu.start, edu.end)}</p>
+                  <p className="text-xs text-neutral-400">{formatRange(edu.start, edu.end, false, t.present)}</p>
                 </div>
               ))}
             </Section>
           )}
 
           {languages.length > 0 && (
-            <Section title="Languages">
+            <Section title={t.languagesSection}>
               {languages.map((l) => (
                 <p key={l.id} className="text-sm text-neutral-700">
                   {l.name} <span className="text-neutral-400">· {l.level}</span>

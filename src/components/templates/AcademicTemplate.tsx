@@ -1,8 +1,10 @@
 import { formatRange } from '../../lib/format'
+import { useLocale } from '../../i18n/LocaleContext'
 import type { TemplateProps } from './shared'
 
 export function AcademicTemplate({ data }: TemplateProps) {
   const { personal, experience, education, skills, projects, languages } = data
+  const { t } = useLocale()
   return (
     <div className="cv-page bg-white px-16 py-14 text-neutral-900" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
       <header className="mb-6 text-center">
@@ -14,18 +16,18 @@ export function AcademicTemplate({ data }: TemplateProps) {
       </header>
 
       {personal.summary && (
-        <Section title="Research Interests">
+        <Section title={t.researchInterestsSection}>
           <p className="text-sm leading-relaxed text-neutral-800">{personal.summary}</p>
         </Section>
       )}
 
       {education.length > 0 && (
-        <Section title="Education">
+        <Section title={t.educationSection}>
           {education.map((edu) => (
             <div key={edu.id} className="mb-3">
               <div className="flex items-baseline justify-between">
                 <h3 className="text-sm font-bold">{edu.degree}</h3>
-                <span className="text-xs text-neutral-500">{formatRange(edu.start, edu.end)}</span>
+                <span className="text-xs text-neutral-500">{formatRange(edu.start, edu.end, false, t.present)}</span>
               </div>
               <p className="text-sm text-neutral-700">
                 {edu.school}
@@ -38,14 +40,14 @@ export function AcademicTemplate({ data }: TemplateProps) {
       )}
 
       {experience.length > 0 && (
-        <Section title="Academic & Professional Experience">
+        <Section title={t.academicExperienceSection}>
           {experience.map((exp) => (
             <div key={exp.id} className="mb-4">
               <div className="flex items-baseline justify-between">
                 <h3 className="text-sm font-bold">
                   {exp.role}, {exp.company}
                 </h3>
-                <span className="text-xs text-neutral-500">{formatRange(exp.start, exp.end, exp.current)}</span>
+                <span className="text-xs text-neutral-500">{formatRange(exp.start, exp.end, exp.current, t.present)}</span>
               </div>
               <ul className="mt-1 list-disc space-y-0.5 pl-5">
                 {exp.bullets.filter(Boolean).map((b, i) => (
@@ -60,7 +62,7 @@ export function AcademicTemplate({ data }: TemplateProps) {
       )}
 
       {projects.length > 0 && (
-        <Section title="Publications & Projects">
+        <Section title={t.publicationsProjectsSection}>
           <ol className="list-decimal space-y-2 pl-5">
             {projects.map((p) => (
               <li key={p.id} className="text-sm leading-relaxed text-neutral-800">
@@ -73,7 +75,7 @@ export function AcademicTemplate({ data }: TemplateProps) {
       )}
 
       {skills.length > 0 && (
-        <Section title="Skills & Competencies">
+        <Section title={t.skillsCompetenciesSection}>
           {skills.map((g) => (
             <p key={g.id} className="mb-1 text-sm text-neutral-800">
               <span className="font-semibold">{g.label}: </span>
@@ -84,7 +86,7 @@ export function AcademicTemplate({ data }: TemplateProps) {
       )}
 
       {languages.length > 0 && (
-        <Section title="Languages">
+        <Section title={t.languagesSection}>
           <p className="text-sm text-neutral-800">{languages.map((l) => `${l.name} (${l.level})`).join(', ')}</p>
         </Section>
       )}
