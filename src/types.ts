@@ -69,6 +69,11 @@ export type TemplateId =
   | 'elegant'
   | 'compact'
   | 'academic'
+  | 'photobanner'
+  | 'grid'
+  | 'newspaper'
+  | 'swiss'
+  | 'gradient'
 
 export interface TemplateMeta {
   id: TemplateId

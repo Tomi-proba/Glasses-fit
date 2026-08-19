@@ -11,6 +11,11 @@ import { DarkTechTemplate } from './DarkTechTemplate'
 import { ElegantTemplate } from './ElegantTemplate'
 import { CompactTemplate } from './CompactTemplate'
 import { AcademicTemplate } from './AcademicTemplate'
+import { PhotoBannerTemplate } from './PhotoBannerTemplate'
+import { GridTemplate } from './GridTemplate'
+import { NewspaperTemplate } from './NewspaperTemplate'
+import { SwissTemplate } from './SwissTemplate'
+import { GradientTemplate } from './GradientTemplate'
 
 export const TEMPLATE_COMPONENTS: Record<TemplateId, ComponentType<TemplateProps>> = {
   minimal: MinimalTemplate,
@@ -23,6 +28,11 @@ export const TEMPLATE_COMPONENTS: Record<TemplateId, ComponentType<TemplateProps
   elegant: ElegantTemplate,
   compact: CompactTemplate,
   academic: AcademicTemplate,
+  photobanner: PhotoBannerTemplate,
+  grid: GridTemplate,
+  newspaper: NewspaperTemplate,
+  swiss: SwissTemplate,
+  gradient: GradientTemplate,
 }
 
 export type { TemplateProps } from './shared'
