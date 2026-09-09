@@ -30,11 +30,23 @@ export interface Frame {
   looks: Look[]
   frameShape: FrameShape
   suitedFor: FaceShape[]
-  color: string
   accentColor: string
-  material: string
-  price: number
-  blurb: string
+  price: number | null
+  note: string
+  productUrl: string
+  image: string | null
+}
+
+/** Raw entry as written by scripts/generate-products.mjs into products.json. */
+export interface ProductRecord {
+  brand: string
+  modelName: string
+  frameShape: FrameShape
+  type: GlassesType
+  price: number | null
+  image: string | null
+  productUrl: string
+  note: string
 }
 
 export interface LookOption {

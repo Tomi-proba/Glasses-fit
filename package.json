@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "build:artifact": "tsc -b && vite build --config vite.config.artifact.ts",
     "build:standalone": "node scripts/generate-embedded-assets.mjs && tsc -b && vite build --config vite.config.standalone.ts",
+    "generate-products": "node scripts/generate-products.mjs",
     "lint": "oxlint",
     "preview": "vite preview"
   },

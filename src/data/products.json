@@ -1,0 +1,1162 @@
+[
+  {
+    "brand": "rayban",
+    "modelName": "Aviator Classic (RB3025)",
+    "frameShape": "aviator",
+    "type": "sunglasses",
+    "price": 179,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "The original teardrop pilot shape, in production since 1937."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Outdoorsman (RB3030)",
+    "frameShape": "aviator",
+    "type": "sunglasses",
+    "price": 203,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Aviator variant with a brow bar, introduced alongside the original."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Original Wayfarer (RB2140)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": 171,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "The 1952 trapezoid design that defined the Wayfarer family."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "New Wayfarer (RB2132)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": 163,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Ray-Ban's own top-selling customer favorite, per the brand."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Wayfarer Ease (RB4340)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": 171,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Lightweight nylon take on the Wayfarer silhouette."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Clubmaster (RB3016)",
+    "frameShape": "browline",
+    "type": "sunglasses",
+    "price": 179,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Ray-Ban's third best-selling style, behind Wayfarer and Aviator."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Clubmaster Optics (RB5154)",
+    "frameShape": "browline",
+    "type": "regular",
+    "price": 189,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/eyeglasses",
+    "note": "Optical version of the Clubmaster browline shape."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Clubmaster Oversized (RB4175)",
+    "frameShape": "browline",
+    "type": "sunglasses",
+    "price": 203,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Scaled-up Clubmaster silhouette."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Round Metal (RB3447)",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": 163,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Thin wire-rim round frame, a 1960s revival shape."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Round Metal Optics (RB2447)",
+    "frameShape": "round",
+    "type": "regular",
+    "price": 163,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/eyeglasses",
+    "note": "Optical round-metal frame, same lineage as RB3447."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Round Flat Lenses (RB3548N)",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": 179,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Round frame fitted with flat (non-curved) lenses."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Erika (RB4171)",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": 163,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Named after a Ray-Ban employee; one of the brand's modern-era favorites."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Erika Classic (RB4171 Classic)",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": 153,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Original colorway run of the Erika line."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Justin Classic (RB4165)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": 147,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Rubberized matte-finish square frame."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Hexagonal Flat Lenses (RB2185)",
+    "frameShape": "geometric",
+    "type": "sunglasses",
+    "price": 173,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Six-sided metal frame with flat lenses."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Blaze Round (RB3574N)",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": 219,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Rimless round lens with a thin metal brow."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Blaze Double Bridge (RB3583N)",
+    "frameShape": "aviator",
+    "type": "sunglasses",
+    "price": 207,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Aviator-derived Blaze line with a double bridge."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Round Craft (RB3648)",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": 249,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Round frame in leather-wrapped metal."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "Wayfarer Reverse (RB4426)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": 190,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/view-all",
+    "note": "Wayfarer shape with the bevel reversed to the front."
+  },
+  {
+    "brand": "rayban",
+    "modelName": "State Street",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.ray-ban.com/usa/sunglasses/new-icons",
+    "note": "Part of the \"New Icons\" collection."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Holbrook",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": 174,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us/category/sunglasses/holbrook",
+    "note": "Oakley's lifestyle square frame, named for a California town."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Holbrook XL",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us/category/sunglasses/holbrook",
+    "note": "Wider-fit version of the Holbrook."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Frogskins",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": 163,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us/category/sunglasses/frogskins",
+    "note": "Oakley's first sunglass model, originally released in 1985."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Frogskins Lite",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us/category/sunglasses/frogskins",
+    "note": "Lighter O Matter build of the original Frogskins."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Sutro",
+    "frameShape": "geometric",
+    "type": "sunglasses",
+    "price": 217,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us/category/sunglasses/sutro",
+    "note": "Shield-style frame built for the sport/lifestyle crossover."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Sutro Lite",
+    "frameShape": "geometric",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us/category/sunglasses/sutro",
+    "note": "Lighter-weight Sutro variant."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Radar EV Path",
+    "frameShape": "rectangle",
+    "type": "sunglasses",
+    "price": 247,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us/custom-product/0OO9208CP",
+    "note": "Performance shield frame from Oakley's Radar line."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Flak 2.0 XL",
+    "frameShape": "rectangle",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us",
+    "note": "One of Oakley's longest-running sport shield frames."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Jawbreaker",
+    "frameShape": "geometric",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us",
+    "note": "Cycling-oriented shield frame with an interchangeable lens system."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Gascan",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": 139,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us",
+    "note": "One of Oakley's original lifestyle square frames."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Latch",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us",
+    "note": "Low-profile everyday square frame."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Latch SQ",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us",
+    "note": "Slightly squarer-lens variant of the Latch."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "HSTN",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": 227,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us",
+    "note": "Modern square-lens lifestyle frame."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Portal X",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us",
+    "note": "One of Oakley's round lifestyle frames."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Sylas",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us",
+    "note": "Rounded lifestyle frame."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Encoder",
+    "frameShape": "rectangle",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us",
+    "note": "Modern performance shield frame."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Leadline",
+    "frameShape": "rectangle",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us",
+    "note": "Rectangular sport frame."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Turbine",
+    "frameShape": "oversized",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us",
+    "note": "Oversized sport shield frame."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Hex Jector",
+    "frameShape": "geometric",
+    "type": "regular",
+    "price": 187,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us/category/prescription/sunglasses",
+    "note": "Hexagonal-lens optical frame."
+  },
+  {
+    "brand": "oakley",
+    "modelName": "Eye Jacket Redux",
+    "frameShape": "rectangle",
+    "type": "sunglasses",
+    "price": 186,
+    "image": null,
+    "productUrl": "https://www.oakley.com/en-us",
+    "note": "Reissue of Oakley's 1990s Eye Jacket shield."
+  },
+  {
+    "brand": "persol",
+    "modelName": "649 Original (PO0649)",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.persol.com/en-us/products/0po0649-95_31",
+    "note": "Persol's signature keyhole-bridge, arrow-hinge shape."
+  },
+  {
+    "brand": "persol",
+    "modelName": "PO3092SM",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": 284,
+    "image": null,
+    "productUrl": "https://www.persol.com/usa/0PO3092SM--121948",
+    "note": "Phantos-shaped acetate frame with the Meflecto system."
+  },
+  {
+    "brand": "persol",
+    "modelName": "PO3225S",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.persol.com/usa/0PO3225S--95-58",
+    "note": "Square acetate sunglasses from the current collection."
+  },
+  {
+    "brand": "persol",
+    "modelName": "PO3235S",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": 315,
+    "image": null,
+    "productUrl": "https://www.persol.com",
+    "note": "Round acetate sunglasses."
+  },
+  {
+    "brand": "persol",
+    "modelName": "649 Folding (PO0714)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": 315,
+    "image": null,
+    "productUrl": "https://www.persol.com",
+    "note": "Folding version of the 649 shape."
+  },
+  {
+    "brand": "persol",
+    "modelName": "PO3269S",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": 262,
+    "image": null,
+    "productUrl": "https://www.framesdirect.com/persol-po3269s-sunglasses",
+    "note": "Round Persol sunglasses."
+  },
+  {
+    "brand": "persol",
+    "modelName": "PO3306S",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": 265,
+    "image": null,
+    "productUrl": "https://www.persol.com",
+    "note": "Round acetate sunglasses."
+  },
+  {
+    "brand": "persol",
+    "modelName": "PO3288S",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": 275,
+    "image": null,
+    "productUrl": "https://lensesrx.com/76820-persol-sunglasses-po3288s-24-57-sun-glasses/",
+    "note": "Round Persol sunglasses."
+  },
+  {
+    "brand": "persol",
+    "modelName": "Vintage Celebration (PO3007VM)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": 348,
+    "image": null,
+    "productUrl": "https://www.persol.com",
+    "note": "Part of Persol's Vintage Celebration heritage line."
+  },
+  {
+    "brand": "persol",
+    "modelName": "PO3019S",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.persol.com/en-us/products/0po3019s-24_31",
+    "note": "Semi-square acetate sunglasses."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Haskell",
+    "frameShape": "round",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/haskell/whiskey-tortoise",
+    "note": "Round frame with a keyhole bridge."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Percey",
+    "frameShape": "round",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses",
+    "note": "Round acetate frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Louise",
+    "frameShape": "cat-eye",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses",
+    "note": "Subtle cat-eye lift."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Daisy",
+    "frameShape": "round",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/women",
+    "note": "Rounded everyday frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Esme",
+    "frameShape": "cat-eye",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/women",
+    "note": "Cat-eye acetate frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Farris",
+    "frameShape": "square",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/men",
+    "note": "Square everyday frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Hughes",
+    "frameShape": "square",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/men",
+    "note": "Square acetate frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Laurel",
+    "frameShape": "round",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/women",
+    "note": "Round everyday frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Griffin",
+    "frameShape": "round",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses",
+    "note": "Round acetate frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Durand",
+    "frameShape": "square",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/men",
+    "note": "Square acetate frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Chamberlain",
+    "frameShape": "square",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/men",
+    "note": "One of Warby Parker's original, longest-running styles."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Downing",
+    "frameShape": "browline",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/men",
+    "note": "Browline frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Devon",
+    "frameShape": "rectangle",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/men",
+    "note": "Rectangular everyday frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Baker",
+    "frameShape": "square",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/men",
+    "note": "Square acetate frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Winston",
+    "frameShape": "square",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/men",
+    "note": "One of Warby Parker's original, longest-running styles."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Wilkie",
+    "frameShape": "round",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/men",
+    "note": "Round everyday frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Reilly",
+    "frameShape": "round",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses",
+    "note": "Round acetate frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Ames",
+    "frameShape": "square",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/men",
+    "note": "Square acetate frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Hardy",
+    "frameShape": "rectangle",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/men",
+    "note": "Rectangular everyday frame."
+  },
+  {
+    "brand": "warbyparker",
+    "modelName": "Sinclair",
+    "frameShape": "cat-eye",
+    "type": "regular",
+    "price": 95,
+    "image": null,
+    "productUrl": "https://www.warbyparker.com/eyeglasses/women",
+    "note": "Cat-eye acetate frame."
+  },
+  {
+    "brand": "gucci",
+    "modelName": "GG0061S",
+    "frameShape": "oversized",
+    "type": "sunglasses",
+    "price": 520,
+    "image": null,
+    "productUrl": "https://www.framesdirect.com/gucci-gg0061s-sunglasses",
+    "note": "Oversized square acetate frame with a Web-stripe temple."
+  },
+  {
+    "brand": "gucci",
+    "modelName": "GG0396S",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.amazon.com/Gucci-GG0396S-Octagonal-Womens-Sunglasses/dp/B07LHDPDHL",
+    "note": "Round metal frame."
+  },
+  {
+    "brand": "gucci",
+    "modelName": "GG0459S",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.macys.com/shop/product/gucci-sunglasses-gg0459s?ID=9484933",
+    "note": "Acetate sunglasses from the GG line."
+  },
+  {
+    "brand": "gucci",
+    "modelName": "GG0516S",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": 267,
+    "image": null,
+    "productUrl": "https://lensesrx.com/86057-gucci-sunglasses-gg0516s-001-sun-glasses/",
+    "note": "Round metal sunglasses."
+  },
+  {
+    "brand": "prada",
+    "modelName": "Symbole (PR 17WS)",
+    "frameShape": "rectangle",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.sunglasshut.com/us/prada/pr-17ws-8056597418478",
+    "note": "Rectangular frame from the Symbole line."
+  },
+  {
+    "brand": "prada",
+    "modelName": "Linea Rossa (PS 01ZS)",
+    "frameShape": "rectangle",
+    "type": "sunglasses",
+    "price": 179,
+    "image": null,
+    "productUrl": "https://www.ebay.com/itm/297373794629",
+    "note": "Prada's sport sub-brand shield frame."
+  },
+  {
+    "brand": "prada",
+    "modelName": "Linea Rossa (PS 55WS)",
+    "frameShape": "rectangle",
+    "type": "sunglasses",
+    "price": 289,
+    "image": null,
+    "productUrl": "https://www.prada.com",
+    "note": "Linea Rossa rectangular shield frame."
+  },
+  {
+    "brand": "prada",
+    "modelName": "PR 09ZS",
+    "frameShape": "rectangle",
+    "type": "sunglasses",
+    "price": 490,
+    "image": null,
+    "productUrl": "https://www.endclothing.com/us/prada-eyewear-pr-09zs-sunglasses-0pr-09zs-1ab5s054.html",
+    "note": "Sharp rectangular acetate frame."
+  },
+  {
+    "brand": "prada",
+    "modelName": "PR A09S",
+    "frameShape": "geometric",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.sunglasshut.com/us/prada/pr-a09s-8056597939270",
+    "note": "Irregular-lens acetate frame."
+  },
+  {
+    "brand": "prada",
+    "modelName": "PR A11S",
+    "frameShape": "geometric",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.eyeons.com/products/prada-pr-a11s",
+    "note": "Irregular-lens acetate and nylon frame."
+  },
+  {
+    "brand": "prada",
+    "modelName": "PR 06YS",
+    "frameShape": "rectangle",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.ezcontacts.com/product/sunglasses/1040288-1040292/prada-pr-06ys",
+    "note": "Rectangular acetate frame with triangular facets."
+  },
+  {
+    "brand": "prada",
+    "modelName": "PR 16YS",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.specscollective.com/products/prada-pr-16ys-sunglasses",
+    "note": "Square acetate frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Snowdon (FT0237)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.smartbuyglasses.com/designer-sunglasses/Tom-Ford/Tom-Ford-FT0237-SNOWDON-05B-159828.html",
+    "note": "Thick square acetate frame; appeared in a James Bond film."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Snowdon Optical (FT5178)",
+    "frameShape": "square",
+    "type": "regular",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.ezcontactsusa.com/tom-ford-ft-5178-eyeglasses.html",
+    "note": "Optical version of the Snowdon shape."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Jameson (FT0752)",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.go-optic.com/tom-ford-ft0752-jameson-sunglasses-ft0752/p/289278",
+    "note": "Round full-rim acetate frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Leo (FT0336)",
+    "frameShape": "aviator",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.amazon.com/Tom-Ford-Authentic-Designer-Sunglasses/dp/B00FGS3HOC",
+    "note": "Pilot-shaped metal-and-acetate frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Anders (FT1363)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.tomfordfashion.com/en-us/anders-sunglasses/FT1363.html",
+    "note": "Square acetate frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Marko (FT0144)",
+    "frameShape": "aviator",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.tomfordfashion.com",
+    "note": "Narrow drop-lens frame worn in a James Bond film."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Henry (FT0248)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.tomfordfashion.com",
+    "note": "Vintage-look trapezoid frame worn in a James Bond film."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Cecilio-02 (FT0628)",
+    "frameShape": "geometric",
+    "type": "sunglasses",
+    "price": 263,
+    "image": null,
+    "productUrl": "https://www.eyeons.com/tom-ford-ft0628-cecilio-02",
+    "note": "Geometric acetate frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Fausto (FT0711)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": 269,
+    "image": null,
+    "productUrl": "https://www.framesdirect.com/tom-ford-ft0711-fausto-sunglasses",
+    "note": "Square full-rim acetate frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Dax (FT0751)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.tomfordfashion.com",
+    "note": "Square acetate frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Alessio (FT0699)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://us.glassesstation.com/designer-sunglasses/Tom-Ford/Alessio/FT0699-52V-57",
+    "note": "Square acetate frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Nico-02 (FT1062)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.smartbuyglasses.com/designer-sunglasses/Tom-Ford/Tom-Ford-FT1062-NICO-02-01A-645609.html",
+    "note": "Square plastic frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Beatrix-02 (FT0613)",
+    "frameShape": "oversized",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.framesdirect.com/tom-ford-ft0613-beatrix-02-sunglasses",
+    "note": "Oversized glamour frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Farrah (FT0631)",
+    "frameShape": "aviator",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.tomfordfashion.com",
+    "note": "Shield-shaped aviator with polarized lenses."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Raoul (FT0753)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.tomfordfashion.com/en-us/raoul-sunglasses/FT0753.html",
+    "note": "Square acetate frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Aristotle (FT1332)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.tomfordfashion.com/en-us/aristotle-sunglasses/FT1332.html",
+    "note": "Square acetate frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Fernanda (FT1069)",
+    "frameShape": "cat-eye",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.tomfordfashion.com",
+    "note": "Cat-eye acetate frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Wallace (FT0870)",
+    "frameShape": "oversized",
+    "type": "sunglasses",
+    "price": 400,
+    "image": null,
+    "productUrl": "https://www.amazon.com/Tom-Ford-WALLACE-FT-0870/dp/B095J4JL9P",
+    "note": "Oversized glamour frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Ryder-02 (FT1035)",
+    "frameShape": "aviator",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.ebay.com/itm/256871537833",
+    "note": "Aviator-derived navigator frame."
+  },
+  {
+    "brand": "tomford",
+    "modelName": "Amber-02 (FT0990)",
+    "frameShape": "cat-eye",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.amazon.com/Tom-Ford-Amber-02-Sunglasses-Guarantee/dp/B09ZC1S9D4",
+    "note": "Cat-eye acetate frame."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "Gregory Peck (OV5186)",
+    "frameShape": "round",
+    "type": "regular",
+    "price": 214.5,
+    "image": null,
+    "productUrl": "https://www.oliverpeoples.com/en-us/products/0ov5186-1011",
+    "note": "Named for the actor's own glasses; a brand-defining shape."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "Gregory Peck Sun (OV5217S)",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oliverpeoples.com/en-us/products/0ov5217s-1483r8",
+    "note": "Sun version of the Gregory Peck shape."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "O'Malley (OV5183)",
+    "frameShape": "round",
+    "type": "regular",
+    "price": 221,
+    "image": null,
+    "productUrl": "https://www.oliverpeoples.com",
+    "note": "Created in 1988; later worn in American Psycho."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "Cary Grant (OV5413U)",
+    "frameShape": "square",
+    "type": "regular",
+    "price": 132.56,
+    "image": null,
+    "productUrl": "https://www.oliverpeoples.com",
+    "note": "Named for the actor's style in North by Northwest."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "Finley Vintage (OV5397U)",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": 263.25,
+    "image": null,
+    "productUrl": "https://www.oliverpeoples.com",
+    "note": "Vintage-inspired round frame."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "Sheldrake (OV5036)",
+    "frameShape": "browline",
+    "type": "regular",
+    "price": 221,
+    "image": null,
+    "productUrl": "https://www.oliverpeoples.com",
+    "note": "Launched 2008; a nod to Andy Warhol."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "Roella",
+    "frameShape": "cat-eye",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.eurooptica.com/products/oliver-peoples-roella-sunglasses",
+    "note": "Cat-eye acetate sunglasses."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "Casian",
+    "frameShape": "rectangle",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.eurooptica.com/products/oliver-peoples-casian-sunglasses",
+    "note": "Oversized rectangular sunglasses."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "Riley Sun (OV5004SU)",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oliverpeoples.com/en-us/products/0ov5004su-1005p1",
+    "note": "Sun version of the Riley optical shape."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "Rosson Sun (OV5540SU)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.amazon.com/Oliver-Peoples-Midnight-Express-Sunglasses/dp/B0CYQBC7YB",
+    "note": "Square acetate-and-metal sunglasses."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "Kosa",
+    "frameShape": "round",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.thebs.com/en/kosa-black-sunglasses-oliver-peoples-116264",
+    "note": "Round acetate-and-metal sunglasses with G-15 lenses."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "Nino Sun (OV5473SU)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oliverpeoples.com/usa/0OV5473SU--1005P2",
+    "note": "Square sunglasses."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "OP-1955 (OV5185)",
+    "frameShape": "round",
+    "type": "regular",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.oliverpeoples.com",
+    "note": "Re-release from the Vintage Circa 1987 collection."
+  },
+  {
+    "brand": "oliverpeoples",
+    "modelName": "Davri Sun (OV5510SU)",
+    "frameShape": "square",
+    "type": "sunglasses",
+    "price": null,
+    "image": null,
+    "productUrl": "https://www.specscollective.com/products/oliver-peoples-davri-ov5510su-sunglasses",
+    "note": "Square acetate sunglasses."
+  }
+]

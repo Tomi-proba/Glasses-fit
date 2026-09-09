@@ -37,4 +37,16 @@ export const BRANDS: Brand[] = [
     tagline: 'Minimal, architectural',
     accent: '#1a1a1a',
   },
+  {
+    id: 'tomford',
+    name: 'Tom Ford',
+    tagline: 'Hollywood glamour',
+    accent: '#3b2a1a',
+  },
+  {
+    id: 'oliverpeoples',
+    name: 'Oliver Peoples',
+    tagline: 'Vintage-inspired craft',
+    accent: '#4a3f2f',
+  },
 ]

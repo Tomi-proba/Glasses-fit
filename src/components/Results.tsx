@@ -18,9 +18,7 @@ interface Props {
 export function Results({ brandId, type, look, faceShape, photo, onRestart, onChangeShape }: Props) {
   const brand = BRANDS.find((b) => b.id === brandId)!
   const lookOption = LOOKS.find((l) => l.id === look)!
-  const recommendations = getRecommendations(brandId, type, look, faceShape)
-  const matched = recommendations.filter((r) => r.matchesFaceShape)
-  const others = recommendations.filter((r) => !r.matchesFaceShape)
+  const { picks, noExactMatch } = getRecommendations(brandId, type, look, faceShape)
 
   return (
     <div className="mx-auto w-full max-w-5xl">
@@ -60,39 +58,22 @@ export function Results({ brandId, type, look, faceShape, photo, onRestart, onCh
         </div>
       </div>
 
-      {recommendations.length === 0 ? (
+      {noExactMatch ? (
         <p className="rounded-2xl border border-dashed border-neutral-300 p-10 text-center text-neutral-500 dark:border-neutral-700 dark:text-neutral-400">
-          {brand.name} doesn't have {type === 'sunglasses' ? 'sunglasses' : 'regular glasses'} in the catalog yet —
-          try another type or brand.
+          No exact match in {brand.name}'s real catalog for this face shape, type, and style combination — we don't
+          invent a frame to fill this. Try another brand, type, or style.
         </p>
       ) : (
-        <>
-          {matched.length > 0 && (
-            <section className="mb-8">
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-                Best matches for your face shape
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {matched.map((rec) => (
-                  <FrameCard key={rec.frame.id} recommendation={rec} faceShape={faceShape} />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {others.length > 0 && (
-            <section>
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-                {matched.length > 0 ? `More ${lookOption.label.toLowerCase()} styles from ${brand.name}` : `${lookOption.label} styles from ${brand.name}`}
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {others.map((rec) => (
-                  <FrameCard key={rec.frame.id} recommendation={rec} faceShape={faceShape} />
-                ))}
-              </div>
-            </section>
-          )}
-        </>
+        <section>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+            {faceShape ? `Best matches for your ${FACE_SHAPE_LABELS[faceShape].toLowerCase()} face` : 'Top picks'}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {picks.map((rec) => (
+              <FrameCard key={rec.frame.id} recommendation={rec} />
+            ))}
+          </div>
+        </section>
       )}
 
       <div className="mt-10 flex justify-center">
