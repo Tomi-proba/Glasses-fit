@@ -9,7 +9,6 @@ gsap.registerPlugin(ScrollTrigger);
 const PREVIEW = new URLSearchParams(location.search).has('preview') || location.hash === '#preview';
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const isMobile = () => matchMedia('(max-width: 760px), (pointer: coarse)').matches;
-const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
 
 let runtime = readRuntime();
 let lenis = null;
@@ -82,32 +81,19 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeMenu();
 });
 
-// Card tilt + glow and magnetic buttons (fine pointers only, never with reduced motion).
-let tiltEl = null;
-let magnetEl = null;
-document.addEventListener('pointermove', (e) => {
-  if (!finePointer.matches || reduceMotion.matches) return;
-  const card = e.target.closest?.('.tilt');
-  if (tiltEl && tiltEl !== card) tiltEl.style.removeProperty('--rx'), tiltEl.style.removeProperty('--ry');
-  tiltEl = card;
-  if (card) {
-    const r = card.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width;
-    const py = (e.clientY - r.top) / r.height;
-    card.style.setProperty('--rx', `${(0.5 - py) * 6}deg`);
-    card.style.setProperty('--ry', `${(px - 0.5) * 8}deg`);
-    card.style.setProperty('--gx', `${px * 100}%`);
-    card.style.setProperty('--gy', `${py * 100}%`);
-  }
-  const btn = e.target.closest?.('.magnetic');
-  if (magnetEl && magnetEl !== btn) magnetEl.style.removeProperty('--mx'), magnetEl.style.removeProperty('--my');
-  magnetEl = btn;
-  if (btn) {
-    const r = btn.getBoundingClientRect();
-    btn.style.setProperty('--mx', `${(e.clientX - r.left - r.width / 2) * 0.18}px`);
-    btn.style.setProperty('--my', `${(e.clientY - r.top - r.height / 2) * 0.25}px`);
-  }
-}, { passive: true });
+// Testimonials: one quote on stage, previous/next buttons cycle through them.
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-quote]');
+  if (!btn) return;
+  const quotes = [...document.querySelectorAll('.quote-stage .quote')];
+  if (quotes.length < 2) return;
+  const current = quotes.findIndex((q) => !q.hasAttribute('data-inactive'));
+  const next = (current + Number(btn.dataset.quote) + quotes.length) % quotes.length;
+  quotes.forEach((q, i) => {
+    if (i === next) q.removeAttribute('data-inactive');
+    else q.setAttribute('data-inactive', '');
+  });
+});
 
 // Contact form: posts to `contact.formEndpoint` (e.g. Formspree) or falls back to mailto.
 document.addEventListener('submit', async (e) => {
@@ -120,11 +106,13 @@ document.addEventListener('submit', async (e) => {
   for (const f of fields) {
     const ok = f.value.trim() !== '' && f.checkValidity();
     f.setAttribute('aria-invalid', String(!ok));
+    const err = document.getElementById(`${f.id}-err`);
+    if (err) err.textContent = ok ? '' : f.type === 'email' && f.value.trim() ? 'Ez nem érvényes e-mail cím.' : 'Ezt a mezőt ki kell tölteni.';
     if (!ok && !firstInvalid) firstInvalid = f;
   }
   status.className = 'form-status';
   if (firstInvalid) {
-    status.textContent = 'Kérjük, töltsd ki helyesen a kötelező mezőket.';
+    status.textContent = 'Néhány mező hiányzik vagy hibás, javítsd a jelölt mezőket.';
     status.classList.add('err');
     firstInvalid.focus();
     return;
@@ -195,46 +183,57 @@ function formatCount(n) {
   return Math.round(n).toLocaleString(document.documentElement.lang || 'hu');
 }
 
-function initAnimations({ animateIn }) {
-  const reveals = gsap.utils.toArray('[data-reveal]');
-  const counts = gsap.utils.toArray('.count[data-count]');
+const REVEAL_FROM = {
+  row: { opacity: 0, y: 28 },
+  lines: { opacity: 0, y: 40 },
+  clip: { clipPath: 'inset(100% 0% 0% 0%)' },
+};
+const REVEAL_TO = {
+  row: { opacity: 1, y: 0, duration: 1, ease: 'expo.out', stagger: 0.08 },
+  lines: { opacity: 1, y: 0, duration: 1.4, ease: 'expo.out' },
+  clip: { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.inOut', stagger: 0.1 },
+};
 
-  if (!animateIn || reduceMotion.matches) {
-    gsap.set(reveals, { opacity: 1, y: 0 });
-    counts.forEach((el) => { el.textContent = formatCount(Number(el.dataset.count) || 0); });
-    if (reduceMotion.matches) return;
-  } else {
-    ScrollTrigger.batch(reveals, {
-      start: 'top 88%',
-      once: true,
-      onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out', stagger: 0.09, overwrite: true }),
-    });
+function initAnimations({ animateIn }) {
+  const counts = gsap.utils.toArray('.count[data-count]');
+  const showCounts = () => counts.forEach((el) => { el.textContent = formatCount(Number(el.dataset.count) || 0); });
+  if (reduceMotion.matches) return showCounts();
+
+  if (animateIn) {
+    // Only content that starts below the fold is hidden for its reveal; everything is visible by default.
+    for (const kind of Object.keys(REVEAL_FROM)) {
+      const els = gsap.utils.toArray(`[data-reveal="${kind}"]`).filter((el) => el.getBoundingClientRect().top > window.innerHeight * 0.9);
+      if (!els.length) continue;
+      gsap.set(els, REVEAL_FROM[kind]);
+      ScrollTrigger.batch(els, {
+        start: 'top 88%',
+        once: true,
+        onEnter: (batch) => gsap.to(batch, { ...REVEAL_TO[kind], overwrite: true }),
+      });
+    }
     counts.forEach((el) => {
       const target = Number(el.dataset.count) || 0;
       const state = { v: 0 };
-      el.textContent = '0';
       ScrollTrigger.create({
         trigger: el,
         start: 'top 92%',
         once: true,
-        onEnter: () => gsap.to(state, { v: target, duration: 2, ease: 'power3.out', onUpdate: () => { el.textContent = formatCount(state.v); } }),
+        onEnter: () => gsap.fromTo(state, { v: target * 0.6 }, { v: target, duration: 1.8, ease: 'power3.out', onUpdate: () => { el.textContent = formatCount(state.v); } }),
       });
     });
+  } else {
+    showCounts();
   }
 
-  // Parallax layers.
+  // Parallax: the hero copy drifts up faster than the 3D stage; about image moves inside its frame.
   const heroEl = document.querySelector('.hero');
   if (heroEl) {
-    gsap.to('.hero-inner', { yPercent: 28, opacity: 0.15, ease: 'none', scrollTrigger: { trigger: heroEl, start: 'top top', end: 'bottom top', scrub: true } });
-    gsap.to('.hero-bg', { yPercent: 18, ease: 'none', scrollTrigger: { trigger: heroEl, start: 'top top', end: 'bottom top', scrub: true } });
+    const st = { trigger: heroEl, start: 'top top', end: 'bottom top', scrub: true };
+    gsap.to('.hero-copy', { yPercent: -18, opacity: 0.2, ease: 'none', scrollTrigger: st });
+    gsap.to('.hero-stage', { yPercent: 12, ease: 'none', scrollTrigger: { ...st } });
   }
-  gsap.utils.toArray('[data-parallax]').forEach((wrap) => {
-    const img = wrap.querySelector('img');
-    const speed = Number(wrap.dataset.parallax) || 0.1;
-    if (img) gsap.fromTo(img, { yPercent: -speed * 100 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: wrap, start: 'top bottom', end: 'bottom top', scrub: true } });
-  });
-  gsap.utils.toArray('.about-orb').forEach((orb) => {
-    gsap.fromTo(orb, { y: 60 }, { y: -60, ease: 'none', scrollTrigger: { trigger: orb.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
+  gsap.utils.toArray('img[data-parallax]').forEach((img) => {
+    gsap.fromTo(img, { yPercent: -14 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
   });
 }
 
@@ -267,7 +266,7 @@ function hasFastWebGL() {
 }
 
 function wantsHero3D() {
-  return runtime.effect3d && runtime.effect3d !== 'none' && !reduceMotion.matches && document.querySelector('.hero-canvas') && hasFastWebGL();
+  return ['particles', 'relief'].includes(runtime.effect3d) && runtime.heroImage && !reduceMotion.matches && document.querySelector('.hero-canvas') && hasFastWebGL();
 }
 
 async function startHero3D() {
@@ -279,12 +278,19 @@ async function startHero3D() {
   if (token !== heroToken) return; // superseded by a newer request
   const canvas = document.querySelector('.hero-canvas');
   if (!canvas) return;
-  hero = createHero3D(canvas, {
-    type: runtime.effect3d,
-    accent: runtime.theme?.accent || '#00d4ff',
-    light: runtime.theme?.mode === 'light',
-    mobile: isMobile(),
-  });
+  try {
+    const created = await createHero3D(canvas, {
+      type: runtime.effect3d,
+      image: runtime.heroImage,
+      accent: runtime.theme?.accent || '#00d4ff',
+      light: runtime.theme?.mode === 'light',
+      mobile: isMobile(),
+    });
+    if (token !== heroToken) return created?.destroy();
+    hero = created;
+  } catch (err) {
+    console.warn('3D hero unavailable, showing the still image.', err);
+  }
 }
 
 function scheduleHero3D() {
@@ -305,7 +311,7 @@ let renderModule = null;
 async function applyPreviewConfig(config) {
   renderModule ||= await import('./render.js');
   const { renderBody, themeCss, fontsHref } = renderModule;
-  runtime = { effect3d: config.effect3d, theme: config.theme };
+  runtime = { effect3d: config.effect3d, theme: config.theme, heroImage: config.hero?.image };
 
   document.getElementById('theme-vars').textContent = themeCss(config);
   document.documentElement.dataset.mode = config.theme?.mode === 'light' ? 'light' : 'dark';
@@ -325,10 +331,11 @@ async function applyPreviewConfig(config) {
   document.documentElement.classList.add('no-intro');
   document.getElementById('app').innerHTML = renderBody(config);
 
-  const sameHero = hero && hero.type === runtime.effect3d && hero.light === (runtime.theme?.mode === 'light') && wantsHero3D();
+  const sameHero = hero && hero.type === runtime.effect3d && hero.image === runtime.heroImage && hero.light === (runtime.theme?.mode === 'light') && wantsHero3D();
   const freshCanvas = document.querySelector('.hero-canvas');
   if (sameHero && freshCanvas && keptCanvas) {
-    freshCanvas.replaceWith(keptCanvas);
+    // Keep the live 3D stage (its observers are bound to it) instead of the freshly rendered one.
+    freshCanvas.parentElement.replaceWith(keptCanvas.parentElement);
     hero.setAccent(runtime.theme?.accent || '#00d4ff');
   } else {
     startHero3D();
