@@ -2,13 +2,14 @@
 
 Konfigurációvezérelt, egyoldalas céges weboldal-sablon (minta: **Aura Hair Studio**, fodrászszalon, neon kék kiemelő szín) és egy hozzá tartozó **élő konfigurátor**, amellyel az ügyfél lépésről lépésre testreszabhatja a saját oldalát, majd letöltheti kész, feltölthető weboldalként.
 
-- **3D hero** Three.js-szel: részecske-galaxis, folyékony gömb vagy hullámzó pontrács; egérmozgásra reagál, mobilon könnyített, és csak a betöltés után, lazy módon töltődik be.
+- **3D hero egy képből** Three.js-szel. Az ügyfél képéből (`hero.image`) részecskefelhő épül, amely betöltéskor összeáll, lassan forog, követi az egeret, és szétnyílik a mutató körül. A másik lehetőség egy domborított felület. Mobilon könnyített, a betöltés után, lazy módon töltődik be, és ha a 3D nem fut, az álló kép látszik.
 - **GSAP + ScrollTrigger** görgetési animációk és parallax, **Lenis** sima görgetés.
-- Mikro-interakciók: mágneses gombok, 3D-ben dőlő kártyák fénycsóvával, hover effektek.
+- Dizájn: Bugatti-ihletésű, visszafogott luxus (fekete vászon, ritkított nagybetűs Tenor Sans címek, Hanken Grotesk szöveg, Martian Mono csak árakhoz, időkhöz és számokhoz, vékony vonalak, kerek gombok).
+- Mikro-interakciók: alulról kitöltődő gombok, árlista-sorok kiemelő vonallal, finom kép-nagyítás a galériában, vélemény-karusszel.
 - Sötét / világos téma, CSS változókra épülő színek, Google Fonts betűtípusok.
 - SEO: meta tagek, Open Graph / Twitter kártya, `LocalBusiness` JSON-LD, `sitemap.xml`, `robots.txt`, előrenderelt HTML.
 - Akadálymentesség: skip link, ARIA címkék, alt szövegek, látható fókusz, automatikusan kontrasztos kiemelő szín, `prefers-reduced-motion` támogatás (ilyenkor nincs 3D, nincs sima görgetés, és nincsenek animációk).
-- Lighthouse (headless Chrome, helyi szerver gzippel): **100 / 100 / 100 / 100** mobilon és asztalin is.
+- Lighthouse (headless Chrome, helyi szerver gzippel): **99-100 / 100 / 100 / 100** mobilon és asztalin.
 
 ## Gyors kezdés
 
@@ -39,7 +40,8 @@ site-template/
 │   └── js/
 │       ├── render.js       ← közös renderelő: config → HTML (build, előnézet és ZIP export is ezt használja)
 │       ├── main.js         ← Lenis, GSAP animációk, interakciók, űrlap, előnézet-fogadás
-│       ├── hero3d.js       ← Three.js effektek (külön, lazy-loaded chunk)
+│       ├── hero3d.js       ← képből készülő Three.js 3D (külön, lazy-loaded chunk)
+│       ├── icons.js        ← generált Phosphor ikonok (scripts/gen-icons.mjs)
 │       └── configurator.js
 └── scripts/build.mjs       ← esbuild bundle + előrenderelés + sitemap/robots + dev szerver
 ```
@@ -102,20 +104,20 @@ Mivel az oldal fizetős termék, a „kész weboldal ZIP” letöltés alapból 
 | --- | --- |
 | `meta` | `lang`, `siteUrl`, `title`, `description`, `keywords`, `ogImage` – SEO és megosztás |
 | `brand` | `name`, `shortName` (menüben), `tagline`, `logo` (üresen hagyva a név kezdőbetűje jelenik meg), `logoAlt` |
-| `theme` | `mode`: `"dark"` / `"light"`, `accent`: hex szín, `headingFont` / `bodyFont` (lásd `FONTS` a `render.js`-ben), `radius` (px) |
-| `effect3d` | `"particles"`, `"blob"`, `"waves"` vagy `"none"` |
+| `theme` | `mode`: `"dark"` / `"light"`, `accent`: hex szín, `headingFont` / `bodyFont` (lásd `FONTS` a `render.js`-ben: címsor- és szövegbetűk külön listában), `radius` (a képek és a térkép sarka, px; a gombok mindig kerekek) |
+| `effect3d` | `"particles"` (részecskék), `"relief"` (domborított) vagy `"none"` (álló kép) |
 | `sections.order` | A szekciók sorrendje: `hero`, `about`, `services`, `gallery`, `testimonials`, `contact` |
 | `sections.enabled` | Szekciónként `true` / `false` – ki-be kapcsolás |
-| `hero` | `eyebrow`, `title`, `subtitle`, `ctaText`, `ctaLink`, `secondaryText`, `secondaryLink` |
+| `hero` | `title`, `subtitle`, `ctaText`, `ctaLink`, `secondaryText`, `secondaryLink`, `image` (a 3D forrásképe), `imageAlt` |
 | `about` | `title`, `paragraphs[]`, `image`, `imageAlt`, `stats[]` (`value`, `suffix`, `label`) |
-| `services` | `title`, `intro`, `items[]` (`icon`, `title`, `text`, `price`) – ikonok: `scissors, palette, droplet, sparkles, razor, heart, star, crown, leaf, sun, gift, calendar` |
+| `services` | `title`, `intro`, `items[]` (`icon`, `title`, `text`, `price`) – ikonok (Phosphor): `scissors, palette, droplet, sparkles, crown, flower, heart, star, leaf, sun, gift, dryer` |
 | `gallery` | `title`, `intro`, `items[]` (`src`, `alt`, `caption`) |
 | `testimonials` | `title`, `items[]` (`quote`, `name`, `role`, `rating` 0–5) |
 | `contact` | `address`, `phone`, `email`, `hours[]`, `mapQuery` (Google Térkép keresés), `formEndpoint`, űrlap-szövegek |
 | `social[]` | `type` (`instagram, facebook, tiktok, youtube, linkedin, x`) + `url` |
 | `footer` | `text`, `copyright` |
 
-Minden szekciónak van `navLabel` (menüfelirat) és `eyebrow` (kis felirat a cím fölött) mezője is.
+Minden szekciónak van `navLabel` (menüfelirat) mezője. Kis feliratok a címek fölött szándékosan nincsenek, a cím önmagában hordozza az üzenetet.
 
 ### Színek és téma
 
@@ -129,15 +131,24 @@ A `render.js` a configból CSS változókat generál (`--accent`, `--accent-rgb`
 - Ha üres, az űrlap a látogató e-mail kliensét nyitja meg a kitöltött üzenettel (`mailto:`).
 - Beépített honeypot mező véd az egyszerű spam botok ellen.
 
-### Új 3D effekt hozzáadása
+### A 3D elem képből
 
-A `src/js/hero3d.js`-ben írj egy `makeXxx(ctx)` függvényt, amely `{ object, material, update(t) }` objektumot ad vissza, vedd fel a `FACTORIES`-be, és a `render.js` `EFFECTS` listájába (így a konfigurátorban is megjelenik).
+A `hero3d.js` a képből számol mélységet, AI-modell vagy külső szolgáltatás nélkül:
+1. Kiválasztja a tárgyat: az átlátszó pixeleket, vagy ha nincs átlátszóság, a sarkok színétől eltérő részeket.
+2. A maszkot elmosva lekerekített „térfogatot” kap, ehhez keveri a kép világosságát.
+3. Ebből lesz a részecskék mélysége, vagy a domborított felület magassága.
+
+Legjobb forráskép: egy jól körülhatárolt tárgy vagy logó, átlátszó vagy egyszínű háttéren. A konfigurátorban feltöltött képet a böngésző kicsinyíti és WebP-be menti.
+
+Ha valódi 3D modell (.glb) kell, ingyenes online eszközzel (például Microsoft TRELLIS vagy Tencent Hunyuan3D-2 a Hugging Face-en) képből előállítható. A beépítéséhez egy `GLTFLoader`-es effektet kell felvenni a `FACTORIES` listába.
+
+Új effekt: a `hero3d.js`-ben írj egy `makeXxx(ctx, map)` függvényt, amely `{ object, material, geometry }` objektumot ad vissza, vedd fel a `FACTORIES`-be és a `render.js` `EFFECTS` listájába.
 
 ## Teljesítmény
 
-- Az oldal előrenderelt HTML, a 3D-t pedig a `load` esemény után, üresjáratban tölti be a böngésző – így nem lassítja az első megjelenítést.
+- Az oldal előrenderelt HTML, a 3D-t pedig a `load` esemény után, üresjáratban tölti be a böngésző, így nem lassítja az első megjelenítést.
 - Mobilon kevesebb részecske / poligon, alacsonyabb pixelarány és nincs egérkövetés; a renderelés szünetel, ha a hero nem látható vagy a fül a háttérben van.
-- Szoftveres WebGL-en (GPU nélküli gépen) a 3D kimarad, és a CSS-es fényhatás marad. Hibakereséshez a `?3d=force` paraméterrel mégis bekapcsolható.
+- Szoftveres WebGL-en (GPU nélküli gépen) a 3D kimarad, és az álló kép látszik. Hibakereséshez a `?3d=force` paraméterrel mégis bekapcsolható.
 - A Google Fonts CSS nem blokkolja a renderelést (`display=swap`).
 - Éles tárhelyen kapcsold be a gzip/brotli tömörítést (a legtöbb tárhelyen alapból be van kapcsolva) és a hosszú cache-t a `js/chunks/` fájlokra.
 - A Lighthouse 100-as pontszámokat headless Chrome-ban mértük, ahol GPU nincs, ezért a 3D kimaradt. Valódi GPU-val a Three.js chunk (~540 KB minifikálva, ~135 KB gzippel) a betöltés után még letöltődik és lefut, ez a TBT-t valamennyire növelheti.
@@ -145,3 +156,12 @@ A `src/js/hero3d.js`-ben írj egy `makeXxx(ctx)` függvényt, amely `{ object, m
 ## Licencek
 
 Three.js (MIT), GSAP (ingyenes, a GSAP licenc szerint), Lenis (MIT), JSZip (MIT / GPLv3), esbuild (MIT). A minta-galériaképek generált, absztrakt SVG-k – éles használat előtt cseréld le őket valódi fotókra.
+
+## Fejlesztői eszközök a repóban
+
+| Eszköz | Hol | Mire |
+| --- | --- | --- |
+| Taste skill | `.claude/skills/taste-skill` | dizájnszabályok a generikus „AI-külső” ellen |
+| Impeccable | `.claude/skills/impeccable` | dizájnszabályok és automatikus ellenőrző: `sh .claude/skills/impeccable/scripts/impeccable detect --json site-template/dist/index.html` |
+| Playwright CLI | `npm i -g @playwright/cli@0.1.22`, skill: `.claude/skills/playwright-cli`, beállítás: `.playwright/cli.config.json` | screenshotok asztali és mobil nézetben |
+| Phosphor ikonok | `npm run icons` | a használt ikonok újragenerálása `src/js/icons.js`-be |

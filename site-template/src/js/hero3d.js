@@ -91,7 +91,11 @@ function analyse(img, size) {
   }
   const volume = boxBlur(mask.slice(), size, Math.max(2, Math.round(size / 40)), 3);
   const depth = new Float32Array(n);
-  for (let p = 0; p < n; p++) depth[p] = mask[p] * (0.75 * Math.sqrt(volume[p]) + 0.25 * lum[p]);
+  for (let p = 0; p < n; p++) {
+    // 0 at the silhouette edge, rising to a rounded crown inside: no vertical walls at the edge.
+    const inner = Math.sqrt(Math.max(0, (volume[p] - 0.45) / 0.55));
+    depth[p] = mask[p] * inner * (0.78 + 0.22 * lum[p]);
+  }
   return { canvas, data, mask, lum, depth, size };
 }
 

@@ -7,6 +7,7 @@ import {
   SECTION_IDS,
   SECTION_LABELS,
   SERVICE_ICONS,
+  SOCIAL_LABELS,
   SOCIAL_TYPES,
   buildPage,
   buildRobots,
@@ -32,7 +33,6 @@ const ACCENTS = [
   ['Királykék', '#3b6cff'],
 ];
 
-const SOCIAL_LABELS = { instagram: 'Instagram', facebook: 'Facebook', tiktok: 'TikTok', youtube: 'YouTube', linkedin: 'LinkedIn', x: 'X (Twitter)' };
 
 const $ = (sel, root = document) => root.querySelector(sel);
 
@@ -96,7 +96,7 @@ function download(blob, filename) {
 }
 
 /** Reads an uploaded image, downscales it and returns a data URL (SVGs are kept as-is). */
-function readImage(file, maxSize) {
+function readImage(file, maxSize, keepAlpha = false) {
   return new Promise((resolve, reject) => {
     if (!file.type.startsWith('image/')) return reject(new Error('Csak képfájl tölthető fel.'));
     const reader = new FileReader();
@@ -111,8 +111,8 @@ function readImage(file, maxSize) {
         canvas.width = Math.round(img.width * scale);
         canvas.height = Math.round(img.height * scale);
         canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-        const keepAlpha = file.type === 'image/png' && maxSize <= 600;
-        resolve(canvas.toDataURL(keepAlpha ? 'image/png' : 'image/webp', 0.82));
+        // WebP keeps transparency too, and is far smaller than PNG.
+        resolve(canvas.toDataURL('image/webp', keepAlpha ? 0.9 : 0.82));
       };
       img.src = reader.result;
     };
@@ -142,7 +142,7 @@ function select(label, path, options) {
   return `<div class="f"><label for="${id}">${esc(label)}</label><select id="${id}" data-path="${esc(path)}">${opts}</select></div>`;
 }
 
-function imageField(label, path, { alt, maxSize = 1600, hint = '' } = {}) {
+function imageField(label, path, { alt, maxSize = 1600, hint = '', alpha = false } = {}) {
   const id = uid();
   const value = getPath(config, path);
   return `<div class="f img-field">
@@ -150,7 +150,7 @@ function imageField(label, path, { alt, maxSize = 1600, hint = '' } = {}) {
     <div class="img-row">
       <div class="thumb">${value ? `<img src="${esc(value)}" alt="">` : '<span>Nincs kép</span>'}</div>
       <div class="img-actions">
-        <label class="cfg-btn ghost sm file-btn" for="${id}">Kép feltöltése<input id="${id}" type="file" accept="image/*" data-image="${esc(path)}" data-max="${maxSize}"></label>
+        <label class="cfg-btn ghost sm file-btn" for="${id}">Kép feltöltése<input id="${id}" type="file" accept="image/*" data-image="${esc(path)}" data-max="${maxSize}"${alpha ? ' data-alpha="1"' : ''}></label>
         ${value ? `<button type="button" class="cfg-btn ghost sm" data-action="clear-image" data-path="${esc(path)}">Eltávolítás</button>` : ''}
       </div>
     </div>
@@ -182,13 +182,12 @@ const STEPS = [
       ${field('Rövid név (menüben)', 'brand.shortName', { hint: 'A fejlécben jelenik meg, ha a teljes név túl hosszú.' })}
       ${field('Szlogen', 'brand.tagline')}
       <h3 class="sub">Hero szekció</h3>
-      ${field('Felső kis felirat', 'hero.eyebrow')}
       ${field('Főcím', 'hero.title', { rows: 2 })}
       ${field('Alcím', 'hero.subtitle', { rows: 3 })}
       <div class="row">${field('Gomb szövege', 'hero.ctaText')}${field('Második gomb', 'hero.secondaryText')}</div>
       <h3 class="sub">Keresőoptimalizálás</h3>
-      ${field('Oldal címe (böngészőfül, Google)', 'meta.title', { hint: 'Ideálisan 50–60 karakter.' })}
-      ${field('Leírás (Google találat)', 'meta.description', { rows: 3, hint: 'Ideálisan 120–160 karakter.' })}
+      ${field('Oldal címe (böngészőfül, Google)', 'meta.title', { hint: 'Ideálisan 50-60 karakter.' })}
+      ${field('Leírás (Google találat)', 'meta.description', { rows: 3, hint: 'Ideálisan 120-160 karakter.' })}
       <div class="row">${field('Weboldal címe (URL)', 'meta.siteUrl', { type: 'url', placeholder: 'https://www.cegnev.hu' })}${select('Nyelv', 'meta.lang', [['hu', 'Magyar'], ['en', 'English'], ['de', 'Deutsch']])}</div>`,
   },
   {
@@ -198,7 +197,8 @@ const STEPS = [
       const mode = config.theme.mode;
       const accent = config.theme.accent;
       const swatches = ACCENTS.map(([name, hex]) => `<button type="button" class="swatch${hex.toLowerCase() === String(accent).toLowerCase() ? ' on' : ''}" style="--c:${hex}" data-action="accent" data-value="${hex}" aria-label="${name}" title="${name}"></button>`).join('');
-      const fonts = Object.keys(FONTS).map((f) => [f, f]);
+      const displayFonts = Object.keys(FONTS).filter((f) => FONTS[f].role !== 'body').map((f) => [f, f]);
+      const bodyFonts = Object.keys(FONTS).filter((f) => FONTS[f].role !== 'display').map((f) => [f, f]);
       const effects = Object.entries(EFFECTS).map(([k, label]) => `<label class="choice${config.effect3d === k ? ' on' : ''}">
           <input type="radio" name="effect3d" value="${k}" data-path="effect3d" ${config.effect3d === k ? 'checked' : ''}>
           <span class="choice-art art-${k}" aria-hidden="true"></span><span>${label}</span></label>`).join('');
@@ -218,13 +218,14 @@ const STEPS = [
           <input type="color" id="accent-picker" value="${esc(accent)}" data-path="theme.accent" aria-label="Egyedi szín">
           <input type="text" id="accent-hex" value="${esc(accent)}" data-path="theme.accent" data-kind="hex" aria-label="Szín hex kódja" maxlength="7" spellcheck="false">
         </div>
-        <p class="hint">${ratio < 3 ? '⚠️ Ez a szín kevésbé olvasható ezen a háttéren – a szövegekhez automatikusan kontrasztosabb árnyalatot használunk.' : '✓ Jó kontraszt a háttérrel.'}</p>
+        <p class="hint">${ratio < 3 ? '⚠️ Ez a szín kevésbé olvasható ezen a háttéren, ezért a szövegekhez automatikusan kontrasztosabb árnyalatot használunk.' : '✓ Jó kontraszt a háttérrel.'}</p>
       </div>
-      <div class="row">${select('Címsor betűtípus', 'theme.headingFont', fonts)}${select('Szöveg betűtípus', 'theme.bodyFont', fonts)}</div>
-      <div class="f"><label for="radius">Lekerekítés: <output id="radius-out">${config.theme.radius}px</output></label>
-        <input id="radius" type="range" min="0" max="36" step="2" value="${config.theme.radius}" data-path="theme.radius" data-kind="number"></div>
+      <div class="row">${select('Címsor betűtípus', 'theme.headingFont', displayFonts)}${select('Szöveg betűtípus', 'theme.bodyFont', bodyFonts)}</div>
+      <div class="f"><label for="radius">Képek és térkép lekerekítése: <output id="radius-out">${config.theme.radius}px</output></label>
+        <input id="radius" type="range" min="0" max="32" step="2" value="${config.theme.radius}" data-path="theme.radius" data-kind="number"></div>
       <div class="f"><span class="label">3D effekt a hero szekcióban</span><div class="choices">${effects}</div>
-        <p class="hint">Mobilon automatikusan könnyített változat fut, a „csökkentett mozgás” beállítású eszközökön pedig kikapcsol.</p></div>`;
+        <p class="hint">Mobilon könnyített változat fut. Csökkentett mozgás beállítás mellett, vagy ha nincs grafikus gyorsítás, az álló kép jelenik meg.</p></div>
+      ${imageField('A 3D elem képe', 'hero.image', { maxSize: 900, alpha: true, alt: 'hero.imageAlt', hint: 'Ebből készül a 3D elem. Egy jól körülhatárolt tárgy vagy logó átlátszó vagy egyszínű háttéren mutat a legjobban.' })}`;
     },
   },
   {
@@ -267,16 +268,16 @@ const STEPS = [
           ${listControls('about.stats', i, arr.length)}
         </div>`).join('');
       return `
-        ${group('Rólunk', `${field('Felirat', 'about.eyebrow')}${field('Cím', 'about.title', { rows: 2 })}
+        ${group('Rólunk', `${field('Cím', 'about.title', { rows: 2 })}
           ${field('Bemutatkozás', 'about.paragraphs', { rows: 7, kind: 'paragraphs', hint: 'A bekezdéseket üres sorral válaszd el.' })}
           <h4>Számok</h4>${stats}<button type="button" class="cfg-btn ghost sm" data-action="add" data-list="about.stats">+ Szám hozzáadása</button>`, { open: true, section: 'about' })}
-        ${group('Szolgáltatások', `${field('Felirat', 'services.eyebrow')}${field('Cím', 'services.title', { rows: 2 })}${field('Bevezető', 'services.intro', { rows: 2 })}
+        ${group('Szolgáltatások', `${field('Cím', 'services.title', { rows: 2 })}${field('Bevezető', 'services.intro', { rows: 2 })}
           ${services}<button type="button" class="cfg-btn ghost sm" data-action="add" data-list="services.items">+ Szolgáltatás hozzáadása</button>`, { section: 'services' })}
-        ${group('Referenciák', `${field('Felirat', 'gallery.eyebrow')}${field('Cím', 'gallery.title', { rows: 2 })}${field('Bevezető', 'gallery.intro', { rows: 2 })}
+        ${group('Referenciák', `${field('Cím', 'gallery.title', { rows: 2 })}${field('Bevezető', 'gallery.intro', { rows: 2 })}
           <p class="hint">A képeket a „Képek” lépésben töltheted fel.</p>`, { section: 'gallery' })}
-        ${group('Vélemények', `${field('Felirat', 'testimonials.eyebrow')}${field('Cím', 'testimonials.title', { rows: 2 })}
+        ${group('Vélemények', `${field('Cím', 'testimonials.title', { rows: 2 })}
           ${testimonials}<button type="button" class="cfg-btn ghost sm" data-action="add" data-list="testimonials.items">+ Vélemény hozzáadása</button>`, { section: 'testimonials' })}
-        ${group('Kapcsolat szövegei', `${field('Felirat', 'contact.eyebrow')}${field('Cím', 'contact.title', { rows: 2 })}${field('Bevezető', 'contact.intro', { rows: 2 })}
+        ${group('Kapcsolat szövegei', `${field('Cím', 'contact.title', { rows: 2 })}${field('Bevezető', 'contact.intro', { rows: 2 })}
           ${field('Küldés gomb', 'contact.formSubmitText')}${field('Sikeres küldés üzenete', 'contact.formSuccess')}`, { section: 'contact' })}
         ${group('Lábléc', `${field('Lábléc szöveg', 'footer.text')}${field('Copyright szöveg', 'footer.copyright')}`)}`;
     },
@@ -291,7 +292,7 @@ const STEPS = [
           ${field('Képaláírás', `gallery.items.${i}.caption`)}
         </div>`).join('');
       return `
-        ${imageField('Logó', 'brand.logo', { maxSize: 400, alt: 'brand.logoAlt', hint: 'Négyzetes SVG vagy PNG ajánlott. Ha üres, a cégnév kezdőbetűje jelenik meg.' })}
+        ${imageField('Logó', 'brand.logo', { maxSize: 400, alpha: true, alt: 'brand.logoAlt', hint: 'Négyzetes SVG vagy PNG ajánlott. Ha üres, csak a cégnév jelenik meg.' })}
         ${imageField('Bemutatkozó kép (Rólunk)', 'about.image', { alt: 'about.imageAlt' })}
         ${imageField('Megosztási kép (Facebook, Messenger stb.)', 'meta.ogImage', { maxSize: 1200, hint: 'Ajánlott méret: 1200 × 630 px.' })}
         <h3 class="sub">Galéria</h3>
@@ -315,7 +316,7 @@ const STEPS = [
       return `
         ${field('Cím', 'contact.address')}
         <div class="row">${field('Telefon', 'contact.phone', { type: 'tel' })}${field('E-mail', 'contact.email', { type: 'email' })}</div>
-        ${field('Térkép keresőkifejezés', 'contact.mapQuery', { hint: 'Ezt keresi a beágyazott Google Térkép – pl. a pontos cím. Üresen hagyva nem jelenik meg térkép.' })}
+        ${field('Térkép keresőkifejezés', 'contact.mapQuery', { hint: 'Ezt keresi a beágyazott Google Térkép, például a pontos cím. Üresen hagyva nem jelenik meg térkép.' })}
         ${field('Űrlap fogadó cím (opcionális)', 'contact.formEndpoint', { type: 'url', placeholder: 'https://formspree.io/f/…', hint: 'Pl. Formspree vagy saját végpont. Üresen hagyva az űrlap e-mail klienst nyit.' })}
         <h3 class="sub">Nyitvatartás</h3>
         ${hours}<button type="button" class="cfg-btn ghost sm" data-action="add" data-list="contact.hours">+ Sor hozzáadása</button>
@@ -354,11 +355,11 @@ function renderSummary() {
         ${summaryRow('Téma', c.theme.mode === 'light' ? '☀️ Világos' : '🌙 Sötét', STEP_OF.look)}
         ${summaryRow('Kiemelő szín', `<span class="dot" style="background:${esc(c.theme.accent)}"></span><code>${esc(c.theme.accent)}</code>`, STEP_OF.look)}
         ${summaryRow('Betűtípusok', `${esc(c.theme.headingFont)} / ${esc(c.theme.bodyFont)}`, STEP_OF.look)}
-        ${summaryRow('3D effekt', esc(EFFECTS[c.effect3d] || '–'), STEP_OF.look)}
+        ${summaryRow('3D effekt', esc(EFFECTS[c.effect3d] || '-'), STEP_OF.look)}
         ${summaryRow('Szekciók', `<ol class="sum-sections">${enabled.map((id) => `<li>${esc(SECTION_LABELS[id])}</li>`).join('')}</ol>${disabled.length ? `<span class="muted">Kikapcsolva: ${disabled.map((id) => esc(SECTION_LABELS[id])).join(', ')}</span>` : ''}`, STEP_OF.sections)}
         ${summaryRow('Tartalom', `${c.services.items.length} szolgáltatás · ${c.testimonials.items.length} vélemény · ${c.about.stats.length} kiemelt szám`, STEP_OF.texts)}
         ${summaryRow('Képek', `${c.brand.logo ? 'Logó ✓' : 'Nincs logó'} · ${galleryCount} galériakép`, STEP_OF.images)}
-        ${summaryRow('Elérhetőség', [c.contact.address, c.contact.phone, c.contact.email].filter(Boolean).map(esc).join('<br>') || '–', STEP_OF.contact)}
+        ${summaryRow('Elérhetőség', [c.contact.address, c.contact.phone, c.contact.email].filter(Boolean).map(esc).join('<br>') || '-', STEP_OF.contact)}
       </dl>
     </div>
 
@@ -589,7 +590,7 @@ function save() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
       $('#save-status').textContent = 'Minden módosítás mentve ebben a böngészőben';
     } catch {
-      $('#save-status').textContent = '⚠️ Nem sikerült menteni (túl nagy képek?) – töltsd le a JSON-t!';
+      $('#save-status').textContent = '⚠️ Nem sikerült menteni (talán túl nagyok a képek). Töltsd le a JSON-t!';
     }
   }, 400);
 }
@@ -633,7 +634,7 @@ async function onFile(e) {
   const file = input.files?.[0];
   if (!path || !file) return;
   try {
-    setPath(config, path, await readImage(file, Number(input.dataset.max) || 1600));
+    setPath(config, path, await readImage(file, Number(input.dataset.max) || 1600, input.dataset.alpha === '1'));
     changed({ rerender: true });
     toast('Kép feltöltve ✓');
   } catch (err) {
@@ -646,7 +647,7 @@ const NEW_ITEMS = {
   'testimonials.items': () => ({ quote: 'Fantasztikus élmény volt!', name: 'Új vendég', role: '', rating: 5 }),
   'gallery.items': () => ({ src: '', alt: '', caption: 'Új kép' }),
   'about.stats': () => ({ value: '100', suffix: '+', label: 'új adat' }),
-  'contact.hours': () => ({ days: 'Nap', time: '9:00 – 17:00' }),
+  'contact.hours': () => ({ days: 'Nap', time: '9:00-17:00' }),
   social: () => ({ type: 'instagram', url: '' }),
 };
 
@@ -848,7 +849,7 @@ async function exportZip(btn) {
     zip.file('site.config.json', JSON.stringify(cfg, null, 2));
     zip.file('sitemap.xml', buildSitemap(cfg));
     zip.file('robots.txt', buildRobots(cfg));
-    zip.file('OLVASSEL.txt', `${cfg.brand.name} – weboldal\n\nTöltsd fel a mappa teljes tartalmát a tárhelyed gyökérkönyvtárába (pl. public_html).\nA kezdőoldal az index.html. A beállítások a site.config.json fájlban vannak; ezt a konfigurátorba visszatöltve később is módosíthatod az oldalt.\nNe felejtsd el a site.config.json "meta.siteUrl" mezőjében megadni a végleges domaint (SEO, sitemap).\n`);
+    zip.file('OLVASSEL.txt', `${cfg.brand.name} weboldal\n\nTöltsd fel a mappa teljes tartalmát a tárhelyed gyökérkönyvtárába (pl. public_html).\nA kezdőoldal az index.html. A beállítások a site.config.json fájlban vannak; ezt a konfigurátorba visszatöltve később is módosíthatod az oldalt.\nNe felejtsd el a site.config.json "meta.siteUrl" mezőjében megadni a végleges domaint (SEO, sitemap).\n`);
     const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
     download(blob, `${slugify(cfg.brand.name)}-weboldal.zip`);
     toast('A weboldal letöltése elkezdődött ✓');

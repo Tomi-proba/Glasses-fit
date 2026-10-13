@@ -145,7 +145,7 @@ input, textarea { caret-color: var(--accent); }
 .nav-toggle[aria-expanded='true'] .bars { transform: rotate(45deg); }
 .nav-toggle[aria-expanded='true'] .bars::before { transform: translateY(-6px) rotate(-90deg); }
 
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
   .nav-toggle { display: grid; place-items: center; }
   .nav-menu {
     position: fixed; inset: 72px 0 auto; flex-direction: column; align-items: stretch; gap: 24px;
@@ -170,6 +170,8 @@ input, textarea { caret-color: var(--accent); }
 .hero-stage.is-live .hero-canvas { opacity: 1; }
 .hero-stage.is-live .hero-still { opacity: 0; }
 [data-mode='light'] .hero-still { filter: grayscale(1) invert(1); }
+/* The bundled monochrome logo flips for the light theme (hue kept); uploaded logos are left alone. */
+[data-mode='light'] .brand img[src$='assets/logo.svg'] { filter: invert(1) hue-rotate(180deg); }
 
 /* Live preview re-renders must not replay the intro on every keystroke. */
 .no-intro .hero-title { animation: none; }
