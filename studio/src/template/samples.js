@@ -7,7 +7,9 @@ const clone = (v) => JSON.parse(JSON.stringify(v));
 const block = (type, props) => ({ id: newId(), type, bg: 'default', hidden: false, ...props });
 const page = (id, title, blocks, slug = id) => ({ id, title, slug: id === 'home' ? '' : slug, showInNav: true, blocks });
 const theme = (o) => ({ ...clone(blank.theme), ...o, colors: { ...blank.theme.colors, ...o.colors } });
-const galleryItems = (caps) => caps.map((caption, i) => ({ src: `assets/gallery/work-${i + 1}.svg`, alt: `Helyőrző kép: ${caption}`, caption }));
+const art = (id, file) => `assets/samples/${id}/${file}.svg`;
+const galleryItems = (id, caps) => caps.map((caption, i) => ({ src: art(id, `work-${i + 1}`), alt: `Helyőrző kép: ${caption}`, caption }));
+const members = (id, list) => list.map(([name, role, bio = ''], i) => ({ photo: art(id, `team-${i + 1}`), name, role, bio }));
 
 const SAMPLE_DEFS = [
   {
@@ -22,14 +24,14 @@ const SAMPLE_DEFS = [
       pages: [
         page('home', 'Főoldal', [
           block('hero', { title: 'A hajad. A te történeted.', subtitle: 'Precíziós vágás, egyedi színek és nyugodt, prémium élmény a belváros szívében.', ctaText: 'Időpontfoglalás', ctaLink: 'contact', secondaryText: 'Árak', secondaryLink: 'page:arak', visual: 'particles', image: 'assets/hero/hero-object.webp', imageAlt: 'Olló részecskékből', layout: 'split' }),
+          block('imageText', { title: 'Tizenkét év szenvedély, minden tincsben.', body: ['Az Aura Hair Studio 2014-ben azzal a céllal nyílt meg, hogy a szalonélményt újragondolja: kevesebb sietség, több figyelem.', 'Kizárólag professzionális, környezettudatos termékekkel dolgozunk, és minden szolgáltatás előtt konzultálunk veled.'], image: art('aura', 'about'), imageAlt: 'Helyőrző kép: hullámzó tincsek kékben', imageSide: 'left' }),
           block('stats', { title: '', items: [{ value: '2014', suffix: '', label: 'óta a Példa utcában' }, { value: '6', suffix: '', label: 'stylist a csapatban' }, { value: '8400', suffix: '+', label: 'elégedett vendég' }] }),
-          block('imageText', { title: 'Tizenkét év szenvedély, minden tincsben.', body: ['Az Aura Hair Studio 2014-ben azzal a céllal nyílt meg, hogy a szalonélményt újragondolja: kevesebb sietség, több figyelem.', 'Kizárólag professzionális, környezettudatos termékekkel dolgozunk, és minden szolgáltatás előtt konzultálunk veled.'], image: 'assets/gallery/about.svg', imageAlt: 'Absztrakt, hullámzó vonalak kékben', imageSide: 'left' }),
           block('cards', { title: 'Szolgáltatások', intro: 'Minden kezelés konzultációval indul.', columns: '3', bg: 'muted', items: [
             { icon: 'scissors', title: 'Precíziós vágás', text: 'Arcformához és életstílushoz igazított vágás.' },
             { icon: 'palette', title: 'Festés és balayage', text: 'Természetes átmenetek, kíméletes színek.' },
             { icon: 'droplet', title: 'Mélyápoló kezelés', text: 'Regeneráló rituálék a selymes hajért.' },
           ] }),
-          block('gallery', { title: 'Munkáink', layout: 'mosaic', items: galleryItems(['Karamell balayage', 'Aszimmetrikus bob', 'Platina tónus', 'Alkalmi konty', 'Textúrált fade', 'Vörösréz ragyogás']) }),
+          block('gallery', { title: 'Munkáink', layout: 'mosaic', items: galleryItems('aura', ['Karamell balayage', 'Aszimmetrikus bob', 'Platina tónus', 'Alkalmi konty', 'Textúrált fade', 'Vörösréz ragyogás']) }),
           block('testimonials', { title: 'Vendégeink mondták', items: [
             { quote: 'Végre valaki tényleg meghallgatta, mit szeretnék. A balayage még jobb lett, mint amit elképzeltem.', name: 'Kovács Petra', role: 'törzsvendég 2019 óta', rating: 5 },
             { quote: 'Nyugodt, gyönyörű hely, ahol tényleg kikapcsolok. A vágás hetekkel később is tökéletesen áll.', name: 'Nagy Dániel', role: 'férfi vágás', rating: 5 },
@@ -64,8 +66,8 @@ const SAMPLE_DEFS = [
       pages: [
         page('home', 'Főoldal', [
           block('hero', { title: 'Ami ma a piacon a legjobb.', subtitle: 'Hetente változó menü helyi termelők alapanyagaiból, csendes belső udvarral.', ctaText: 'Asztalfoglalás', ctaLink: 'contact', secondaryText: 'Étlap', secondaryLink: 'page:etlap', visual: 'relief', image: 'assets/hero/cooking-pot.webp', imageAlt: 'Fazék, a bisztró jelképe', layout: 'split' }),
-          block('text', { title: 'Kis konyha, nagy odafigyelés.', body: ['A Rozmaring 2017 óta főz a Belváros egyik csendes udvarában. Minden reggel a piacról indulunk, és az alapján írjuk a napi menüt.'], align: 'center' }),
-          block('gallery', { title: 'A konyhából', layout: 'grid', items: galleryItems(['Őszi tökleves', 'A belső udvar', 'Kóstolómenü', 'Házi kenyér', 'Borválogatás', 'Desszert']) }),
+          block('imageText', { title: 'Kis konyha, nagy odafigyelés.', body: ['A Rozmaring 2017 óta főz a Belváros egyik csendes udvarában.', 'Minden reggel a piacról indulunk, és az alapján írjuk a napi menüt.'], image: art('rozmaring', 'about'), imageAlt: 'Helyőrző kép: szezonális alapanyagok', imageSide: 'right', bg: 'muted' }),
+          block('gallery', { title: 'A konyhából', layout: 'grid', items: galleryItems('rozmaring', ['Őszi tökleves', 'A belső udvar', 'Kóstolómenü', 'Házi kenyér', 'Borválogatás', 'Desszert']) }),
           block('testimonials', { title: 'Vendégeink mondták', items: [{ quote: 'Évek óta ide járunk ebédelni, és még egyszer sem csalódtunk.', name: 'Fehér Anna', role: 'törzsvendég', rating: 5 }] }),
           block('booking', { title: 'Foglalj asztalt', text: 'Hétköznap délben és este is várunk, hétvégére érdemes előre foglalni.', buttonText: 'Asztalfoglalás', buttonLink: 'contact', note: 'Csoportoknak 8 főtől egyedi menü.', bg: 'muted' }),
         ]),
@@ -89,6 +91,7 @@ const SAMPLE_DEFS = [
       pages: [
         page('home', 'Főoldal', [
           block('hero', { title: 'Jogi biztonság üzleti tempóban.', subtitle: 'Társasági jog, ingatlanügyletek és szerződések vállalkozásoknak és magánszemélyeknek.', ctaText: 'Konzultáció', ctaLink: 'contact', secondaryText: 'Díjak', secondaryLink: 'page:dijak', visual: 'relief', image: 'assets/hero/scales.webp', imageAlt: 'Mérleg', layout: 'split' }),
+          block('imageText', { title: 'Huszonkét éve a vállalkozások oldalán.', body: ['Kis csapat vagyunk, ezért minden ügyet irodavezető ügyvéd felügyel.', 'Díjainkat előre, írásban rögzítjük, így nincs meglepetés.'], image: art('kardos', 'about'), imageAlt: 'Helyőrző kép: az iroda', imageSide: 'left', bg: 'muted' }),
           block('cards', { title: 'Szakterületek', intro: '', columns: '2', items: [
             { icon: 'crown', title: 'Társasági jog', text: 'Cégalapítás, módosítás, átalakulás és tulajdonosi megállapodások.' },
             { icon: 'globe', title: 'Ingatlanjog', text: 'Adásvétel, ellenjegyzés, bérleti és fejlesztési szerződések.' },
@@ -96,7 +99,7 @@ const SAMPLE_DEFS = [
             { icon: 'heart', title: 'Családjog', text: 'Házassági vagyonjogi szerződés, válás, öröklés.' },
           ] }),
           block('stats', { title: '', bg: 'muted', items: [{ value: '22', suffix: '', label: 'év gyakorlat' }, { value: '3', suffix: '', label: 'ügyvéd' }, { value: '1200', suffix: '+', label: 'lezárt ügy' }] }),
-          block('team', { title: 'Az iroda', intro: '', members: [{ photo: '', name: 'dr. Kardos Péter', role: 'irodavezető ügyvéd', bio: 'Társasági és ingatlanjog.' }, { photo: '', name: 'dr. Simon Eszter', role: 'ügyvéd', bio: 'Szerződések és családjog.' }, { photo: '', name: 'dr. Bodnár Máté', role: 'ügyvéd', bio: 'Ingatlanügyletek.' }] }),
+          block('team', { title: 'Az iroda', intro: '', members: members('kardos', [['dr. Kardos Péter', 'irodavezető ügyvéd', 'Társasági és ingatlanjog.'], ['dr. Simon Eszter', 'ügyvéd', 'Szerződések és családjog.'], ['dr. Bodnár Máté', 'ügyvéd', 'Ingatlanügyletek.']]) }),
           block('ctaBand', { title: 'Beszéljük meg az ügyét.', text: 'Az első, harmincperces konzultáció díja beszámít a megbízásba.', buttonText: 'Konzultáció', buttonLink: 'contact', bg: 'accent' }),
         ]),
         page('dijak', 'Díjak', [
@@ -119,6 +122,8 @@ const SAMPLE_DEFS = [
       pages: [
         page('home', 'Főoldal', [
           block('hero', { title: 'Erő, ami a hétköznapokban is látszik.', subtitle: 'Személyi edzés és nyolcfős kiscsoportok felméréssel és követhető fejlődéssel.', ctaText: 'Ingyenes próbaedzés', ctaLink: 'contact', secondaryText: 'Bérletek', secondaryLink: 'page:berletek', visual: 'particles', image: 'assets/hero/barbell.webp', imageAlt: 'Súlyzórúd', layout: 'split' }),
+          block('imageText', { title: 'Nem gépsor, hanem műhely.', body: ['Szabad súlyok, saját tempó és egy edző, aki figyel a technikádra.', 'Minden tag felméréssel kezd, és havonta mérjük a fejlődést.'], image: art('eromuhely', 'about'), imageAlt: 'Helyőrző kép: edzés közben', imageSide: 'right', bg: 'muted' }),
+          block('gallery', { title: 'A teremből', layout: 'mosaic', items: galleryItems('eromuhely', ['Szabad súlyok', 'Kiscsoportos óra', 'Mobilitás', 'Felmérés', 'Reggeli edzés', 'Közösség']) }),
           block('stats', { title: '', items: [{ value: '8', suffix: '', label: 'fő egy csoportban' }, { value: '5', suffix: '', label: 'edző' }, { value: '350', suffix: '+', label: 'aktív tag' }] }),
           block('cards', { title: 'Edzések', intro: 'Az első próbaedzés és a felmérés ingyenes.', columns: '4', bg: 'muted', items: [
             { icon: 'star', title: 'Személyi edzés', text: 'Egyéni program és technikai oktatás.' },
@@ -126,7 +131,7 @@ const SAMPLE_DEFS = [
             { icon: 'leaf', title: 'Mobilitás', text: 'Ízületkímélő óra ülőmunkát végzőknek.' },
             { icon: 'sun', title: 'Táplálkozás', text: 'Étrend a célodhoz igazítva.' },
           ] }),
-          block('team', { title: 'Edzőink', intro: '', members: [{ photo: '', name: 'Horváth Bence', role: 'vezetőedző', bio: '' }, { photo: '', name: 'Lakatos Nóra', role: 'mobilitás és jóga', bio: '' }, { photo: '', name: 'Papp Zoltán', role: 'erőnléti edző', bio: '' }] }),
+          block('team', { title: 'Edzőink', intro: '', members: members('eromuhely', [['Horváth Bence', 'vezetőedző'], ['Lakatos Nóra', 'mobilitás és jóga'], ['Papp Zoltán', 'erőnléti edző']]) }),
           block('testimonials', { title: 'Tagjaink mondták', items: [{ quote: 'Fél év alatt megszűnt a derékfájásom, és először élvezem a rendszeres edzést.', name: 'Kiss Ádám', role: 'tag 2023 óta', rating: 5 }] }),
           block('booking', { title: 'Gyere el egy próbaedzésre', text: 'Válassz időpontot online, az első alkalom ingyenes.', buttonText: 'Időpontot foglalok', buttonLink: 'contact', note: '', bg: 'accent' }),
         ]),

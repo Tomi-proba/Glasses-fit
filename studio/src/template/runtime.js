@@ -10,6 +10,7 @@ const root = document.documentElement;
 const params = new URLSearchParams(location.search);
 const PREVIEW = root.hasAttribute('data-preview');
 const THUMB = params.has('thumb');
+if (THUMB) root.dataset.thumb = '';
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile = () => matchMedia('(max-width: 760px), (pointer: coarse)').matches;
 

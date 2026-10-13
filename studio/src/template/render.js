@@ -247,6 +247,7 @@ const R = {
   hero(b, config, ctx) {
     const img = assetUrl(b.image);
     const visual = b.visual === 'none' || !img ? '' : `<figure class="hero-stage" data-effect="${esc(b.visual)}" data-image="${esc(img)}">
+          <span class="hero-tint" aria-hidden="true" style="-webkit-mask-image: url('${esc(img)}'); mask-image: url('${esc(img)}')"></span>
           <img class="hero-still" src="${esc(img)}" alt="${esc(b.imageAlt)}" width="640" height="640" fetchpriority="high" decoding="async">
           ${b.visual === 'particles' || b.visual === 'relief' ? '<canvas class="hero-canvas" aria-hidden="true"></canvas>' : ''}
         </figure>`;

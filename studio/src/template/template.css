@@ -103,6 +103,8 @@ h3 { font-size: 1.2rem; line-height: 1.25; }
 .block-hero { padding-block: calc(clamp(48px, 7vw, 96px) * var(--space)); }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(24px, 4vw, 64px); align-items: center; min-height: min(78svh, 760px); }
 .hero-grid.is-center { grid-template-columns: 1fr; min-height: min(64svh, 640px); align-content: center; }
+/* Thumbnails on the studio home page are tall iframes: keep the hero compact so the next blocks show too. */
+[data-thumb] .hero-grid { min-height: 560px; }
 .hero-grid.is-center .hero-title { margin-inline: auto; }
 .hero-grid.is-center .hero-subtitle { margin-inline: auto; }
 .hero-grid.is-center .hero-actions { justify-content: center; }
@@ -114,7 +116,11 @@ h3 { font-size: 1.2rem; line-height: 1.25; }
 .hero-canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; opacity: 0; transition: opacity 0.8s var(--ease); }
 .hero-stage.is-live .hero-canvas { opacity: 1; }
 .hero-stage.is-live .hero-still { opacity: 0; }
-[data-mode='light'] .hero-stage[data-effect='particles'] .hero-still, [data-mode='light'] .hero-stage[data-effect='relief'] .hero-still { filter: invert(1); }
+/* While the 3D is not running (thumbnails, no WebGL, reduced motion) the still is shown in the brand colours:
+   the grey source image becomes a luminance mask over an accent gradient, so its shading is kept. */
+.hero-tint { position: absolute; inset: 12%; background: linear-gradient(155deg, color-mix(in srgb, var(--accent-ink) 55%, var(--text)) 0%, var(--accent-ink) 45%, color-mix(in srgb, var(--primary) 70%, var(--bg)) 100%); -webkit-mask: center / contain no-repeat; mask-position: center; mask-size: contain; mask-repeat: no-repeat; mask-mode: luminance; transition: opacity 0.8s var(--ease); }
+.hero-stage:has(.hero-tint) .hero-still { opacity: 0; }
+.hero-stage.is-live .hero-tint { opacity: 0; }
 
 /* image + text */
 .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(36px, 6vw, 96px); align-items: center; }
