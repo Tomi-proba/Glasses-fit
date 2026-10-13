@@ -171,9 +171,9 @@ const STEPS = [
     title: 'Kezdés',
     lead: 'Indulj egy mintából vagy üres lappal, és add meg az alapadatokat. Később minden módosítható.',
     render: () => `
-      <div class="starts" role="list">
-        <button type="button" class="start" data-action="start" data-sample="" role="listitem"><span class="start-art blank">${icon('plus')}</span><span><strong>Kezdj üresen</strong><small>Néhány alapblokk, semleges stílus</small></span></button>
-        ${SAMPLES.map((s) => `<button type="button" class="start" data-action="start" data-sample="${s.id}" role="listitem"><span class="start-art" style="--a:${esc(s.config.theme.colors.primary)};--b:${esc(s.config.theme.colors.background)}"></span><span><strong>${esc(s.label)}</strong><small>${esc(s.style)}</small></span></button>`).join('')}
+      <div class="starts">
+        <button type="button" class="start" data-action="start" data-sample=""><span class="start-art blank">${icon('plus')}</span><span><strong>Kezdj üresen</strong><small>Néhány alapblokk, semleges stílus</small></span></button>
+        ${SAMPLES.map((s) => `<button type="button" class="start" data-action="start" data-sample="${s.id}"><span class="start-art" style="--a:${esc(s.config.theme.colors.primary)};--b:${esc(s.config.theme.colors.background)}"></span><span><strong>${esc(s.label)}</strong><small>${esc(s.style)}</small></span></button>`).join('')}
       </div>
       <p class="hint">A minta csak kiindulópont: lecseréli a mostani tervet, de az előzőt egy kattintással visszahozhatod.</p>
       ${sub('Alapadatok')}

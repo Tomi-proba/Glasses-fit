@@ -19,29 +19,28 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: studio
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            site-template/package-lock.json
+          cache-dependency-path: studio/package-lock.json
       - run: npm ci
+      # The studio site (home page, configurator, checkout) is served at https://<user>.github.io/<repo>/
       - run: npm run build
-      # Premium site template + configurator, served under /site-template/
-      - run: npm ci
-        working-directory: site-template
-      - run: npm run build
-        working-directory: site-template
-      - run: cp -r site-template/dist dist/site-template
+        env:
+          SITE_URL: https://tomi-proba.github.io
+          BASE_PATH: /Glasses-fit/
       - uses: actions/configure-pages@v5
         with:
           enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: studio/dist
 
   deploy:
     needs: build

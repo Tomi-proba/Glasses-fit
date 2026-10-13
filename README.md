@@ -72,6 +72,7 @@ scripts/
   generate-products.mjs           curated real product list → products.json, with shortfall warnings
 ```
 
-## Prémium weboldal-sablon + konfigurátor
+## Vonal Stúdió (weboldal-készítő oldal + tervező)
 
-A [`site-template/`](site-template/) mappában egy különálló, konfigurációvezérelt bemutatkozó weboldal-sablon (Three.js, GSAP, Lenis) és egy élő konfigurátor található. Részletek: [site-template/README.md](site-template/README.md).
+A [`studio/`](studio/) mappában egy Astro projekt található: a stúdió bemutatkozó oldala, egy beépített, blokkalapú weboldal-tervező élő előnézettel, valamint az összegző és megrendelő folyamat. A GitHub Pages ezt az oldalt szolgálja ki. Részletek: [studio/README.md](studio/README.md).
+

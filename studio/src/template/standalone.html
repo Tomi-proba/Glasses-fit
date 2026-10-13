@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="{{LANG}}" class="no-js" data-mode="{{MODE}}">
+<html lang="{{LANG}}" class="no-js" {{ATTRS}} data-asset-base="{{ROOT}}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <script>document.documentElement.classList.replace('no-js', 'js')</script>
     {{HEAD}}
-    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="css/site.css">
-    <script type="module" src="js/main.js"></script>
+    <link rel="icon" href="{{ROOT}}assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="{{ROOT}}css/site.css">
+    <script type="module" src="{{ROOT}}js/runtime.js"></script>
   </head>
-  <body id="top">
+  <body>
   <div id="app">
   {{BODY}}
   </div>
