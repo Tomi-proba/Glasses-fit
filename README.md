@@ -71,3 +71,7 @@ src/
 scripts/
   generate-products.mjs           curated real product list → products.json, with shortfall warnings
 ```
+
+## Prémium weboldal-sablon + konfigurátor
+
+A [`site-template/`](site-template/) mappában egy különálló, konfigurációvezérelt bemutatkozó weboldal-sablon (Three.js, GSAP, Lenis) és egy élő konfigurátor található. Részletek: [site-template/README.md](site-template/README.md).

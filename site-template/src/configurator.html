@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Weboldal-konfigurátor</title>
+    <meta name="description" content="Szabd testre a weboldaladat lépésről lépésre, élő előnézettel.">
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#0b0c10">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="css/configurator.css">
+    <script type="module" src="js/configurator.js"></script>
+  </head>
+  <body class="cfg view-settings">
+    <header class="cfg-top">
+      <div class="cfg-title">
+        <span class="cfg-logo" aria-hidden="true">✦</span>
+        <div>
+          <h1>Weboldal-konfigurátor</h1>
+          <p class="cfg-save" id="save-status" role="status" aria-live="polite">Betöltés…</p>
+        </div>
+      </div>
+      <div class="cfg-devices" role="group" aria-label="Előnézet mérete">
+        <button type="button" data-device="desktop" aria-pressed="true" title="Asztali nézet">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span class="sr-only">Asztali</span>
+        </button>
+        <button type="button" data-device="tablet" aria-pressed="false" title="Tablet nézet">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M11 18h2"/></svg><span class="sr-only">Tablet</span>
+        </button>
+        <button type="button" data-device="mobile" aria-pressed="false" title="Mobil nézet">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg><span class="sr-only">Mobil</span>
+        </button>
+      </div>
+      <div class="cfg-actions">
+        <a class="cfg-btn ghost" href="index.html" target="_blank" rel="noopener">Mintaoldal</a>
+        <button type="button" class="cfg-btn primary" data-action="download-zip">Weboldal letöltése</button>
+      </div>
+    </header>
+
+    <div class="cfg-layout">
+      <aside class="cfg-panel" id="panel" aria-label="Beállítások">
+        <nav class="cfg-steps" aria-label="Lépések">
+          <ol id="steps"></ol>
+        </nav>
+        <form class="cfg-body" id="step-body" autocomplete="off" novalidate></form>
+        <footer class="cfg-nav">
+          <button type="button" class="cfg-btn ghost" data-action="prev">← Vissza</button>
+          <span class="cfg-progress" id="progress"></span>
+          <button type="button" class="cfg-btn primary" data-action="next">Tovább →</button>
+        </footer>
+      </aside>
+
+      <section class="cfg-preview" aria-label="Élő előnézet">
+        <div class="frame-wrap" id="frame-wrap" data-device="desktop">
+          <iframe id="preview" src="index.html?preview" title="A weboldal élő előnézete"></iframe>
+        </div>
+      </section>
+    </div>
+
+    <nav class="cfg-switch" aria-label="Nézet váltása">
+      <button type="button" data-view="settings" aria-pressed="true">Beállítások</button>
+      <button type="button" data-view="preview" aria-pressed="false">Előnézet</button>
+    </nav>
+
+    <div class="cfg-toast" id="toast" role="alert" hidden></div>
+  </body>
+</html>
