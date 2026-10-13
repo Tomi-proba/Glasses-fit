@@ -24,3 +24,5 @@ dist-standalone
 *.njsproj
 *.sln
 *.sw?
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
