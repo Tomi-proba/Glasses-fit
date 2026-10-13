@@ -15,9 +15,11 @@ import {
   esc,
   icon,
 } from './render.js';
+import { buildOrderPayload, formatPrice, loadCheckoutConfig, startPayment, validateOrder } from './payment.js';
 
 const STORAGE_KEY = 'site-configurator:v1';
 const STEP_KEY = 'site-configurator:step';
+const CUSTOMER_KEY = 'site-configurator:customer';
 
 const ACCENTS = [
   ['Neon kék', '#00d4ff'],
@@ -37,6 +39,8 @@ const $ = (sel, root = document) => root.querySelector(sel);
 let defaults = null;
 let config = null;
 let step = 0;
+let checkout = null;
+let lastOrder = null;
 
 /* ------------------------------------------------------------- utilities */
 
@@ -320,36 +324,223 @@ const STEPS = [
     },
   },
   {
-    title: 'Mentés & export',
-    lead: 'A beállításaidat a böngésző automatikusan menti. Innen töltheted le őket.',
-    render: () => `
-      <div class="export-card">
-        <h3>🚀 Kész weboldal (ZIP)</h3>
-        <p>Optimalizált, azonnal feltölthető statikus weboldal – SEO meta tagekkel, sitemap.xml-lel és a képeiddel együtt. Bármilyen tárhelyre (Netlify, GitHub Pages, cPanel) feltölthető.</p>
-        <button type="button" class="cfg-btn primary" data-action="download-zip">Weboldal letöltése (.zip)</button>
-      </div>
-      <div class="export-card">
-        <h3>🧩 Beállítások (site.config.json)</h3>
-        <p>A konfiguráció fájlként – ezt küldd el a fejlesztőnek, vagy töltsd vissza később.</p>
-        <div class="btn-row">
-          <button type="button" class="cfg-btn ghost" data-action="download-json">JSON letöltése</button>
-          <label class="cfg-btn ghost file-btn">JSON betöltése<input type="file" accept="application/json,.json" data-action="import-json"></label>
-        </div>
-      </div>
-      <div class="export-card danger">
-        <h3>↺ Visszaállítás</h3>
-        <p>Minden módosítás elvész, és a mintaoldal alapbeállításai töltődnek be.</p>
-        <button type="button" class="cfg-btn ghost" data-action="reset">Alapállapot visszaállítása</button>
-      </div>`,
+    title: 'Összegzés',
+    lead: 'Nézd át a választott beállításokat, majd rendeld meg a weboldaladat.',
+    render: renderSummary,
   },
 ];
+
+/* --------------------------------------------------------------- summary */
+
+const STEP_OF = { basics: 0, look: 1, sections: 2, texts: 3, images: 4, contact: 5 };
+
+function summaryRow(label, value, stepIndex) {
+  return `<div class="sum-row"><dt>${esc(label)}</dt><dd>${value}</dd>
+    <button type="button" class="link-btn" data-step="${stepIndex}" aria-label="${esc(label)} módosítása">Módosítás</button></div>`;
+}
+
+function renderSummary() {
+  const c = config;
+  const enabled = c.sections.order.filter((id) => c.sections.enabled[id] !== false);
+  const disabled = c.sections.order.filter((id) => c.sections.enabled[id] === false);
+  const logo = c.brand.logo ? `<img src="${esc(c.brand.logo)}" alt="">` : `<span class="sum-mark">${esc((c.brand.shortName || c.brand.name || '?').charAt(0))}</span>`;
+  const galleryCount = c.gallery.items.filter((g) => g.src).length;
+  const price = formatPrice(checkout);
+  return `
+    <div class="sum-card" style="--a:${esc(c.theme.accent)}">
+      <div class="sum-brand">${logo}<div><strong>${esc(c.brand.name)}</strong><span>${esc(c.brand.tagline)}</span></div></div>
+      <dl class="sum-list">
+        ${summaryRow('Főcím', esc(c.hero.title), STEP_OF.basics)}
+        ${summaryRow('Téma', c.theme.mode === 'light' ? '☀️ Világos' : '🌙 Sötét', STEP_OF.look)}
+        ${summaryRow('Kiemelő szín', `<span class="dot" style="background:${esc(c.theme.accent)}"></span><code>${esc(c.theme.accent)}</code>`, STEP_OF.look)}
+        ${summaryRow('Betűtípusok', `${esc(c.theme.headingFont)} / ${esc(c.theme.bodyFont)}`, STEP_OF.look)}
+        ${summaryRow('3D effekt', esc(EFFECTS[c.effect3d] || '–'), STEP_OF.look)}
+        ${summaryRow('Szekciók', `<ol class="sum-sections">${enabled.map((id) => `<li>${esc(SECTION_LABELS[id])}</li>`).join('')}</ol>${disabled.length ? `<span class="muted">Kikapcsolva: ${disabled.map((id) => esc(SECTION_LABELS[id])).join(', ')}</span>` : ''}`, STEP_OF.sections)}
+        ${summaryRow('Tartalom', `${c.services.items.length} szolgáltatás · ${c.testimonials.items.length} vélemény · ${c.about.stats.length} kiemelt szám`, STEP_OF.texts)}
+        ${summaryRow('Képek', `${c.brand.logo ? 'Logó ✓' : 'Nincs logó'} · ${galleryCount} galériakép`, STEP_OF.images)}
+        ${summaryRow('Elérhetőség', [c.contact.address, c.contact.phone, c.contact.email].filter(Boolean).map(esc).join('<br>') || '–', STEP_OF.contact)}
+      </dl>
+    </div>
+
+    <div class="buy-card">
+      <p class="buy-kicker">${esc(checkout.productName)}</p>
+      <p class="buy-price">${esc(price)}</p>
+      <p class="buy-desc">${esc(checkout.productDescription || '')}</p>
+      ${checkout.vatNote ? `<p class="hint">${esc(checkout.vatNote)}</p>` : ''}
+      <button type="button" class="cfg-btn primary buy-btn" data-action="open-checkout">Megvásárlás – ${esc(price)}</button>
+      <p class="hint">🔒 A fizetés jelenleg tesztüzemmódban van: kártyaterhelés nem történik.</p>
+    </div>
+
+    <h3 class="sub">Mentés</h3>
+    <div class="export-card">
+      <h3>🧩 Beállítások (site.config.json)</h3>
+      <p>A beállításaid automatikusan mentődnek ebben a böngészőben. Fájlként is letöltheted vagy visszatöltheted őket.</p>
+      <div class="btn-row">
+        <button type="button" class="cfg-btn ghost" data-action="download-json">JSON letöltése</button>
+        <label class="cfg-btn ghost file-btn">JSON betöltése<input type="file" accept="application/json,.json" data-action="import-json"></label>
+      </div>
+    </div>
+    ${checkout.allowZipExport ? `<div class="export-card">
+      <h3>🚀 Kész weboldal (ZIP)</h3>
+      <p>Optimalizált, azonnal feltölthető statikus weboldal a képeiddel együtt.</p>
+      <button type="button" class="cfg-btn ghost" data-action="download-zip">Weboldal letöltése (.zip)</button>
+    </div>` : ''}
+    <div class="export-card danger">
+      <h3>↺ Visszaállítás</h3>
+      <p>Minden módosítás elvész, és a mintaoldal alapbeállításai töltődnek be.</p>
+      <button type="button" class="cfg-btn ghost" data-action="reset">Alapállapot visszaállítása</button>
+    </div>`;
+}
+
+/* -------------------------------------------------------------- checkout */
+
+function loadCustomer() {
+  try {
+    return JSON.parse(localStorage.getItem(CUSTOMER_KEY) || 'null') || {};
+  } catch {
+    return {};
+  }
+}
+
+function checkoutField(label, name, value, { type = 'text', autocomplete = '', cls = '', placeholder = '' } = {}) {
+  return `<div class="f ${cls}"><label for="co-${name}">${esc(label)}</label>
+    <input id="co-${name}" name="${name}" type="${type}" value="${esc(value || '')}" ${autocomplete ? `autocomplete="${autocomplete}"` : ''} placeholder="${esc(placeholder)}" aria-describedby="co-${name}-err">
+    <p class="field-err" id="co-${name}-err"></p></div>`;
+}
+
+function openCheckout() {
+  const dlg = $('#checkout');
+  const d = loadCustomer();
+  const price = formatPrice(checkout);
+  dlg.innerHTML = `<form method="dialog" class="co" id="checkout-form" novalidate>
+    <header class="co-head">
+      <div><p class="co-kicker">Megrendelés</p><h2 id="co-title">${esc(checkout.productName)}</h2></div>
+      <button type="button" class="icon-btn" data-action="close-checkout" aria-label="Bezárás">✕</button>
+    </header>
+    <div class="co-body">
+      <fieldset><legend>Kapcsolattartó</legend>
+        ${checkoutField('Teljes név', 'name', d.name, { autocomplete: 'name' })}
+        <div class="row">${checkoutField('E-mail', 'email', d.email, { type: 'email', autocomplete: 'email' })}${checkoutField('Telefon', 'phone', d.phone, { type: 'tel', autocomplete: 'tel' })}</div>
+      </fieldset>
+      <fieldset><legend>Számlázási adatok</legend>
+        <div class="segmented" role="radiogroup" aria-label="Számlázás típusa">
+          <label><input type="radio" name="billingType" value="person" ${d.billingType !== 'company' ? 'checked' : ''}><span>Magánszemély</span></label>
+          <label><input type="radio" name="billingType" value="company" ${d.billingType === 'company' ? 'checked' : ''}><span>Cég</span></label>
+        </div>
+        <div class="company-only">
+          ${checkoutField('Cégnév', 'companyName', d.companyName || config.brand.name, { autocomplete: 'organization' })}
+          ${checkoutField('Adószám', 'taxNumber', d.taxNumber, { placeholder: '12345678-1-23' })}
+        </div>
+        <div class="row">${checkoutField('Irányítószám', 'zip', d.zip, { autocomplete: 'postal-code' })}${checkoutField('Település', 'city', d.city, { autocomplete: 'address-level2' })}</div>
+        ${checkoutField('Utca, házszám', 'address', d.address, { autocomplete: 'street-address' })}
+      </fieldset>
+      <fieldset><legend>Megjegyzés (opcionális)</legend>
+        <div class="f"><label for="co-note" class="sr-only">Megjegyzés</label><textarea id="co-note" name="note" rows="2" placeholder="pl. domain név, határidő">${esc(d.note || '')}</textarea></div>
+      </fieldset>
+      <div class="consents">
+        <label class="check"><input type="checkbox" name="terms" aria-describedby="co-terms-err"> <span>Elfogadom az <a href="${esc(checkout.termsUrl || '#')}" target="_blank" rel="noopener">ÁSZF</a>-et.</span></label>
+        <p class="field-err" id="co-terms-err"></p>
+        <label class="check"><input type="checkbox" name="privacy" aria-describedby="co-privacy-err"> <span>Elolvastam az <a href="${esc(checkout.privacyUrl || '#')}" target="_blank" rel="noopener">adatkezelési tájékoztatót</a>.</span></label>
+        <p class="field-err" id="co-privacy-err"></p>
+        <label class="check"><input type="checkbox" name="marketing" ${d.marketing ? 'checked' : ''}> <span>Kérek értesítést újdonságokról (opcionális).</span></label>
+      </div>
+    </div>
+    <footer class="co-foot">
+      <div><span class="co-total-label">Fizetendő</span><strong class="co-total">${esc(price)}</strong></div>
+      <button type="submit" class="cfg-btn primary">Tovább a fizetéshez →</button>
+    </footer>
+  </form>`;
+  dlg.showModal();
+  $('#co-name', dlg).focus();
+}
+
+function readCheckoutForm(form) {
+  const f = new FormData(form);
+  const v = (k) => String(f.get(k) || '');
+  return {
+    customer: { name: v('name'), email: v('email'), phone: v('phone') },
+    billing: { type: v('billingType'), name: v('name'), companyName: v('companyName'), taxNumber: v('taxNumber'), country: 'HU', zip: v('zip'), city: v('city'), address: v('address') },
+    consents: { terms: f.has('terms'), privacy: f.has('privacy'), marketing: f.has('marketing') },
+    note: v('note'),
+  };
+}
+
+async function submitCheckout(form) {
+  const data = readCheckoutForm(form);
+  try {
+    localStorage.setItem(CUSTOMER_KEY, JSON.stringify({ ...data.customer, ...data.billing, billingType: data.billing.type, note: data.note, marketing: data.consents.marketing }));
+  } catch { /* storage unavailable */ }
+  const errors = validateOrder(data);
+  form.querySelectorAll('.field-err').forEach((el) => { el.textContent = ''; });
+  form.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+  const keys = Object.keys(errors);
+  if (keys.length) {
+    for (const k of keys) {
+      const err = $(`#co-${k}-err`, form);
+      if (err) err.textContent = errors[k];
+      form.elements[k]?.setAttribute('aria-invalid', 'true');
+    }
+    form.elements[keys[0]]?.focus();
+    return;
+  }
+  const btn = form.querySelector('[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = 'Előkészítés…';
+  try {
+    const order = buildOrderPayload({ siteConfig: clone(config), ...data, checkout });
+    const result = await startPayment(order, checkout);
+    if (result.status === 'redirect' && result.url) {
+      location.href = result.url;
+      return;
+    }
+    lastOrder = order;
+    showPaymentPlaceholder(order);
+  } catch (err) {
+    console.error(err);
+    btn.disabled = false;
+    btn.textContent = 'Tovább a fizetéshez →';
+    toast('A fizetés indítása nem sikerült. Próbáld újra.', 'err');
+  }
+}
+
+/** Shortens embedded images so the JSON preview stays readable. */
+function previewJson(order) {
+  return JSON.stringify(order, (k, v) => (typeof v === 'string' && v.startsWith('data:') ? `${v.slice(0, 32)}… (${Math.round(v.length / 1024)} KB)` : v), 2);
+}
+
+function showPaymentPlaceholder(order) {
+  const dlg = $('#checkout');
+  dlg.innerHTML = `<div class="co">
+    <header class="co-head">
+      <div><p class="co-kicker">Fizetés · tesztüzem</p><h2>Rendelés előkészítve</h2></div>
+      <button type="button" class="icon-btn" data-action="close-checkout" aria-label="Bezárás">✕</button>
+    </header>
+    <div class="co-body">
+      <div class="pay-placeholder">
+        <p class="pay-icon" aria-hidden="true">💳</p>
+        <h3>Itt jelenik majd meg a fizetési felület</h3>
+        <p>A Stripe vagy Barion integráció még nincs bekötve, ezért terhelés nem történt. A rendelés adatai elkészültek, és készen állnak a fizetési szolgáltatónak való átadásra.</p>
+        <dl class="pay-meta">
+          <div><dt>Rendelésszám</dt><dd><code>${esc(order.orderId)}</code></dd></div>
+          <div><dt>Összeg</dt><dd>${esc(formatPrice(checkout))}</dd></div>
+          <div><dt>Értesítési e-mail</dt><dd>${esc(order.customer.email)}</dd></div>
+        </dl>
+      </div>
+      <details class="group"><summary>Elküldendő adatok (JSON)</summary><div class="group-body"><pre class="json">${esc(previewJson(order))}</pre></div></details>
+    </div>
+    <footer class="co-foot">
+      <button type="button" class="cfg-btn ghost" data-action="download-order">Rendelés JSON letöltése</button>
+      <button type="button" class="cfg-btn primary" data-action="close-checkout">Kész</button>
+    </footer>
+  </div>`;
+}
 
 /* ----------------------------------------------------------- rendering */
 
 function renderSteps() {
   $('#steps').innerHTML = STEPS.map((s, i) => `<li><button type="button" data-step="${i}" ${i === step ? 'aria-current="step"' : ''}>
       <span class="num">${i + 1}</span><span class="txt">${esc(s.title)}</span></button></li>`).join('');
-  $('#progress').textContent = `${step + 1} / ${STEPS.length}`;
+  $('#progress').innerHTML = `<span>Lépés ${step + 1} / ${STEPS.length}</span><span class="bar" aria-hidden="true"><i style="width:${((step + 1) / STEPS.length) * 100}%"></i></span>`;
   $('[data-action="prev"]').disabled = step === 0;
   $('[data-action="next"]').disabled = step === STEPS.length - 1;
 }
@@ -461,7 +652,10 @@ const NEW_ITEMS = {
 
 function onClick(e) {
   const stepBtn = e.target.closest('[data-step]');
-  if (stepBtn) return goTo(Number(stepBtn.dataset.step));
+  if (stepBtn) {
+    setView('settings');
+    return goTo(Number(stepBtn.dataset.step));
+  }
   const deviceBtn = e.target.closest('[data-device]');
   if (deviceBtn && deviceBtn.tagName === 'BUTTON') return setDevice(deviceBtn.dataset.device);
   const viewBtn = e.target.closest('[data-view]');
@@ -504,10 +698,22 @@ function onClick(e) {
       return changed({ rerender: true });
     case 'download-json':
       return download(new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' }), 'site.config.json');
+    case 'open-checkout':
+      return openCheckout();
+    case 'close-checkout':
+      return $('#checkout').close();
+    case 'download-order':
+      return lastOrder && download(new Blob([JSON.stringify(lastOrder, null, 2)], { type: 'application/json' }), `rendeles-${lastOrder.orderId}.json`);
     case 'download-zip':
       return exportZip(btn);
     case 'reset':
-      if (!confirm('Biztosan visszaállítod az alapbeállításokat? Minden módosítás elvész.')) return undefined;
+      // Two-click confirmation (native confirm() is blocked in some embedded viewers).
+      if (btn.dataset.armed !== '1') {
+        btn.dataset.armed = '1';
+        btn.textContent = 'Biztos? Kattints újra a visszaállításhoz';
+        setTimeout(() => { if (btn.isConnected) { btn.dataset.armed = ''; btn.textContent = 'Alapállapot visszaállítása'; } }, 4000);
+        return undefined;
+      }
       config = clone(defaults);
       changed({ rerender: true });
       return toast('Alapbeállítások visszaállítva');
@@ -658,7 +864,8 @@ async function exportZip(btn) {
 /* ------------------------------------------------------------------ boot */
 
 async function boot() {
-  defaults = await fetch('site.config.json').then((r) => r.json());
+  [defaults, checkout] = await Promise.all([fetch('site.config.json').then((r) => r.json()), loadCheckoutConfig()]);
+  $('#buy-top').textContent = `Megvásárlás – ${formatPrice(checkout)}`;
   let saved = null;
   try {
     saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
@@ -678,6 +885,12 @@ async function boot() {
     if (e.origin === location.origin && e.data?.type === 'preview-ready') sendToPreview();
   });
   frame().addEventListener('load', sendToPreview);
+  $('#checkout').addEventListener('submit', (e) => {
+    e.preventDefault();
+    submitCheckout(e.target);
+  });
+  // Close when clicking the backdrop.
+  $('#checkout').addEventListener('click', (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
 
   renderStep();
   sendToPreview();

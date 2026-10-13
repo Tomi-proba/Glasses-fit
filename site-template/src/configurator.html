@@ -36,7 +36,7 @@
       </div>
       <div class="cfg-actions">
         <a class="cfg-btn ghost" href="index.html" target="_blank" rel="noopener">Mintaoldal</a>
-        <button type="button" class="cfg-btn primary" data-action="download-zip">Weboldal letöltése</button>
+        <button type="button" class="cfg-btn primary" data-step="6" id="buy-top">Megvásárlás</button>
       </div>
     </header>
 
@@ -64,6 +64,8 @@
       <button type="button" data-view="settings" aria-pressed="true">Beállítások</button>
       <button type="button" data-view="preview" aria-pressed="false">Előnézet</button>
     </nav>
+
+    <dialog class="checkout" id="checkout" aria-labelledby="co-title"></dialog>
 
     <div class="cfg-toast" id="toast" role="alert" hidden></div>
   </body>

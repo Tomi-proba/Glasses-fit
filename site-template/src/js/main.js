@@ -6,7 +6,7 @@ import Lenis from 'lenis';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const PREVIEW = new URLSearchParams(location.search).has('preview');
+const PREVIEW = new URLSearchParams(location.search).has('preview') || location.hash === '#preview';
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const isMobile = () => matchMedia('(max-width: 760px), (pointer: coarse)').matches;
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');

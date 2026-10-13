@@ -49,11 +49,11 @@ site-template/
 ### A) Konfigurátorral (ajánlott, fejlesztő nélkül is)
 
 1. Nyisd meg a `configurator.html`-t (`npm run dev`, vagy a buildelt `dist/` bármilyen statikus tárhelyen).
-2. Menj végig a 7 lépésen: **Alapadatok → Megjelenés → Szekciók → Szövegek → Képek → Elérhetőség → Mentés & export**.
+2. Menj végig a 7 lépésen: **Alapadatok → Megjelenés → Szekciók → Szövegek → Képek → Elérhetőség → Összegzés**. Alul a folyamatjelző mutatja, hol tartasz („Lépés 3 / 7”), és a Vissza gombbal visszaléphetsz.
    Bal oldalon a beállítások, jobb oldalon az élő előnézet (asztali / tablet / mobil nézet). Mobilon alul válthatsz a beállítások és az előnézet között.
 3. Minden változás azonnal megjelenik az előnézetben, és automatikusan mentődik a böngészőbe (localStorage).
-4. Export:
-   - **Weboldal letöltése (.zip)** – kész, feltölthető statikus oldal: előrenderelt `index.html`, minifikált JS/CSS, a feltöltött képek külön fájlként (`assets/uploads/`), `sitemap.xml`, `robots.txt`, `site.config.json`.
+4. Export (az Összegzés lépésben):
+   - **Weboldal letöltése (.zip)**, ha az `allowZipExport` be van kapcsolva – kész, feltölthető statikus oldal: előrenderelt `index.html`, minifikált JS/CSS, a feltöltött képek külön fájlként (`assets/uploads/`), `sitemap.xml`, `robots.txt`, `site.config.json`.
    - **JSON letöltése / betöltése** – a `site.config.json`, amit később vissza lehet tölteni, vagy a fejlesztő a repóba tehet.
 
 > A ZIP export a buildelt fájlokat csomagolja, ezért a konfigurátort a `dist/`-ből (vagy `npm run dev`-vel) kell futtatni, nem közvetlenül az `src/`-ből.
@@ -64,6 +64,37 @@ site-template/
 2. Szerkeszd a `site.config.json`-t (lásd lent), a képeket tedd a `public/assets/` alá.
 3. `npm run build` → a `dist/` mappa tartalmát töltsd fel a tárhelyre.
 4. **Fontos:** állítsd be a `meta.siteUrl`-t a végleges domainre (canonical URL, OG-kép, sitemap).
+
+## Vásárlás (előkészítve, fizetés nélkül)
+
+A konfigurátor utolsó lépése az **Összegzés**: a választott beállítások áttekintése, „Módosítás” gombokkal az egyes lépésekhez, és a **Megvásárlás – 250 000 Ft** gomb. A gomb egy megrendelő ablakot nyit (kapcsolattartó, számlázási adatok magánszemélynek vagy cégnek adószámmal, ÁSZF és adatkezelés elfogadása), majd egy helyőrző fizetési képernyőt. Kártyaterhelés nem történik.
+
+| Fájl | Szerepe |
+| --- | --- |
+| `public/checkout.config.json` | **Ár** (`price`), pénznem, termék neve, `provider`, ÁSZF és adatkezelési URL, `allowZipExport`. Újrabuildelés nélkül módosítható. |
+| `src/js/payment.js` | Különálló fizetési modul: `loadCheckoutConfig()`, `buildOrderPayload()`, `validateOrder()` és `startPayment()` |
+
+**Ide kerül a valódi integráció:** a `startPayment(order, checkout)` függvény jól jelölt `PAYMENT PROVIDER INTEGRATION POINT` blokkja, Stripe és Barion vázlattal. A függvény `{ status: 'redirect', url }` értéket ad vissza, ilyenkor a konfigurátor átirányít a fizetési oldalra. A `provider` értéke a `checkout.config.json`-ből jön.
+
+A vásárláskor elküldendő JSON-t a `buildOrderPayload()` állítja össze:
+
+```jsonc
+{
+  "schemaVersion": 1,
+  "orderId": "WEB-20261013-XXXX",
+  "createdAt": "…",
+  "product": { "sku": "premium-website", "name": "…", "price": 250000, "currency": "HUF" },
+  "customer": { "name": "…", "email": "…", "phone": "…" },
+  "billing": { "type": "person|company", "name": "…", "taxNumber": "…", "country": "HU", "zip": "…", "city": "…", "address": "…" },
+  "consents": { "terms": true, "privacy": true, "marketing": false, "acceptedAt": "…" },
+  "note": "…",
+  "siteConfig": { /* a teljes site.config.json */ }
+}
+```
+
+A helyőrző képernyőn ez a JSON megtekinthető és letölthető. **Fontos:** éles fizetésnél az árat a szervernek kell a saját konfigurációjából venni (a `product.sku` alapján), a böngészőből érkező árban nem szabad megbízni.
+
+Mivel az oldal fizetős termék, a „kész weboldal ZIP” letöltés alapból ki van kapcsolva (`allowZipExport: false`). Átadáskor vagy belső használatra `true`-ra állítva megjelenik az Összegzés lépésben.
 
 ## `site.config.json` felépítése
 
