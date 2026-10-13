@@ -1,58 +1,55 @@
-// Site runtime: smooth scrolling, scroll animations, micro-interactions,
-// lazy 3D hero and (inside the configurator iframe) live preview updates.
+// Client-site runtime: smooth scroll, scroll animations (scaled by theme.motion), 3D hero,
+// testimonials carousel, video facades, contact forms, and the live-preview bridge.
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const root = document.documentElement;
 const params = new URLSearchParams(location.search);
-// Inside the studio's configurator the page is driven by postMessage; as a gallery thumbnail it stays static.
-const PREVIEW = document.documentElement.hasAttribute('data-preview') || params.has('preview');
+const PREVIEW = root.hasAttribute('data-preview');
 const THUMB = params.has('thumb');
-const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile = () => matchMedia('(max-width: 760px), (pointer: coarse)').matches;
 
-let runtime = readRuntime();
+let runtime = JSON.parse(document.getElementById('site-runtime')?.textContent || '{}');
+const motion = () => (reduceMotion || THUMB ? 'none' : root.dataset.motion || 'normal');
+const MOTION = {
+  none: { y: 0, dur: 0, parallax: 0 },
+  subtle: { y: 16, dur: 0.8, parallax: 0 },
+  normal: { y: 30, dur: 1.1, parallax: 1 },
+  strong: { y: 56, dur: 1.4, parallax: 1.8 },
+};
+
 let lenis = null;
-let gsapCtx = null;
+let ctx = null;
 let hero = null;
 let heroToken = 0;
 
-function readRuntime() {
-  try {
-    return JSON.parse(document.getElementById('site-runtime')?.textContent || '{}');
-  } catch {
-    return {};
+/* ---------------------------------------------------------- smooth scroll */
+
+function setupLenis() {
+  const want = motion() !== 'none' && !PREVIEW;
+  if (want && !lenis) {
+    lenis = new Lenis({ lerp: motion() === 'strong' ? 0.07 : 0.1 });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((t) => lenis?.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
   }
 }
-
-/* ----------------------------------------------------------- smooth scroll */
-
-function initLenis() {
-  if (reduceMotion.matches || THUMB) return;
-  lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 1, smoothWheel: true });
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => lenis?.raf(time * 1000));
-  gsap.ticker.lagSmoothing(0);
+function scrollToEl(el) {
+  if (!el) return;
+  if (lenis) lenis.scrollTo(el, { offset: -76, duration: 1.2 });
+  else el.scrollIntoView({ behavior: motion() === 'none' ? 'auto' : 'smooth', block: 'start' });
 }
 
-function scrollToTarget(target) {
-  const headerOffset = -76;
-  if (lenis) lenis.scrollTo(target, { offset: target === 0 ? 0 : headerOffset, duration: 1.4 });
-  else if (target === 0) window.scrollTo({ top: 0, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
-  else target.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth' });
-}
+/* --------------------------------------------------- delegated handlers */
 
-/* ----------------------------------------------------- delegated handlers */
-
-function closeMenu() {
-  const toggle = document.querySelector('.nav-toggle');
-  const menu = document.getElementById('nav-menu');
-  if (!toggle || !menu) return;
-  toggle.setAttribute('aria-expanded', 'false');
-  menu.classList.remove('is-open');
-}
+const closeMenu = () => {
+  document.querySelector('.nav-toggle')?.setAttribute('aria-expanded', 'false');
+  document.getElementById('nav-menu')?.classList.remove('is-open');
+};
 
 document.addEventListener('click', (e) => {
   const toggle = e.target.closest('.nav-toggle');
@@ -62,202 +59,145 @@ document.addEventListener('click', (e) => {
     document.getElementById('nav-menu')?.classList.toggle('is-open', open);
     return;
   }
-  const link = e.target.closest('a[href^="#"]');
+
+  const quoteBtn = e.target.closest('[data-quote]');
+  if (quoteBtn) {
+    const stage = quoteBtn.closest('.block').querySelector('.quote-stage');
+    const quotes = [...stage.querySelectorAll('.quote')];
+    const cur = quotes.findIndex((q) => !q.hasAttribute('data-inactive'));
+    const next = (cur + Number(quoteBtn.dataset.quote) + quotes.length) % quotes.length;
+    quotes.forEach((q, i) => (i === next ? q.removeAttribute('data-inactive') : q.setAttribute('data-inactive', '')));
+    return;
+  }
+
+  const video = e.target.closest('.video-facade');
+  if (video) {
+    const iframe = document.createElement('iframe');
+    iframe.src = video.dataset.src;
+    iframe.title = video.getAttribute('aria-label') || 'Videó';
+    iframe.allow = 'autoplay; fullscreen; picture-in-picture';
+    iframe.allowFullscreen = true;
+    video.replaceWith(iframe);
+    return;
+  }
+
+  const link = e.target.closest('a[href]');
   if (!link) return;
-  const id = link.getAttribute('href').slice(1);
-  const target = id === 'top' ? 0 : document.getElementById(id);
-  if (target === null) return;
-  e.preventDefault();
-  closeMenu();
-  scrollToTarget(target);
-  if (target !== 0 && !PREVIEW) {
-    history.replaceState(null, '', `#${id}`);
-    const focusable = target.matches('section, main') ? target : null;
-    if (focusable) {
-      if (!focusable.hasAttribute('tabindex')) focusable.setAttribute('tabindex', '-1');
-      focusable.focus({ preventScroll: true });
-    }
+  // In the studio preview, links between pages switch the rendered page instead of navigating.
+  if (PREVIEW && link.dataset.page) {
+    e.preventDefault();
+    closeMenu();
+    window.parent?.postMessage({ type: 'page-change', pageId: link.dataset.page, anchor: link.dataset.anchor || '' }, location.origin);
+    return;
+  }
+  const href = link.getAttribute('href');
+  if (href.startsWith('#') && href.length > 1) {
+    const target = document.getElementById(href.slice(1));
+    if (!target) return;
+    e.preventDefault();
+    closeMenu();
+    scrollToEl(target);
+  } else if (PREVIEW && !href.startsWith('#')) {
+    e.preventDefault(); // keep the preview on this page; external links would leave the configurator
   }
 });
 
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeMenu();
-});
+document.addEventListener('keydown', (e) => e.key === 'Escape' && closeMenu());
 
-// Testimonials: one quote on stage, previous/next buttons cycle through them.
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-quote]');
-  if (!btn) return;
-  const quotes = [...document.querySelectorAll('.quote-stage .quote')];
-  if (quotes.length < 2) return;
-  const current = quotes.findIndex((q) => !q.hasAttribute('data-inactive'));
-  const next = (current + Number(btn.dataset.quote) + quotes.length) % quotes.length;
-  quotes.forEach((q, i) => {
-    if (i === next) q.removeAttribute('data-inactive');
-    else q.setAttribute('data-inactive', '');
-  });
-});
-
-// Contact form: posts to `contact.formEndpoint` (e.g. Formspree) or falls back to mailto.
+// Contact forms: POST to the block's endpoint (e.g. Formspree), otherwise open the mail app.
 document.addEventListener('submit', async (e) => {
   const form = e.target.closest('.contact-form');
   if (!form) return;
   e.preventDefault();
   const status = form.querySelector('.form-status');
-  const fields = [...form.querySelectorAll('input[required], textarea[required]')];
-  let firstInvalid = null;
-  for (const f of fields) {
+  let first = null;
+  for (const f of form.querySelectorAll('[required]')) {
     const ok = f.value.trim() !== '' && f.checkValidity();
     f.setAttribute('aria-invalid', String(!ok));
     const err = document.getElementById(`${f.id}-err`);
     if (err) err.textContent = ok ? '' : f.type === 'email' && f.value.trim() ? 'Ez nem érvényes e-mail cím.' : 'Ezt a mezőt ki kell tölteni.';
-    if (!ok && !firstInvalid) firstInvalid = f;
+    if (!ok && !first) first = f;
   }
   status.className = 'form-status';
-  if (firstInvalid) {
-    status.textContent = 'Néhány mező hiányzik vagy hibás, javítsd a jelölt mezőket.';
-    status.classList.add('err');
-    firstInvalid.focus();
-    return;
-  }
-  if (form.elements._gotcha?.value) return; // spam bot
+  status.textContent = '';
+  if (first) return first.focus();
+  if (form.elements._gotcha?.value) return;
   if (PREVIEW) {
     status.textContent = 'Előnézet: az üzenet nem kerül elküldésre.';
     status.classList.add('ok');
     return;
   }
   const data = new FormData(form);
-  const endpoint = form.dataset.endpoint;
-  if (!endpoint) {
-    const body = `${data.get('message')}\n\n${data.get('name')}\n${data.get('email')}\n${data.get('phone') || ''}`;
+  if (!form.dataset.endpoint) {
+    const body = `${data.get('message')}\n\n${data.get('name')}\n${data.get('email')}`;
     location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent('Üzenet a weboldalról')}&body=${encodeURIComponent(body)}`;
     return;
   }
-  const button = form.querySelector('button[type="submit"]');
-  button.disabled = true;
+  const btn = form.querySelector('[type=submit]');
+  btn.disabled = true;
   try {
-    const res = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+    const res = await fetch(form.dataset.endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
     if (!res.ok) throw new Error(String(res.status));
     form.reset();
     status.textContent = status.dataset.success;
     status.classList.add('ok');
   } catch {
     status.textContent = status.dataset.error;
-    status.classList.add('err');
   } finally {
-    button.disabled = false;
+    btn.disabled = false;
   }
 });
 
-/* ------------------------------------------------------- scroll animations */
+/* ------------------------------------------------------------ animations */
 
-function initHeader() {
-  const header = document.querySelector('.site-header');
-  if (!header) return;
-  let lastY = 0;
-  ScrollTrigger.create({
-    start: 0,
-    end: 'max',
-    onUpdate(self) {
-      const y = self.scroll();
-      header.classList.toggle('is-scrolled', y > 40);
-      const menuOpen = document.getElementById('nav-menu')?.classList.contains('is-open');
-      header.classList.toggle('is-hidden', !menuOpen && y > 600 && y > lastY);
-      lastY = y;
-    },
-  });
-  // Highlight the nav link of the section in view.
-  document.querySelectorAll('main > section[id]').forEach((section) => {
-    ScrollTrigger.create({
-      trigger: section,
-      start: 'top 50%',
-      end: 'bottom 50%',
-      onToggle({ isActive }) {
-        document.querySelectorAll(`.nav-menu a[href="#${section.id}"]`).forEach((a) => {
-          if (isActive) a.setAttribute('aria-current', 'true');
-          else a.removeAttribute('aria-current');
-        });
-      },
-    });
-  });
-}
-
-function formatCount(n) {
-  return Math.round(n).toLocaleString(document.documentElement.lang || 'hu');
-}
-
-const REVEAL_FROM = {
-  row: { opacity: 0, y: 28 },
-  lines: { opacity: 0, y: 40 },
-  clip: { clipPath: 'inset(100% 0% 0% 0%)' },
-};
-const REVEAL_TO = {
-  row: { opacity: 1, y: 0, duration: 1, ease: 'expo.out', stagger: 0.08 },
-  lines: { opacity: 1, y: 0, duration: 1.4, ease: 'expo.out' },
-  clip: { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.inOut', stagger: 0.1 },
-};
+const formatCount = (n) => Math.round(n).toLocaleString(root.lang || 'hu');
 
 function initAnimations({ animateIn }) {
-  const counts = gsap.utils.toArray('.count[data-count]');
-  const showCounts = () => counts.forEach((el) => { el.textContent = formatCount(Number(el.dataset.count) || 0); });
-  if (reduceMotion.matches) return showCounts();
+  const level = MOTION[motion()];
+  const header = document.querySelector('.site-header');
+  if (header) ScrollTrigger.create({ start: 8, end: 'max', onToggle: (s) => header.classList.toggle('is-scrolled', s.isActive) });
 
-  if (animateIn) {
-    // Only content that starts below the fold is hidden for its reveal; everything is visible by default.
-    for (const kind of Object.keys(REVEAL_FROM)) {
-      const els = gsap.utils.toArray(`[data-reveal="${kind}"]`).filter((el) => el.getBoundingClientRect().top > window.innerHeight * 0.9);
-      if (!els.length) continue;
-      gsap.set(els, REVEAL_FROM[kind]);
-      ScrollTrigger.batch(els, {
-        start: 'top 88%',
-        once: true,
-        onEnter: (batch) => gsap.to(batch, { ...REVEAL_TO[kind], overwrite: true }),
-      });
-    }
+  const counts = gsap.utils.toArray('.count[data-count]');
+  if (!level.dur || !animateIn) {
+    counts.forEach((el) => { el.textContent = formatCount(Number(el.dataset.count) || 0); });
+    if (!level.dur) return;
+  } else {
+    const below = (el) => el.getBoundingClientRect().top > innerHeight * 0.92;
+    gsap.utils.toArray('.block > .container').filter(below).forEach((el) => {
+      const group = el.querySelector('[data-reveal-group]');
+      const targets = group ? [el.querySelector('.block-head'), ...group.children].filter(Boolean) : [el];
+      gsap.set(targets, { opacity: 0, y: level.y });
+      ScrollTrigger.create({ trigger: el, start: 'top 86%', once: true, onEnter: () => gsap.to(targets, { opacity: 1, y: 0, duration: level.dur, ease: 'expo.out', stagger: 0.07 }) });
+    });
     counts.forEach((el) => {
       const target = Number(el.dataset.count) || 0;
-      const state = { v: 0 };
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 92%',
-        once: true,
-        onEnter: () => gsap.fromTo(state, { v: target * 0.6 }, { v: target, duration: 1.8, ease: 'power3.out', onUpdate: () => { el.textContent = formatCount(state.v); } }),
-      });
+      const state = { v: target * 0.5 };
+      ScrollTrigger.create({ trigger: el, start: 'top 92%', once: true, onEnter: () => gsap.to(state, { v: target, duration: 1.8, ease: 'power3.out', onUpdate: () => { el.textContent = formatCount(state.v); } }) });
     });
-  } else {
-    showCounts();
   }
-
-  // Parallax: the hero copy drifts up faster than the 3D stage; about image moves inside its frame.
-  const heroEl = document.querySelector('.hero');
-  if (heroEl) {
-    const st = { trigger: heroEl, start: 'top top', end: 'bottom top', scrub: true };
-    gsap.to('.hero-copy', { yPercent: -18, opacity: 0.2, ease: 'none', scrollTrigger: st });
-    gsap.to('.hero-stage', { yPercent: 12, ease: 'none', scrollTrigger: { ...st } });
+  if (level.parallax) {
+    gsap.utils.toArray('img[data-parallax]').forEach((img) => {
+      gsap.fromTo(img, { yPercent: -12 * level.parallax }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+    const stage = document.querySelector('.hero-stage');
+    if (stage) gsap.to(stage, { yPercent: 10 * level.parallax, ease: 'none', scrollTrigger: { trigger: stage.closest('.block'), start: 'top top', end: 'bottom top', scrub: true } });
   }
-  gsap.utils.toArray('img[data-parallax]').forEach((img) => {
-    gsap.fromTo(img, { yPercent: -14 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
-  });
 }
 
 function initPage({ animateIn }) {
-  gsapCtx?.revert();
-  gsapCtx = gsap.context(() => {
-    initHeader();
-    initAnimations({ animateIn });
-  });
+  ctx?.revert();
+  ctx = gsap.context(() => initAnimations({ animateIn }));
 }
 
-/* ---------------------------------------------------------------- 3D hero */
+/* --------------------------------------------------------------- 3D hero */
 
 let gpuOk = null;
-/** True only for hardware-accelerated WebGL: software renderers would make the page sluggish. */
 function hasFastWebGL() {
   if (gpuOk !== null) return gpuOk;
-  if (new URLSearchParams(location.search).get('3d') === 'force') return (gpuOk = true);
+  if (params.get('3d') === 'force') return (gpuOk = true);
   try {
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl2', { failIfMajorPerformanceCaveat: true }) || canvas.getContext('webgl', { failIfMajorPerformanceCaveat: true });
+    const c = document.createElement('canvas');
+    const gl = c.getContext('webgl2', { failIfMajorPerformanceCaveat: true }) || c.getContext('webgl', { failIfMajorPerformanceCaveat: true });
     const info = gl?.getExtension('WEBGL_debug_renderer_info');
     const name = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : '';
     gpuOk = !!gl && !/swiftshader|llvmpipe|software|basic render/i.test(name);
@@ -268,90 +208,75 @@ function hasFastWebGL() {
   return gpuOk;
 }
 
-function wantsHero3D() {
-  if (THUMB) return false;
-  return ['particles', 'relief'].includes(runtime.effect3d) && runtime.heroImage && !reduceMotion.matches && document.querySelector('.hero-canvas') && hasFastWebGL();
-}
+const heroStage = () => document.querySelector('.hero-stage:has(.hero-canvas)');
+const heroKey = (stage) => (stage ? `${stage.dataset.effect}|${stage.dataset.image}|${root.dataset.mode}` : '');
 
 async function startHero3D() {
   const token = ++heroToken;
   hero?.destroy();
   hero = null;
-  if (!wantsHero3D()) return;
+  const stage = heroStage();
+  if (!stage || motion() === 'none' || !hasFastWebGL()) return;
   const { createHero3D } = await import('./hero3d.js');
-  if (token !== heroToken) return; // superseded by a newer request
-  const canvas = document.querySelector('.hero-canvas');
-  if (!canvas) return;
+  if (token !== heroToken) return;
   try {
-    const created = await createHero3D(canvas, {
-      type: runtime.effect3d,
-      image: runtime.heroImage,
-      accent: runtime.theme?.accent || '#00d4ff',
-      light: runtime.theme?.mode === 'light',
+    const created = await createHero3D(stage.querySelector('.hero-canvas'), {
+      type: stage.dataset.effect,
+      image: stage.dataset.image,
+      accent: getComputedStyle(root).getPropertyValue('--accent').trim() || runtime.accent,
+      light: root.dataset.mode === 'light',
       mobile: isMobile(),
     });
     if (token !== heroToken) return created?.destroy();
     hero = created;
+    hero.key = heroKey(stage);
   } catch (err) {
     console.warn('3D hero unavailable, showing the still image.', err);
   }
 }
 
 function scheduleHero3D() {
-  if (!wantsHero3D()) return;
-  // Load the 3D module after the page is interactive so it never competes with first paint.
   const run = () => startHero3D();
   const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(run, { timeout: 2000 }) : setTimeout(run, 400));
   if (document.readyState === 'complete') idle();
-  else window.addEventListener('load', idle, { once: true });
+  else addEventListener('load', idle, { once: true });
 }
 
-reduceMotion.addEventListener?.('change', () => location.reload());
+/* ---------------------------------------------------------- live preview */
 
-/* --------------------------------------------------------- live preview */
-
-let renderModule = null;
-
-async function applyPreviewConfig(config) {
-  if (!renderModule) {
-    renderModule = await import('./render.js');
-    renderModule.setAssetBase(document.documentElement.dataset.assetBase || '');
+let render = null;
+async function applyPreview(config, pageId, anchor) {
+  if (!render) {
+    render = await import('./render.js');
+    render.setAssetBase(root.dataset.assetBase || '');
   }
-  const { renderBody, themeCss, fontsHref, assetUrl } = renderModule;
-  runtime = { effect3d: config.effect3d, theme: config.theme, heroImage: assetUrl(config.hero?.image) };
+  const ctxRender = { pageId, root: '#' };
+  document.getElementById('theme-vars').textContent = render.themeCss(config);
+  for (const [k, v] of Object.entries(render.rootAttrs(config))) root.setAttribute(k, v);
+  const font = document.getElementById('font-css');
+  const href = render.fontsHref(config);
+  if (font && font.getAttribute('href') !== href) { font.media = 'all'; font.href = href; }
 
-  document.getElementById('theme-vars').textContent = themeCss(config);
-  document.documentElement.dataset.mode = config.theme?.mode === 'light' ? 'light' : 'dark';
-  document.documentElement.lang = config.meta?.lang || 'hu';
-  document.title = config.meta?.title || config.brand?.name || '';
-  const fontLink = document.getElementById('font-css');
-  const href = fontsHref(config);
-  if (fontLink && href && fontLink.getAttribute('href') !== href) {
-    fontLink.media = 'all';
-    fontLink.href = href;
-  }
+  const samePage = runtime.pageId === render.findPage(config, pageId).id;
+  const y = samePage ? scrollY : 0;
+  const oldStage = hero ? heroStage() : null;
+  ctx?.revert();
+  ctx = null;
+  document.getElementById('app').innerHTML = render.renderBody(config, ctxRender);
+  runtime = render.runtimeData(config, ctxRender);
+  document.title = config.brand?.name || '';
 
-  const y = window.scrollY;
-  const keptCanvas = hero?.canvas;
-  gsapCtx?.revert();
-  gsapCtx = null;
-  document.documentElement.classList.add('no-intro');
-  document.getElementById('app').innerHTML = renderBody(config);
-
-  const sameHero = hero && hero.type === runtime.effect3d && hero.image === runtime.heroImage && hero.light === (runtime.theme?.mode === 'light') && wantsHero3D();
-  const freshCanvas = document.querySelector('.hero-canvas');
-  if (sameHero && freshCanvas && keptCanvas) {
-    // Keep the live 3D stage (its observers are bound to it) instead of the freshly rendered one.
-    freshCanvas.parentElement.replaceWith(keptCanvas.parentElement);
-    hero.setAccent(runtime.theme?.accent || '#00d4ff');
+  const fresh = heroStage();
+  if (hero && oldStage && fresh && hero.key === heroKey(fresh)) {
+    fresh.replaceWith(oldStage); // keep the running 3D scene instead of rebuilding it
+    hero.setAccent(getComputedStyle(root).getPropertyValue('--accent').trim());
   } else {
     startHero3D();
   }
-
   initPage({ animateIn: false });
   ScrollTrigger.refresh();
-  if (lenis) lenis.scrollTo(y, { immediate: true, force: true });
-  else window.scrollTo(0, y);
+  window.scrollTo(0, y);
+  if (anchor) scrollToEl(document.getElementById(anchor));
 }
 
 function initPreviewBridge() {
@@ -360,32 +285,26 @@ function initPreviewBridge() {
   const flush = async () => {
     if (busy || !pending) return;
     busy = true;
-    const config = pending;
+    const job = pending;
     pending = null;
-    try {
-      await applyPreviewConfig(config);
-    } finally {
-      busy = false;
-      flush();
-    }
+    try { await applyPreview(job.config, job.pageId, job.anchor); } finally { busy = false; flush(); }
   };
-  window.addEventListener('message', (e) => {
+  addEventListener('message', (e) => {
     if (e.origin !== location.origin || !e.data || typeof e.data !== 'object') return;
-    if (e.data.type === 'site-config' && e.data.config) {
-      pending = e.data.config;
+    if (e.data.type === 'site-config') {
+      pending = { config: e.data.config, pageId: e.data.pageId, anchor: e.data.anchor };
       flush();
     } else if (e.data.type === 'scroll-to') {
-      const target = e.data.id === 'hero' ? 0 : document.getElementById(e.data.id);
-      if (target !== null) scrollToTarget(target);
+      scrollToEl(document.getElementById(`b-${e.data.blockId}`));
     }
   });
   window.parent?.postMessage({ type: 'preview-ready' }, location.origin);
 }
 
-/* -------------------------------------------------------------------- boot */
+/* ------------------------------------------------------------------ boot */
 
-initLenis();
+setupLenis();
 initPage({ animateIn: !THUMB });
-scheduleHero3D();
+if (!THUMB) scheduleHero3D();
 if (PREVIEW) initPreviewBridge();
-window.addEventListener('load', () => ScrollTrigger.refresh());
+addEventListener('load', () => ScrollTrigger.refresh());

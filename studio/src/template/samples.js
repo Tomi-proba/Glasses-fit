@@ -1,114 +1,148 @@
-// Example sites generated from the same template: each entry overrides the default config.
-// They power the home page gallery and the "start from this sample" option in the configurator.
-import base from './site.config.json';
+// Starting points for the configurator. They are ordinary configs: after picking one,
+// every text, colour, block and page can be changed. "Kezdj üresen" uses the blank config.
+import blank from './site.config.json';
+import { newId } from './blocks.js';
 
 const clone = (v) => JSON.parse(JSON.stringify(v));
+const block = (type, props) => ({ id: newId(), type, bg: 'default', hidden: false, ...props });
+const page = (id, title, blocks, slug = id) => ({ id, title, slug: id === 'home' ? '' : slug, showInNav: true, blocks });
+const theme = (o) => ({ ...clone(blank.theme), ...o, colors: { ...blank.theme.colors, ...o.colors } });
+const galleryItems = (caps) => caps.map((caption, i) => ({ src: `assets/gallery/work-${i + 1}.svg`, alt: `Helyőrző kép: ${caption}`, caption }));
 
-function merge(target, patch) {
-  for (const [k, v] of Object.entries(patch)) {
-    if (v && typeof v === 'object' && !Array.isArray(v) && target[k] && typeof target[k] === 'object') merge(target[k], v);
-    else target[k] = v;
-  }
-  return target;
-}
-
-// Placeholder gallery: the bundled abstract artworks with industry-specific captions.
-const gallery = (title, captions) => ({
-  navLabel: 'Galéria',
-  title,
-  intro: '',
-  items: captions.map((caption, i) => ({ src: `assets/gallery/work-${i + 1}.svg`, alt: `Helyőrző kép: ${caption}`, caption })),
-});
-
-const PATCHES = {
-  aura: {
-    label: 'Fodrászszalon',
-    style: 'Sötét, neon kék, részecskés 3D',
-    patch: {},
+const SAMPLE_DEFS = [
+  {
+    id: 'aura', label: 'Fodrászszalon', style: 'Sötét, neon kék, részecskés 3D',
+    config: () => ({
+      meta: { title: 'Aura Hair Studio | Prémium fodrászszalon Budapesten', description: 'Precíziós vágás, egyedi festés és luxus hajápolás a belvárosban. Foglalj időpontot online.' },
+      brand: { name: 'Aura Hair Studio', activity: 'fodrászszalon', tagline: 'Prémium fodrászat a belváros szívében.', logo: 'assets/logo.svg', logoAlt: 'Aura Hair Studio', ctaText: 'Időpontfoglalás', ctaLink: 'contact' },
+      theme: theme({ mode: 'dark', colors: { background: '#070707', text: '#f1f1ef', primary: '#00d4ff', accent: '#00d4ff' }, headingFont: 'Tenor Sans', bodyFont: 'Hanken Grotesk', headingCase: 'upper', radius: 0, shadow: 'none', buttonStyle: 'outline', motion: 'normal' }),
+      contact: { address: '1061 Budapest, Példa utca 12.', phone: '+36 1 234 5678', email: 'hello@example.com', hours: [{ days: 'Hétfő-Péntek', time: '9:00-20:00' }, { days: 'Szombat', time: '9:00-15:00' }, { days: 'Vasárnap', time: 'Zárva' }] },
+      social: [{ type: 'instagram', url: 'https://instagram.com/' }, { type: 'facebook', url: 'https://facebook.com/' }],
+      footer: { text: 'Prémium fodrászat a belváros szívében.', copyright: 'Minden jog fenntartva.' },
+      pages: [
+        page('home', 'Főoldal', [
+          block('hero', { title: 'A hajad. A te történeted.', subtitle: 'Precíziós vágás, egyedi színek és nyugodt, prémium élmény a belváros szívében.', ctaText: 'Időpontfoglalás', ctaLink: 'contact', secondaryText: 'Árak', secondaryLink: 'page:arak', visual: 'particles', image: 'assets/hero/hero-object.webp', imageAlt: 'Olló részecskékből', layout: 'split' }),
+          block('stats', { title: '', items: [{ value: '2014', suffix: '', label: 'óta a Példa utcában' }, { value: '6', suffix: '', label: 'stylist a csapatban' }, { value: '8400', suffix: '+', label: 'elégedett vendég' }] }),
+          block('imageText', { title: 'Tizenkét év szenvedély, minden tincsben.', body: ['Az Aura Hair Studio 2014-ben azzal a céllal nyílt meg, hogy a szalonélményt újragondolja: kevesebb sietség, több figyelem.', 'Kizárólag professzionális, környezettudatos termékekkel dolgozunk, és minden szolgáltatás előtt konzultálunk veled.'], image: 'assets/gallery/about.svg', imageAlt: 'Absztrakt, hullámzó vonalak kékben', imageSide: 'left' }),
+          block('cards', { title: 'Szolgáltatások', intro: 'Minden kezelés konzultációval indul.', columns: '3', bg: 'muted', items: [
+            { icon: 'scissors', title: 'Precíziós vágás', text: 'Arcformához és életstílushoz igazított vágás.' },
+            { icon: 'palette', title: 'Festés és balayage', text: 'Természetes átmenetek, kíméletes színek.' },
+            { icon: 'droplet', title: 'Mélyápoló kezelés', text: 'Regeneráló rituálék a selymes hajért.' },
+          ] }),
+          block('gallery', { title: 'Munkáink', layout: 'mosaic', items: galleryItems(['Karamell balayage', 'Aszimmetrikus bob', 'Platina tónus', 'Alkalmi konty', 'Textúrált fade', 'Vörösréz ragyogás']) }),
+          block('testimonials', { title: 'Vendégeink mondták', items: [
+            { quote: 'Végre valaki tényleg meghallgatta, mit szeretnék. A balayage még jobb lett, mint amit elképzeltem.', name: 'Kovács Petra', role: 'törzsvendég 2019 óta', rating: 5 },
+            { quote: 'Nyugodt, gyönyörű hely, ahol tényleg kikapcsolok. A vágás hetekkel később is tökéletesen áll.', name: 'Nagy Dániel', role: 'férfi vágás', rating: 5 },
+          ] }),
+          block('ctaBand', { title: 'Foglalj időpontot még ma.', text: 'Írj vagy hívj, 24 órán belül visszajelzünk.', buttonText: 'Időpontfoglalás', buttonLink: 'contact', bg: 'accent' }),
+        ]),
+        page('arak', 'Árak', [
+          block('pricing', { title: 'Árlista', intro: 'Az árak a hajhossztól függően változhatnak.', note: 'Az árak bruttó árak.', items: [
+            { name: 'Precíziós vágás', description: 'Mosással és szárítással.', price: '12 900 Ft-tól' },
+            { name: 'Festés és balayage', description: 'Konzultációval és ápolással.', price: '24 900 Ft-tól' },
+            { name: 'Mélyápoló kezelés', description: 'Keratinos és plex regeneráló rituálé.', price: '9 900 Ft-tól' },
+            { name: 'Alkalmi frizura', description: 'Próbafrizurával.', price: '18 900 Ft-tól' },
+          ] }),
+          block('faq', { title: 'Gyakori kérdések', items: [{ q: 'Mennyi idővel előre foglaljak?', a: 'Hétköznapra általában 3-5 nappal előre, hétvégére egy-két héttel.' }, { q: 'Lemondhatom az időpontot?', a: 'Igen, 24 órával előtte díjmentesen.' }] }),
+        ]),
+        page('kapcsolat', 'Kapcsolat', [
+          block('contactForm', { title: 'Foglalj időpontot', intro: 'Írj nekünk vagy hívj, 24 órán belül visszajelzünk.', showDetails: true, submitText: 'Üzenet küldése', successText: 'Köszönjük, hamarosan jelentkezünk.' }),
+          block('map', { title: '', query: '', height: 'normal' }),
+        ]),
+      ],
+    }),
   },
-  rozmaring: {
-    label: 'Bisztró',
-    style: 'Világos, smaragd, domborított 3D',
-    patch: {
-      meta: { title: 'Rozmaring Bisztró | Szezonális konyha a Belvárosban', description: 'Szezonális, helyi alapanyagokból főzött ebédek és vacsorák. Asztalfoglalás online.' },
-      brand: { name: 'Rozmaring Bisztró', shortName: 'Rozmaring', activity: 'bisztró és étterem', tagline: 'Szezonális konyha, lassú esték.', logo: '' },
-      theme: { mode: 'light', accent: '#138a5e', headingFont: 'Bodoni Moda', bodyFont: 'Figtree', radius: 12 },
-      effect3d: 'relief',
-      hero: { title: 'Ami ma a piacon a legjobb.', subtitle: 'Hetente változó menü helyi termelők alapanyagaiból, csendes belső udvarral.', ctaText: 'Asztalfoglalás', secondaryText: 'Étlap', image: 'assets/hero/cooking-pot.webp', imageAlt: 'Fazék, a bisztró jelképe' },
-      about: { title: 'Kis konyha, nagy odafigyelés.', paragraphs: ['A Rozmaring 2017 óta főz a Belváros egyik csendes udvarában. Minden reggel a piacról indulunk, és az alapján írjuk a napi menüt.', 'Huszonnégy hely, nyitott konyha, és egy borlap, amelyet magyar kistermelőktől válogattunk.'], stats: [{ value: '2017', suffix: '', label: 'óta nyitva' }, { value: '24', suffix: '', label: 'hely a teremben' }, { value: '40', suffix: '+', label: 'helyi termelő' }] },
-      services: { navLabel: 'Étlap', title: 'Ebéd, vacsora, rendezvény', intro: 'A menü hetente változik, a heti ajánlatot az Instagramon is közzétesszük.', items: [
-        { icon: 'sun', title: 'Napi ebédmenü', text: 'Leves és főétel hétköznap 12 és 15 óra között.', price: '3 900 Ft' },
-        { icon: 'star', title: 'Kóstolómenü', text: 'Öt fogás az évszak legjavából, borpárosítással is kérhető.', price: '14 500 Ft' },
-        { icon: 'leaf', title: 'Vegetáriánus menü', text: 'Teljes értékű, húsmentes fogások minden nap.', price: '3 600 Ft' },
-        { icon: 'gift', title: 'Zártkörű rendezvény', text: 'Születésnapra, céges vacsorára akár 24 főig.', price: 'egyedi ajánlat' },
-      ] },
-      testimonials: { title: 'Vendégeink mondták', items: [
-        { quote: 'Évek óta ide járunk ebédelni, és még egyszer sem csalódtunk. A kóstolómenü külön élmény.', name: 'Fehér Anna', role: 'törzsvendég', rating: 5 },
-        { quote: 'Kedves kiszolgálás, átgondolt borlap, és az udvar nyáron verhetetlen.', name: 'Varga Bence', role: 'vacsora', rating: 5 },
-      ] },
-      contact: { title: 'Foglalj asztalt', intro: 'Hívj minket, vagy írj, és visszaigazoljuk a foglalást.', address: '1052 Budapest, Példa köz 4.', hours: [{ days: 'Kedd-Szombat', time: '12:00-22:00' }, { days: 'Vasárnap-Hétfő', time: 'Zárva' }], formSubmitText: 'Foglalás küldése' },
-      gallery: gallery('A konyhából', ['Őszi tökleves', 'A belső udvar', 'Kóstolómenü', 'Házi kenyér', 'Borválogatás', 'Desszert']),
-      footer: { text: 'Szezonális konyha a Belvárosban.' },
-    },
+  {
+    id: 'rozmaring', label: 'Bisztró', style: 'Világos, smaragd, domborított 3D',
+    config: () => ({
+      meta: { title: 'Rozmaring Bisztró | Szezonális konyha', description: 'Szezonális, helyi alapanyagokból főzött ebédek és vacsorák. Asztalfoglalás online.' },
+      brand: { name: 'Rozmaring Bisztró', activity: 'bisztró és étterem', tagline: 'Szezonális konyha, lassú esték.', logo: '', logoAlt: '', ctaText: 'Asztalfoglalás', ctaLink: 'contact' },
+      theme: theme({ mode: 'light', colors: { background: '#f6f5f0', text: '#171614', primary: '#138a5e', accent: '#138a5e' }, headingFont: 'Bodoni Moda', bodyFont: 'Figtree', radius: 14, shadow: 'soft', buttonShape: 'rounded', motion: 'subtle' }),
+      contact: { address: '1052 Budapest, Példa köz 4.', phone: '+36 1 555 0101', email: 'asztal@example.com', hours: [{ days: 'Kedd-Szombat', time: '12:00-22:00' }, { days: 'Vasárnap-Hétfő', time: 'Zárva' }] },
+      social: [{ type: 'instagram', url: 'https://instagram.com/' }],
+      footer: { text: 'Szezonális konyha a Belvárosban.', copyright: 'Minden jog fenntartva.' },
+      pages: [
+        page('home', 'Főoldal', [
+          block('hero', { title: 'Ami ma a piacon a legjobb.', subtitle: 'Hetente változó menü helyi termelők alapanyagaiból, csendes belső udvarral.', ctaText: 'Asztalfoglalás', ctaLink: 'contact', secondaryText: 'Étlap', secondaryLink: 'page:etlap', visual: 'relief', image: 'assets/hero/cooking-pot.webp', imageAlt: 'Fazék, a bisztró jelképe', layout: 'split' }),
+          block('text', { title: 'Kis konyha, nagy odafigyelés.', body: ['A Rozmaring 2017 óta főz a Belváros egyik csendes udvarában. Minden reggel a piacról indulunk, és az alapján írjuk a napi menüt.'], align: 'center' }),
+          block('gallery', { title: 'A konyhából', layout: 'grid', items: galleryItems(['Őszi tökleves', 'A belső udvar', 'Kóstolómenü', 'Házi kenyér', 'Borválogatás', 'Desszert']) }),
+          block('testimonials', { title: 'Vendégeink mondták', items: [{ quote: 'Évek óta ide járunk ebédelni, és még egyszer sem csalódtunk.', name: 'Fehér Anna', role: 'törzsvendég', rating: 5 }] }),
+          block('booking', { title: 'Foglalj asztalt', text: 'Hétköznap délben és este is várunk, hétvégére érdemes előre foglalni.', buttonText: 'Asztalfoglalás', buttonLink: 'contact', note: 'Csoportoknak 8 főtől egyedi menü.', bg: 'muted' }),
+        ]),
+        page('etlap', 'Étlap', [
+          block('pricing', { title: 'Ebéd', intro: 'Hétköznap 12 és 15 óra között.', items: [{ name: 'Napi menü', description: 'Leves és főétel.', price: '3 900 Ft' }, { name: 'Vegetáriánus menü', description: 'Teljes értékű, húsmentes fogások.', price: '3 600 Ft' }] }),
+          block('pricing', { title: 'Vacsora', intro: '', items: [{ name: 'Kóstolómenü', description: 'Öt fogás, borpárosítással is kérhető.', price: '14 500 Ft' }, { name: 'Séf ajánlata', description: 'Az évszak legjava.', price: '6 900 Ft-tól' }] }),
+        ]),
+        page('kapcsolat', 'Kapcsolat', [block('contactForm', { title: 'Asztalfoglalás', intro: 'Írd meg, hány főre és mikorra foglalnál.', showDetails: true, submitText: 'Foglalás küldése', successText: 'Köszönjük, hamarosan visszaigazoljuk.' }), block('map', {})]),
+      ],
+    }),
   },
-  kardos: {
-    label: 'Ügyvédi iroda',
-    style: 'Sötét, arany, domborított 3D',
-    patch: {
-      meta: { title: 'Kardos és Társa Ügyvédi Iroda | Üzleti és ingatlanjog', description: 'Társasági jog, ingatlanügyletek és szerződések. Első konzultáció online is.' },
-      brand: { name: 'Kardos és Társa Ügyvédi Iroda', shortName: 'Kardos', activity: 'ügyvédi iroda', tagline: 'Világos tanács, biztos döntés.', logo: '' },
-      theme: { mode: 'dark', accent: '#e2b04a', headingFont: 'Italiana', bodyFont: 'Manrope', radius: 0 },
-      effect3d: 'relief',
-      hero: { title: 'Jogi biztonság üzleti tempóban.', subtitle: 'Társasági jog, ingatlanügyletek és szerződések vállalkozásoknak és magánszemélyeknek.', ctaText: 'Konzultáció', secondaryText: 'Szakterületek', image: 'assets/hero/scales.webp', imageAlt: 'Mérleg, az igazságszolgáltatás jelképe' },
-      about: { title: 'Huszonkét év a tárgyalóasztal mindkét oldalán.', paragraphs: ['Irodánk kis csapattal, közvetlen partneri kapcsolattal dolgozik. Minden ügyért egy felelős ügyvéd felel az első egyeztetéstől a lezárásig.', 'Díjainkat előre, írásban rögzítjük, így nincs meglepetés a számlán.'], stats: [{ value: '22', suffix: '', label: 'év gyakorlat' }, { value: '3', suffix: '', label: 'ügyvéd' }, { value: '1200', suffix: '+', label: 'lezárt ügy' }] },
-      services: { navLabel: 'Szakterületek', title: 'Szakterületek', intro: 'Az első, harmincperces konzultáció díja beszámít a megbízásba.', items: [
-        { icon: 'crown', title: 'Társasági jog', text: 'Cégalapítás, módosítás, átalakulás és tulajdonosi megállapodások.', price: 'óradíj 32 000 Ft' },
-        { icon: 'leaf', title: 'Ingatlanjog', text: 'Adásvétel, ellenjegyzés, bérleti és fejlesztési szerződések.', price: 'ügyérték 0,5%-tól' },
-        { icon: 'star', title: 'Szerződések', text: 'Szerződések megírása, véleményezése és tárgyalása.', price: '45 000 Ft-tól' },
-        { icon: 'heart', title: 'Családjog', text: 'Házassági vagyonjogi szerződés, válás, öröklés.', price: 'óradíj 28 000 Ft' },
-      ] },
-      testimonials: { title: 'Ügyfeleink mondták', items: [
-        { quote: 'A cégátalakítás minden lépését előre elmagyarázták, és a határidőket napra pontosan tartották.', name: 'Tóth Gergely', role: 'ügyvezető', rating: 5 },
-        { quote: 'Gyors, érthető válaszok, és végig ugyanaz az ügyvéd foglalkozott velünk.', name: 'Molnár Kata', role: 'ingatlanvásárlás', rating: 5 },
-      ] },
-      contact: { title: 'Kérjen időpontot', intro: 'Írja le röviden az ügyét, egy munkanapon belül jelentkezünk.', address: '1054 Budapest, Példa tér 2.', hours: [{ days: 'Hétfő-Péntek', time: '8:30-17:30' }], formSubmitText: 'Üzenet küldése' },
-      gallery: gallery('Az irodáról', ['Tárgyaló', 'Könyvtár', 'Csapatunk', 'Ügyféltér', 'Recepció', 'Irodaház']),
-      footer: { text: 'Üzleti és ingatlanjog Budapesten.' },
-    },
+  {
+    id: 'kardos', label: 'Ügyvédi iroda', style: 'Sötét, arany, szögletes',
+    config: () => ({
+      meta: { title: 'Kardos és Társa Ügyvédi Iroda', description: 'Társasági jog, ingatlanügyletek és szerződések. Első konzultáció online is.' },
+      brand: { name: 'Kardos és Társa', activity: 'ügyvédi iroda', tagline: 'Világos tanács, biztos döntés.', logo: '', logoAlt: '', ctaText: 'Konzultáció', ctaLink: 'contact' },
+      theme: theme({ mode: 'dark', colors: { background: '#0b0b0d', text: '#efece6', primary: '#e2b04a', accent: '#e2b04a' }, headingFont: 'Italiana', bodyFont: 'Manrope', headingCase: 'upper', radius: 0, shadow: 'none', buttonShape: 'square', buttonStyle: 'outline', motion: 'subtle' }),
+      contact: { address: '1054 Budapest, Példa tér 2.', phone: '+36 1 444 2020', email: 'iroda@example.com', hours: [{ days: 'Hétfő-Péntek', time: '8:30-17:30' }] },
+      social: [{ type: 'linkedin', url: 'https://linkedin.com/' }],
+      footer: { text: 'Üzleti és ingatlanjog Budapesten.', copyright: 'Minden jog fenntartva.' },
+      pages: [
+        page('home', 'Főoldal', [
+          block('hero', { title: 'Jogi biztonság üzleti tempóban.', subtitle: 'Társasági jog, ingatlanügyletek és szerződések vállalkozásoknak és magánszemélyeknek.', ctaText: 'Konzultáció', ctaLink: 'contact', secondaryText: 'Díjak', secondaryLink: 'page:dijak', visual: 'relief', image: 'assets/hero/scales.webp', imageAlt: 'Mérleg', layout: 'split' }),
+          block('cards', { title: 'Szakterületek', intro: '', columns: '2', items: [
+            { icon: 'crown', title: 'Társasági jog', text: 'Cégalapítás, módosítás, átalakulás és tulajdonosi megállapodások.' },
+            { icon: 'globe', title: 'Ingatlanjog', text: 'Adásvétel, ellenjegyzés, bérleti és fejlesztési szerződések.' },
+            { icon: 'pen', title: 'Szerződések', text: 'Szerződések megírása, véleményezése és tárgyalása.' },
+            { icon: 'heart', title: 'Családjog', text: 'Házassági vagyonjogi szerződés, válás, öröklés.' },
+          ] }),
+          block('stats', { title: '', bg: 'muted', items: [{ value: '22', suffix: '', label: 'év gyakorlat' }, { value: '3', suffix: '', label: 'ügyvéd' }, { value: '1200', suffix: '+', label: 'lezárt ügy' }] }),
+          block('team', { title: 'Az iroda', intro: '', members: [{ photo: '', name: 'dr. Kardos Péter', role: 'irodavezető ügyvéd', bio: 'Társasági és ingatlanjog.' }, { photo: '', name: 'dr. Simon Eszter', role: 'ügyvéd', bio: 'Szerződések és családjog.' }, { photo: '', name: 'dr. Bodnár Máté', role: 'ügyvéd', bio: 'Ingatlanügyletek.' }] }),
+          block('ctaBand', { title: 'Beszéljük meg az ügyét.', text: 'Az első, harmincperces konzultáció díja beszámít a megbízásba.', buttonText: 'Konzultáció', buttonLink: 'contact', bg: 'accent' }),
+        ]),
+        page('dijak', 'Díjak', [
+          block('pricing', { title: 'Díjaink', intro: 'Díjainkat előre, írásban rögzítjük.', items: [{ name: 'Konzultáció', description: '30 perc, online vagy személyesen.', price: '18 000 Ft' }, { name: 'Szerződés véleményezése', description: '', price: '45 000 Ft-tól' }, { name: 'Ingatlan adásvétel', description: 'Szerkesztés és ellenjegyzés.', price: 'ügyérték 0,5%-tól' }] }),
+          block('faq', { title: 'Gyakori kérdések', items: [{ q: 'Lehet online konzultálni?', a: 'Igen, videóhívásban is.' }] }),
+        ]),
+        page('kapcsolat', 'Kapcsolat', [block('contactForm', { title: 'Kérjen időpontot', intro: 'Írja le röviden az ügyét, egy munkanapon belül jelentkezünk.', showDetails: true, submitText: 'Üzenet küldése', successText: 'Köszönjük, hamarosan jelentkezünk.' }), block('map', {})]),
+      ],
+    }),
   },
-  eromuhely: {
-    label: 'Edzőstúdió',
-    style: 'Sötét, korall, részecskés 3D',
-    patch: {
-      meta: { title: 'Erőműhely | Személyi edzés és kiscsoportos órák', description: 'Személyi edzés, kiscsoportos erőnléti órák és mozgásfelmérés. Első alkalom ingyenes.' },
-      brand: { name: 'Erőműhely Edzőstúdió', shortName: 'Erőműhely', activity: 'edzőstúdió', tagline: 'Erősebb minden héten.', logo: '' },
-      theme: { mode: 'dark', accent: '#ff5d4f', headingFont: 'Syncopate', bodyFont: 'Jost', radius: 4 },
-      effect3d: 'particles',
-      hero: { title: 'Erő, ami a mindennapokban is látszik.', subtitle: 'Személyi edzés és nyolcfős kiscsoportok, felméréssel és követhető fejlődéssel.', ctaText: 'Ingyenes próbaedzés', secondaryText: 'Órarend', image: 'assets/hero/barbell.webp', imageAlt: 'Súlyzórúd, az edzőstúdió jelképe' },
-      about: { title: 'Kis csoportok, valódi figyelem.', paragraphs: ['Az Erőműhelyben egy órán legfeljebb nyolcan edzenek, így az edző mindenkire figyel. Minden új tag mozgásfelméréssel kezd.', 'Nem bérletet árulunk, hanem tervet: negyedévente mérjük a fejlődést, és ehhez igazítjuk a programot.'], stats: [{ value: '8', suffix: '', label: 'fő egy csoportban' }, { value: '5', suffix: '', label: 'edző' }, { value: '350', suffix: '+', label: 'aktív tag' }] },
-      services: { navLabel: 'Edzések', title: 'Edzések és bérletek', intro: 'Az első próbaedzés és a mozgásfelmérés ingyenes.', items: [
-        { icon: 'star', title: 'Személyi edzés', text: 'Egyéni program, technikai oktatás, heti egy-három alkalom.', price: '12 000 Ft / alkalom' },
-        { icon: 'heart', title: 'Kiscsoportos erőnléti óra', text: 'Nyolcfős csoportok reggel és este, minden szinten.', price: '29 000 Ft / hó' },
-        { icon: 'leaf', title: 'Mobilitás és stretching', text: 'Ízületkímélő óra ülőmunkát végzőknek.', price: '4 500 Ft / alkalom' },
-        { icon: 'sun', title: 'Táplálkozási tanácsadás', text: 'Étrend a célodhoz és a napirendedhez igazítva.', price: '18 000 Ft' },
-      ] },
-      testimonials: { title: 'Tagjaink mondták', items: [
-        { quote: 'Fél év alatt megszűnt a derékfájásom, és először élvezem a rendszeres edzést.', name: 'Kiss Ádám', role: 'tag 2023 óta', rating: 5 },
-        { quote: 'A kis csoport miatt tényleg odafigyelnek a technikára. Nagyon jó a hangulat.', name: 'Balogh Lili', role: 'esti csoport', rating: 5 },
-      ] },
-      contact: { title: 'Gyere el egy próbaedzésre', intro: 'Írj, és egyeztetünk egy időpontot az ingyenes felméréshez.', address: '1134 Budapest, Példa utca 31.', hours: [{ days: 'Hétfő-Péntek', time: '6:30-21:00' }, { days: 'Szombat', time: '8:00-13:00' }], formSubmitText: 'Jelentkezés' },
-      gallery: gallery('Az edzőteremből', ['Erőnléti zóna', 'Kiscsoportos óra', 'Mobilitás', 'Személyi edzés', 'Felmérés', 'Öltöző']),
-      footer: { text: 'Személyi edzés és kiscsoportos órák.' },
-    },
+  {
+    id: 'eromuhely', label: 'Edzőstúdió', style: 'Sötét, korall, erős animációk',
+    config: () => ({
+      meta: { title: 'Erőműhely Edzőstúdió', description: 'Személyi edzés, kiscsoportos erőnléti órák és mozgásfelmérés. Az első alkalom ingyenes.' },
+      brand: { name: 'Erőműhely', activity: 'edzőstúdió', tagline: 'Erősebb minden héten.', logo: '', logoAlt: '', ctaText: 'Próbaedzés', ctaLink: 'contact' },
+      theme: theme({ mode: 'dark', colors: { background: '#0a0a0a', text: '#f4f2ee', primary: '#ff5d4f', accent: '#ff5d4f' }, headingFont: 'Archivo', bodyFont: 'Jost', headingCase: 'upper', fontScale: 1.05, radius: 6, shadow: 'strong', buttonShape: 'rounded', motion: 'strong' }),
+      contact: { address: '1134 Budapest, Példa utca 31.', phone: '+36 30 555 7788', email: 'edzes@example.com', hours: [{ days: 'Hétfő-Péntek', time: '6:30-21:00' }, { days: 'Szombat', time: '8:00-13:00' }] },
+      social: [{ type: 'instagram', url: 'https://instagram.com/' }, { type: 'tiktok', url: 'https://tiktok.com/' }],
+      footer: { text: 'Személyi edzés és kiscsoportos órák.', copyright: 'Minden jog fenntartva.' },
+      pages: [
+        page('home', 'Főoldal', [
+          block('hero', { title: 'Erő, ami a hétköznapokban is látszik.', subtitle: 'Személyi edzés és nyolcfős kiscsoportok felméréssel és követhető fejlődéssel.', ctaText: 'Ingyenes próbaedzés', ctaLink: 'contact', secondaryText: 'Bérletek', secondaryLink: 'page:berletek', visual: 'particles', image: 'assets/hero/barbell.webp', imageAlt: 'Súlyzórúd', layout: 'split' }),
+          block('stats', { title: '', items: [{ value: '8', suffix: '', label: 'fő egy csoportban' }, { value: '5', suffix: '', label: 'edző' }, { value: '350', suffix: '+', label: 'aktív tag' }] }),
+          block('cards', { title: 'Edzések', intro: 'Az első próbaedzés és a felmérés ingyenes.', columns: '4', bg: 'muted', items: [
+            { icon: 'star', title: 'Személyi edzés', text: 'Egyéni program és technikai oktatás.' },
+            { icon: 'heart', title: 'Kiscsoport', text: 'Nyolcfős erőnléti órák minden szinten.' },
+            { icon: 'leaf', title: 'Mobilitás', text: 'Ízületkímélő óra ülőmunkát végzőknek.' },
+            { icon: 'sun', title: 'Táplálkozás', text: 'Étrend a célodhoz igazítva.' },
+          ] }),
+          block('team', { title: 'Edzőink', intro: '', members: [{ photo: '', name: 'Horváth Bence', role: 'vezetőedző', bio: '' }, { photo: '', name: 'Lakatos Nóra', role: 'mobilitás és jóga', bio: '' }, { photo: '', name: 'Papp Zoltán', role: 'erőnléti edző', bio: '' }] }),
+          block('testimonials', { title: 'Tagjaink mondták', items: [{ quote: 'Fél év alatt megszűnt a derékfájásom, és először élvezem a rendszeres edzést.', name: 'Kiss Ádám', role: 'tag 2023 óta', rating: 5 }] }),
+          block('booking', { title: 'Gyere el egy próbaedzésre', text: 'Válassz időpontot online, az első alkalom ingyenes.', buttonText: 'Időpontot foglalok', buttonLink: 'contact', note: '', bg: 'accent' }),
+        ]),
+        page('berletek', 'Bérletek', [
+          block('pricing', { title: 'Bérletek', intro: '', items: [{ name: 'Személyi edzés', description: 'Alkalmanként.', price: '12 000 Ft' }, { name: 'Kiscsoportos havibérlet', description: 'Korlátlan óra.', price: '29 000 Ft / hó' }, { name: 'Mobilitás óra', description: '', price: '4 500 Ft' }] }),
+          block('faq', { title: 'Kérdések', items: [{ q: 'Kezdőként is jöhetek?', a: 'Igen, minden új tag felméréssel kezd, és a szintjéhez illő csoportba kerül.' }] }),
+        ]),
+        page('kapcsolat', 'Kapcsolat', [block('contactForm', { title: 'Jelentkezz próbaedzésre', intro: 'Írj, és egyeztetünk egy időpontot.', showDetails: true, submitText: 'Jelentkezés', successText: 'Köszönjük, hamarosan jelentkezünk.' }), block('map', {})]),
+      ],
+    }),
   },
-};
+];
 
-export const SAMPLES = Object.entries(PATCHES).map(([id, s]) => ({
-  id,
-  label: s.label,
-  style: s.style,
-  config: merge(clone(base), s.patch),
-}));
+const merged = (overrides) => ({ ...clone(blank), ...overrides, version: 2 });
 
-export const defaultConfig = () => clone(base);
+export const SAMPLES = SAMPLE_DEFS.map((s) => ({ id: s.id, label: s.label, style: s.style, config: merged(s.config()) }));
+export const blankConfig = () => clone(blank);
+export const defaultConfig = blankConfig;
 export const sampleConfig = (id) => clone((SAMPLES.find((s) => s.id === id) || SAMPLES[0]).config);

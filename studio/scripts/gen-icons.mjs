@@ -14,7 +14,7 @@ const NAMES = {
   eye: 'eye', cart: 'shopping-cart-simple', rocket: 'rocket-launch', pen: 'pencil-simple-line', layout: 'layout',
   lock: 'lock-simple', globe: 'globe-simple', gauge: 'gauge', search: 'magnifying-glass', devices: 'devices',
   headset: 'headset', upload: 'upload-simple', plus: 'plus', minus: 'minus', drag: 'dots-six-vertical',
-  arrowDown: 'arrow-down', arrowUp: 'arrow-up', reset: 'arrow-counter-clockwise', download: 'download-simple',
+  arrowDown: 'arrow-down', copy: 'copy-simple', trash: 'trash-simple', arrowUp: 'arrow-up', reset: 'arrow-counter-clockwise', download: 'download-simple',
   instagram: 'instagram-logo', facebook: 'facebook-logo', tiktok: 'tiktok-logo', youtube: 'youtube-logo', linkedin: 'linkedin-logo', x: 'x-logo',
 };
 const out = {};

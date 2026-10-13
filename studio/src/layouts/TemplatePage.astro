@@ -1,20 +1,21 @@
 ---
-// Renders the client template (the product) as a full page, from a site.config.json object.
+// Renders one page of the client template (the product) from a site config.
 // Used by the configurator's live preview and by the sample sites in the home page gallery.
 import '../template/template.css';
-import { renderHead, renderBody, setAssetBase, assetUrl } from '../template/render.js';
+import { renderHead, renderBody, rootAttrs, runtimeData, setAssetBase } from '../template/render.js';
 import { url } from '../lib/url';
 
-interface Props { config: any; preview?: boolean }
-const { config, preview = false } = Astro.props;
+interface Props { config: any; pageId?: string; root?: string; preview?: boolean }
+const { config, pageId, root = './', preview = false } = Astro.props;
 const assetBase = url('template/');
 setAssetBase(assetBase);
-const head = renderHead(config);
-const body = renderBody(config);
-const runtime = { effect3d: config.effect3d, theme: config.theme, heroImage: assetUrl(config.hero?.image) };
+const ctx = { pageId, root };
+const head = renderHead(config, ctx);
+const body = renderBody(config, ctx);
+const attrs = rootAttrs(config);
 ---
 <!doctype html>
-<html lang={config.meta?.lang || 'hu'} class="no-js" data-mode={config.theme?.mode === 'light' ? 'light' : 'dark'} data-asset-base={assetBase} data-preview={preview ? '' : undefined}>
+<html lang={config.meta?.lang || 'hu'} class="no-js" {...attrs} data-asset-base={assetBase} data-preview={preview ? '' : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -23,9 +24,9 @@ const runtime = { effect3d: config.effect3d, theme: config.theme, heroImage: ass
     <meta name="robots" content="noindex" />
     <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
   </head>
-  <body id="top">
+  <body>
     <div id="app" set:html={body} />
-    <script type="application/json" id="site-runtime" set:html={JSON.stringify(runtime).replace(/</g, '\\u003c')} />
+    <script type="application/json" id="site-runtime" set:html={JSON.stringify(runtimeData(config, ctx)).replace(/</g, '\\u003c')} />
     <script>
       import '../template/runtime.js';
     </script>

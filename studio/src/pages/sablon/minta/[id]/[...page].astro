@@ -1,0 +1,15 @@
+---
+// Every page of every sample site, e.g. /sablon/minta/aura/ and /sablon/minta/aura/arak/.
+import TemplatePage from '../../../../layouts/TemplatePage.astro';
+import { SAMPLES } from '../../../../template/samples.js';
+import { url } from '../../../../lib/url';
+
+export function getStaticPaths() {
+  return SAMPLES.flatMap((s) => s.config.pages.map((p) => ({
+    params: { id: s.id, page: p.slug || undefined },
+    props: { config: s.config, pageId: p.id },
+  })));
+}
+const { config, pageId } = Astro.props;
+---
+<TemplatePage config={config} pageId={pageId} root={url(`sablon/minta/${Astro.params.id}/`)} />
