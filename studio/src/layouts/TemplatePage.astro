@@ -1,0 +1,33 @@
+---
+// Renders the client template (the product) as a full page, from a site.config.json object.
+// Used by the configurator's live preview and by the sample sites in the home page gallery.
+import '../template/template.css';
+import { renderHead, renderBody, setAssetBase, assetUrl } from '../template/render.js';
+import { url } from '../lib/url';
+
+interface Props { config: any; preview?: boolean }
+const { config, preview = false } = Astro.props;
+const assetBase = url('template/');
+setAssetBase(assetBase);
+const head = renderHead(config);
+const body = renderBody(config);
+const runtime = { effect3d: config.effect3d, theme: config.theme, heroImage: assetUrl(config.hero?.image) };
+---
+<!doctype html>
+<html lang={config.meta?.lang || 'hu'} class="no-js" data-mode={config.theme?.mode === 'light' ? 'light' : 'dark'} data-asset-base={assetBase} data-preview={preview ? '' : undefined}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script is:inline>document.documentElement.classList.replace('no-js', 'js')</script>
+    <Fragment set:html={head} />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+  </head>
+  <body id="top">
+    <div id="app" set:html={body} />
+    <script type="application/json" id="site-runtime" set:html={JSON.stringify(runtime).replace(/</g, '\\u003c')} />
+    <script>
+      import '../template/runtime.js';
+    </script>
+  </body>
+</html>

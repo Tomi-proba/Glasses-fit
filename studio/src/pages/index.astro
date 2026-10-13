@@ -1,0 +1,247 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero3D from '../components/Hero3D.astro';
+import { business, formatPrice } from '../config/business';
+import { SAMPLES } from '../template/samples.js';
+import { url } from '../lib/url';
+import { icon } from '../lib/icon';
+
+const price = formatPrice();
+const steps = [
+  ['Megtervezed', 'A tervezőben kiválasztod a színeket, a betűket, a 3D elemet, és megírod a szövegeket. Minden változás azonnal látszik.'],
+  ['Megnézed', 'Asztali és mobil nézetben is végignézed az oldalt. Pontosan azt kapod, amit az előnézetben látsz.'],
+  ['Megrendeled', `Online rendeled meg ${price} egyszeri díjért. Nincs havidíj és nincs rejtett tétel.`],
+  ['Élesítjük', 'Átnézzük, finomhangoljuk, és néhány munkanapon belül élesítjük a saját domaineden.'],
+];
+const included = [
+  ['pen', 'Egyedi dizájn', 'A tervezőben összeállított színek, betűk és szövegek alapján.'],
+  ['sparkles', '3D nyitókép', 'A logódból vagy egy jellegzetes képből készül, mobilon könnyített.'],
+  ['devices', 'Mobilra optimalizálva', 'Telefonon, tableten és asztali gépen is hibátlan.'],
+  ['gauge', 'Gyors betöltés', 'Lighthouse 90+ cél, optimalizált képek és betűk.'],
+  ['search', 'Alap SEO', 'Meta adatok, megosztási kép, sitemap és strukturált adatok.'],
+  ['mail', 'Kapcsolati űrlap és térkép', 'Az érdeklődők közvetlenül neked írnak.'],
+  ['globe', 'Élesítés a domaineden', 'Beállítjuk a domaint és a tárhelyet, vagy segítünk választani.'],
+  ['headset', 'Két kör módosítás', 'Élesítés előtt kétszer finomíthatsz, és 30 napig javítjuk a hibákat.'],
+];
+const faq = [
+  ['Mennyi idő alatt készül el az oldal?', 'A megrendeléstől számítva általában 5-7 munkanap, ha a szövegek és a képek megvannak. A tervezőben összeállított változat ehhez jó kiindulás, így a munka nagy része már kész.'],
+  ['Van havidíj?', `Nincs. A ${price} egyszeri díj. A domain és a tárhely díját közvetlenül a szolgáltatónak fizeted, ebben segítünk, és nem kérünk érte felárat.`],
+  ['Kell ÁFA-t fizetni az árra?', `Nem. ${business.taxNote} A számla ${price} összegről szól.`],
+  ['Módosíthatok a megrendelés után?', 'Igen. Élesítés előtt két kör módosítás benne van az árban, utána 30 napig díjmentesen javítjuk a hibákat.'],
+  ['Mi van, ha nincs saját fotóm?', 'Segítünk jogtiszta képeket választani, a feltöltött képeidet pedig méretre szabjuk és optimalizáljuk.'],
+  ['Az enyém lesz a weboldal?', 'Igen. A kész oldal és a forrásfájlok is a tieid, bármikor átviheted más tárhelyre.'],
+];
+const layout = ['wide', 'narrow', 'narrow', 'wide'];
+---
+<Layout>
+  <section class="hero container">
+    <div class="hero-copy">
+      <h1 class="display">Prémium weboldal napok alatt.</h1>
+      <p class="lede">Tervezd meg élő előnézettel, rendeld meg online, és néhány napon belül élesítjük. Egyszeri {price}.</p>
+      <div class="hero-actions">
+        <a class="btn btn-lg" href={url('tervezo')}>Tervezd meg a weboldalad <Fragment set:html={icon('next')} /></a>
+        <a class="btn btn-lg btn-ghost" href="#mintak">Minták</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <Hero3D image="images/hero-object.webp" alt="Két egymásra csúszó böngészőablak részecskékből" />
+    </div>
+  </section>
+
+  <section id="folyamat" class="section container steps" aria-labelledby="folyamat-title">
+    <div class="steps-head">
+      <h2 id="folyamat-title" class="display">Négy lépés, és él az oldalad.</h2>
+      <a class="link" href={url('tervezo')}>Kezdd az első lépéssel</a>
+    </div>
+    <ol class="steps-list" role="list" data-stagger>
+      {steps.map(([title, text], i) => (
+        <li>
+          <span class="step-num mono">0{i + 1}</span>
+          <div><h3>{title}</h3><p class="muted">{text}</p></div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section id="csomag" class="section container package" aria-labelledby="csomag-title">
+    <h2 id="csomag-title" class="display package-title" data-reveal>Minden benne van, ami egy prémium oldalhoz kell.</h2>
+    <div class="package-grid">
+      <div class="price-panel" data-reveal>
+        <p class="price-label">Egyszeri díj</p>
+        <p class="price-amount">{price}</p>
+        <p class="price-note">{business.taxNote}</p>
+        <a class="btn btn-lg price-btn" href={url('tervezo')}>Tervezd meg a weboldalad</a>
+      </div>
+      <ul class="included" role="list" data-stagger>
+        {included.map(([ic, title, text]) => (
+          <li><span class="inc-icon" set:html={icon(ic)} /><div><h3>{title}</h3><p class="muted">{text}</p></div></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="mintak" class="section samples" aria-labelledby="mintak-title">
+    <div class="container">
+      <h2 id="mintak-title" class="display" data-reveal>Így nézhet ki a tiéd.</h2>
+      <p class="lede samples-lede" data-reveal>Négy példa ugyanabból a sablonból, más színekkel, betűkkel és 3D elemmel. Bármelyikből kiindulhatsz.</p>
+      <ul class="samples-grid" role="list">
+        {SAMPLES.map((s, i) => (
+          <li class={`sample sample-${layout[i % 4]}`} data-reveal>
+            <a class="sample-frame" href={url(`sablon/minta/${s.id}`)} target="_blank" rel="noopener" aria-label={`${s.config.brand.name} minta megnyitása új lapon`}>
+              <iframe src={url(`sablon/minta/${s.id}?thumb`)} title={`${s.config.brand.name} minta előnézete`} loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+            </a>
+            <div class="sample-meta">
+              <div>
+                <h3>{s.config.brand.name}</h3>
+                <p class="muted sample-style">{s.label}. {s.style}.</p>
+              </div>
+              <a class="btn btn-sm btn-ghost" href={url(`tervezo?minta=${s.id}`)}>Ezzel kezdem</a>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="gyik" class="section container faq" aria-labelledby="gyik-title">
+    <h2 id="gyik-title" class="display" data-reveal>Gyakori kérdések</h2>
+    <div class="faq-list" data-stagger>
+      {faq.map(([q, a]) => (
+        <details>
+          <summary><span>{q}</span><Fragment set:html={icon('plus')} /></summary>
+          <p class="muted">{a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <section id="kapcsolat" class="section container contact" aria-labelledby="kapcsolat-title">
+    <div class="contact-copy" data-reveal>
+      <h2 id="kapcsolat-title" class="display">Kérdésed van? Írj nekünk.</h2>
+      <p class="lede">Egy munkanapon belül válaszolunk. Ha inkább beszélnél, hívj nyugodtan.</p>
+      <dl class="contact-list">
+        <div><dt class="mono muted">E-mail</dt><dd><a class="link" href={`mailto:${business.email}`}>{business.email}</a></dd></div>
+        <div><dt class="mono muted">Telefon</dt><dd><a class="link" href={`tel:${business.phone.replace(/\s/g, '')}`}>{business.phone}</a></dd></div>
+      </dl>
+    </div>
+    <form class="contact-form panel" data-email={business.email} novalidate data-reveal>
+      <div class="field"><label for="c-name">Név</label><input id="c-name" name="name" autocomplete="name" required aria-describedby="c-name-err" /><p class="field-err" id="c-name-err"></p></div>
+      <div class="field"><label for="c-email">E-mail</label><input id="c-email" name="email" type="email" autocomplete="email" required aria-describedby="c-email-err" /><p class="field-err" id="c-email-err"></p></div>
+      <div class="field"><label for="c-msg">Üzenet</label><textarea id="c-msg" name="message" rows="4" required aria-describedby="c-msg-err"></textarea><p class="field-err" id="c-msg-err"></p></div>
+      <button class="btn" type="submit">Üzenet küldése <Fragment set:html={icon('next')} /></button>
+      <p class="hint" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+</Layout>
+
+<style>
+  .hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); align-items: center; gap: clamp(24px, 4vw, 64px); min-height: calc(100svh - var(--header-h)); padding-block: 48px; }
+  .hero h1 { max-width: 16ch; font-size: clamp(2.6rem, 5.3vw, 4.8rem); }
+  .hero .lede { margin-top: 28px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
+  .hero-visual { max-width: 600px; width: 100%; justify-self: end; }
+
+  .steps { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(40px, 6vw, 96px); border-top: 1px solid var(--line); }
+  .steps-head { position: sticky; top: calc(var(--header-h) + 32px); align-self: start; display: grid; gap: 28px; justify-items: start; }
+  .steps-list { display: grid; }
+  .steps-list li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; padding: 32px 0; border-top: 1px solid var(--line); }
+  .steps-list li:first-child { border-top: 0; padding-top: 8px; }
+  .step-num { color: var(--accent); padding-top: 6px; }
+  .steps-list h3 { font-size: clamp(1.4rem, 2.4vw, 2rem); margin-bottom: 10px; }
+  .steps-list p { max-width: 48ch; }
+
+  .package { border-top: 1px solid var(--line); }
+  .package-title { max-width: 18ch; margin-bottom: clamp(40px, 6vw, 72px); }
+  .package-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 24px; align-items: start; }
+  .price-panel {
+    position: sticky; top: calc(var(--header-h) + 24px); padding: clamp(28px, 4vw, 44px); border-radius: var(--r-panel);
+    background: radial-gradient(120% 90% at 100% 0%, #7ff0ff 0%, var(--accent) 40%, #009ec2 100%); color: var(--on-accent);
+  }
+  .price-label { font-weight: 500; }
+  .price-amount { font-family: var(--font-display); font-weight: 600; font-size: clamp(3rem, 6.5vw, 5.2rem); letter-spacing: -0.04em; line-height: 1; margin-top: 12px; font-variant-numeric: tabular-nums; }
+  .price-note { margin-top: 14px; max-width: 30ch; opacity: 0.85; }
+  .price-btn { margin-top: 32px; background: var(--on-accent); color: var(--text); }
+  .price-btn:hover { background: #000; color: var(--accent); box-shadow: none; }
+  .included { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
+  .included li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 14px; padding: 22px 0; border-top: 1px solid var(--line); }
+  .included h3 { font-size: 1.1rem; margin-bottom: 6px; }
+  .included p { font-size: 15px; }
+  .inc-icon { color: var(--accent); }
+  .inc-icon :global(.icon) { width: 24px; height: 24px; }
+
+  .samples { border-top: 1px solid var(--line); }
+  .samples-lede { margin-top: 20px; }
+  .samples-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; margin-top: clamp(40px, 6vw, 72px); }
+  .sample-wide { grid-column: span 7; }
+  .sample-narrow { grid-column: span 5; }
+  .sample-frame { display: block; position: relative; height: clamp(260px, 30vw, 400px); border-radius: var(--r-media); overflow: hidden; border: 1px solid var(--line); background: var(--surface); transition: border-color 0.3s, transform 0.5s var(--ease); }
+  .sample-frame:hover { border-color: rgba(var(--accent-rgb), 0.6); transform: translateY(-4px); }
+  .sample-frame iframe { position: absolute; top: 0; left: 0; width: 1280px; max-width: none; height: 800px; border: 0; transform-origin: 0 0; transform: scale(var(--s, 0.4)); pointer-events: none; }
+  .sample-meta { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 16px; }
+  .sample-meta h3 { font-size: 1.15rem; }
+  .sample-meta p { margin-top: 4px; font-size: 14.5px; }
+
+  .faq { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(40px, 6vw, 96px); border-top: 1px solid var(--line); }
+  .faq-list details { border-top: 1px solid var(--line); }
+  .faq-list details:last-child { border-bottom: 1px solid var(--line); }
+  .faq-list summary { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 0; cursor: pointer; list-style: none; font-family: var(--font-display); font-weight: 500; font-size: 1.2rem; letter-spacing: -0.015em; }
+  .faq-list summary::-webkit-details-marker { display: none; }
+  .faq-list summary :global(.icon) { width: 22px; height: 22px; color: var(--muted); transition: transform 0.4s var(--ease), color 0.3s; }
+  .faq-list details[open] summary :global(.icon) { transform: rotate(45deg); color: var(--accent); }
+  .faq-list details p { padding-bottom: 24px; max-width: 60ch; }
+
+  .contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 96px); border-top: 1px solid var(--line); align-items: start; }
+  .contact .lede { margin-top: 24px; }
+  .contact-list { margin-top: 40px; display: grid; gap: 16px; }
+  .contact-list div { display: grid; grid-template-columns: 90px 1fr; gap: 16px; align-items: baseline; }
+  .contact-form { display: grid; gap: 20px; padding: clamp(24px, 3vw, 36px); }
+  .contact-form .btn { justify-self: start; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 24px; }
+    .hero-visual { order: -1; max-width: 360px; justify-self: center; }
+    .steps, .faq, .contact, .package-grid { grid-template-columns: 1fr; }
+    .steps-head, .price-panel { position: static; }
+    .sample-wide, .sample-narrow { grid-column: 1 / -1; }
+  }
+  @media (max-width: 600px) {
+    .included { grid-template-columns: 1fr; }
+    .hero-visual { max-width: 260px; }
+    .hero-actions .btn { flex: 1 1 100%; }
+    .sample-meta { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+
+<script>
+  // Scale the live sample previews (rendered at 1280px) to their card width.
+  const frames = document.querySelectorAll<HTMLElement>('.sample-frame');
+  const ro = new ResizeObserver((entries) => {
+    for (const e of entries) {
+      const s = e.contentRect.width / 1280;
+      const el = e.target as HTMLElement;
+      el.style.setProperty('--s', String(s));
+      // Fill the card's height too, so wide and narrow cards both show a full page.
+      el.querySelector('iframe')?.style.setProperty('height', `${Math.ceil(e.contentRect.height / s)}px`);
+    }
+  });
+  frames.forEach((f) => ro.observe(f));
+
+  // Contact form: validates, then opens the visitor's mail app with the message (no backend yet).
+  const form = document.querySelector<HTMLFormElement>('.contact-form');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let first: HTMLInputElement | null = null;
+    for (const f of form.querySelectorAll<HTMLInputElement>('[required]')) {
+      const ok = f.value.trim() !== '' && f.checkValidity();
+      f.setAttribute('aria-invalid', String(!ok));
+      const err = document.getElementById(`${f.id}-err`);
+      if (err) err.textContent = ok ? '' : f.type === 'email' && f.value ? 'Ez nem érvényes e-mail cím.' : 'Ezt a mezőt ki kell tölteni.';
+      if (!ok && !first) first = f;
+    }
+    if (first) return first.focus();
+    const d = new FormData(form);
+    const body = `${d.get('message')}\n\n${d.get('name')}\n${d.get('email')}`;
+    location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent('Kérdés a weboldalról')}&body=${encodeURIComponent(body)}`;
+    form.querySelector('[role=status]')!.textContent = 'Megnyitottuk a levelezőprogramodat az üzenettel. Ha nem nyílt meg, írj közvetlenül a fenti címre.';
+  });
+</script>

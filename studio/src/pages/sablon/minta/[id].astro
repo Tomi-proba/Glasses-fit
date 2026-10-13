@@ -1,0 +1,10 @@
+---
+import TemplatePage from '../../../layouts/TemplatePage.astro';
+import { SAMPLES } from '../../../template/samples.js';
+
+export function getStaticPaths() {
+  return SAMPLES.map((s) => ({ params: { id: s.id }, props: { config: s.config } }));
+}
+const { config } = Astro.props;
+---
+<TemplatePage config={config} />

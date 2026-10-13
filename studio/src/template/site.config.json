@@ -1,0 +1,232 @@
+{
+  "meta": {
+    "lang": "hu",
+    "siteUrl": "https://www.example.com",
+    "title": "Aura Hair Studio | Prémium fodrászszalon Budapesten",
+    "description": "Precíziós hajvágás, egyedi festés és luxus hajápolás a belváros szívében. Foglalj időpontot online az Aura Hair Studióba.",
+    "keywords": "fodrász, fodrászszalon, hajvágás, hajfestés, balayage, Budapest",
+    "ogImage": "assets/og-image.png",
+    "themeColor": "#07080c"
+  },
+  "brand": {
+    "name": "Aura Hair Studio",
+    "shortName": "Aura",
+    "tagline": "Prémium fodrászat a belváros szívében.",
+    "logo": "assets/logo.svg",
+    "logoAlt": "Aura Hair Studio logó",
+    "activity": "fodrászszalon"
+  },
+  "theme": {
+    "mode": "dark",
+    "accent": "#00d4ff",
+    "headingFont": "Tenor Sans",
+    "bodyFont": "Hanken Grotesk",
+    "radius": 0
+  },
+  "effect3d": "particles",
+  "sections": {
+    "order": [
+      "hero",
+      "about",
+      "services",
+      "gallery",
+      "testimonials",
+      "contact"
+    ],
+    "enabled": {
+      "hero": true,
+      "about": true,
+      "services": true,
+      "gallery": true,
+      "testimonials": true,
+      "contact": true
+    }
+  },
+  "hero": {
+    "navLabel": "Kezdőlap",
+    "title": "A hajad. A te történeted.",
+    "subtitle": "Precíziós vágás, egyedi színek és nyugodt, prémium élmény a belváros szívében.",
+    "ctaText": "Időpontfoglalás",
+    "ctaLink": "#contact",
+    "secondaryText": "Árlista",
+    "secondaryLink": "#services",
+    "image": "assets/hero/hero-object.webp",
+    "imageAlt": "Olló, a szalon jelképe, részecskékből kirajzolódva"
+  },
+  "about": {
+    "navLabel": "Rólunk",
+    "title": "Tizenkét év szenvedély, minden tincsben.",
+    "paragraphs": [
+      "Az Aura Hair Studio 2014-ben azzal a céllal nyílt meg, hogy a szalonélményt újragondolja: kevesebb sietség, több figyelem. Csapatunk nemzetközi képzéseken csiszolt tudással és a legújabb technikákkal dolgozik.",
+      "Kizárólag professzionális, környezettudatos termékeket használunk, és minden szolgáltatás előtt alapos konzultációval tervezzük meg veled az eredményt."
+    ],
+    "image": "assets/gallery/about.svg",
+    "imageAlt": "A szalon belső tere meleg fényekkel és tükrökkel",
+    "stats": [
+      {
+        "value": "2014",
+        "suffix": "",
+        "label": "óta a Példa utcában"
+      },
+      {
+        "value": "6",
+        "suffix": "",
+        "label": "stylist a csapatban"
+      },
+      {
+        "value": "8400",
+        "suffix": "+",
+        "label": "elégedett vendég"
+      }
+    ]
+  },
+  "services": {
+    "navLabel": "Szolgáltatások",
+    "title": "Szolgáltatások és árak",
+    "intro": "Minden kezelés konzultációval indul. Az árak a hajhossztól függően változhatnak.",
+    "items": [
+      {
+        "icon": "scissors",
+        "title": "Precíziós vágás",
+        "text": "Arcformához és életstílushoz igazított vágás, konzultációval és styling tanácsokkal.",
+        "price": "12 900 Ft-tól"
+      },
+      {
+        "icon": "palette",
+        "title": "Festés & balayage",
+        "text": "Természetes átmenetek, ragyogó tónusok és kíméletes, ammóniamentes színek.",
+        "price": "24 900 Ft-tól"
+      },
+      {
+        "icon": "droplet",
+        "title": "Mélyápoló kezelés",
+        "text": "Keratinos és plex regeneráló rituálék a selymes, egészséges hajért.",
+        "price": "9 900 Ft-tól"
+      },
+      {
+        "icon": "sparkles",
+        "title": "Alkalmi frizura",
+        "text": "Esküvőre, gálára vagy fotózásra, próbafrizurával és tartós rögzítéssel.",
+        "price": "18 900 Ft-tól"
+      },
+      {
+        "icon": "crown",
+        "title": "Férfi & szakáll",
+        "text": "Klasszikus és modern férfivágások, forró törölközős szakállformázás.",
+        "price": "8 900 Ft-tól"
+      },
+      {
+        "icon": "flower",
+        "title": "Fejbőr spa",
+        "text": "Relaxáló masszázs és méregtelenítő fejbőrkezelés az egyensúlyért.",
+        "price": "11 900 Ft-tól"
+      }
+    ]
+  },
+  "gallery": {
+    "navLabel": "Referenciák",
+    "title": "Munkáink",
+    "intro": "",
+    "items": [
+      {
+        "src": "assets/gallery/work-1.svg",
+        "alt": "Hosszú, hullámos haj meleg karamell balayage-dzsal",
+        "caption": "Karamell balayage"
+      },
+      {
+        "src": "assets/gallery/work-2.svg",
+        "alt": "Rövid, aszimmetrikus bob frizura",
+        "caption": "Aszimmetrikus bob"
+      },
+      {
+        "src": "assets/gallery/work-3.svg",
+        "alt": "Platinaszőke, egyenesre szárított haj",
+        "caption": "Platina tónus"
+      },
+      {
+        "src": "assets/gallery/work-4.svg",
+        "alt": "Elegáns, feltűzött alkalmi frizura",
+        "caption": "Alkalmi kontyok"
+      },
+      {
+        "src": "assets/gallery/work-5.svg",
+        "alt": "Modern férfi fade hajvágás",
+        "caption": "Textúrált fade"
+      },
+      {
+        "src": "assets/gallery/work-6.svg",
+        "alt": "Vörösréz árnyalatú, fényes, hosszú haj",
+        "caption": "Vörösréz ragyogás"
+      }
+    ]
+  },
+  "testimonials": {
+    "navLabel": "Vélemények",
+    "title": "Vendégeink mondták",
+    "items": [
+      {
+        "quote": "Végre valaki tényleg meghallgatta, mit szeretnék. A balayage még jobb lett, mint amit elképzeltem.",
+        "name": "Kovács Petra",
+        "role": "törzsvendég 2019 óta",
+        "rating": 5
+      },
+      {
+        "quote": "Nyugodt, gyönyörű hely, ahol tényleg kikapcsolok. A vágás hetekkel később is tökéletesen áll.",
+        "name": "Nagy Dániel",
+        "role": "férfi vágás",
+        "rating": 5
+      },
+      {
+        "quote": "Az esküvői frizurám egész éjjel kitartott. Profi és kedves csapat.",
+        "name": "Szabó Réka",
+        "role": "alkalmi frizura",
+        "rating": 5
+      }
+    ]
+  },
+  "contact": {
+    "navLabel": "Kapcsolat",
+    "title": "Foglalj időpontot",
+    "intro": "Írj nekünk vagy hívj, 24 órán belül visszajelzünk.",
+    "address": "1061 Budapest, Példa utca 12.",
+    "phone": "+36 1 234 5678",
+    "email": "hello@example.com",
+    "hours": [
+      {
+        "days": "Hétfő-Péntek",
+        "time": "9:00-20:00"
+      },
+      {
+        "days": "Szombat",
+        "time": "9:00-15:00"
+      },
+      {
+        "days": "Vasárnap",
+        "time": "Zárva"
+      }
+    ],
+    "mapQuery": "Andrássy út, Budapest",
+    "formEndpoint": "",
+    "formSubmitText": "Üzenet küldése",
+    "formSuccess": "Köszönjük, megkaptuk az üzenetedet. Hamarosan jelentkezünk.",
+    "formError": "Nem sikerült elküldeni. Próbáld újra, vagy hívj minket."
+  },
+  "social": [
+    {
+      "type": "instagram",
+      "url": "https://instagram.com/"
+    },
+    {
+      "type": "facebook",
+      "url": "https://facebook.com/"
+    },
+    {
+      "type": "tiktok",
+      "url": "https://tiktok.com/"
+    }
+  ],
+  "footer": {
+    "text": "Prémium fodrászat a belváros szívében.",
+    "copyright": "Minden jog fenntartva."
+  }
+}

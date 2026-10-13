@@ -1,0 +1,121 @@
+---
+import '../styles/global.css';
+import { business } from '../config/business';
+import { url } from '../lib/url';
+import { icon } from '../lib/icon';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** App-like pages (configurator) keep native scrolling for their inner panels. */
+  app?: boolean;
+  noindex?: boolean;
+}
+const { title, description = business.description, app = false, noindex = false } = Astro.props;
+const fullTitle = title ? `${title} | ${business.name}` : `${business.name} | ${business.tagline}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(url('images/og.png'), Astro.site).href;
+const path = Astro.url.pathname.replace(/\/$/, '');
+const fonts = 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&family=Onest:wght@400;500&family=Martian+Mono:wght@300;400&display=swap';
+const nav = [
+  ['#folyamat', 'Hogyan működik'],
+  ['#csomag', 'Mit kapsz'],
+  ['#mintak', 'Minták'],
+  ['#gyik', 'GYIK'],
+  ['#kapcsolat', 'Kapcsolat'],
+];
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: business.name,
+  description: business.description,
+  url: new URL(url(''), Astro.site).href,
+  email: business.email,
+  telephone: business.phone,
+  areaServed: 'HU',
+};
+---
+<!doctype html>
+<html lang="hu" data-base={url('')} data-app={app ? '' : undefined}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#090909" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="hu_HU" />
+    <meta property="og:site_name" content={business.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+    <link rel="sitemap" href={url('sitemap.xml')} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={fonts} media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href={fonts} /></noscript>
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+    <slot name="head" />
+  </head>
+  <body class={app ? 'is-app' : ''}>
+    <a class="skip-link" href="#main">Ugrás a tartalomra</a>
+    <header class="site-header">
+      <nav class="container nav" aria-label="Fő navigáció">
+        <a class="brand" href={url('')}>
+          <svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9" stroke="currentColor" stroke-width="1.6" /><path d="M9.5 22.5 22.5 9.5" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" /></svg>
+          {business.name}
+        </a>
+        <div id="nav-links" class="nav-links">
+          {nav.map(([href, label]) => <a href={url('') + href}>{label}</a>)}
+        </div>
+        <div class="nav-cta">
+          <a class="btn btn-sm" href={url('tervezo')} aria-current={path.endsWith('/tervezo') ? 'page' : undefined}>Tervezd meg</a>
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links"><span class="sr-only">Menü</span><Fragment set:html={icon('menu')} /></button>
+        </div>
+      </nav>
+    </header>
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <p class="footer-claim">{business.tagline}</p>
+            <p class="muted" style="margin-top:16px">{business.taxNote}</p>
+          </div>
+          <div>
+            <h2>Oldalak</h2>
+            <ul role="list">
+              <li><a href={url('tervezo')}>Tervező</a></li>
+              <li><a href={url('') + '#csomag'}>Mit kapsz</a></li>
+              <li><a href={url('') + '#gyik'}>Gyakori kérdések</a></li>
+              <li><a href={url('aszf')}>ÁSZF</a></li>
+              <li><a href={url('adatvedelem')}>Adatvédelem</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2>Elérhetőség</h2>
+            <ul role="list">
+              <li><a href={`mailto:${business.email}`}>{business.email}</a></li>
+              <li><a href={`tel:${business.phone.replace(/\s/g, '')}`}>{business.phone}</a></li>
+              <li class="muted">{business.address}</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© {new Date().getFullYear()} {business.legalName}</p>
+          <p>Minden jog fenntartva.</p>
+        </div>
+      </div>
+    </footer>
+    <script>
+      import '../lib/site.ts';
+    </script>
+  </body>
+</html>
