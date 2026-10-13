@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - claude/glasses-recommendation-app-yb3i0v
+      - ccr-5f9517e6-pokezz
   workflow_dispatch:
 
 permissions:
@@ -25,8 +26,17 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            site-template/package-lock.json
       - run: npm ci
       - run: npm run build
+      # Premium site template + configurator, served under /site-template/
+      - run: npm ci
+        working-directory: site-template
+      - run: npm run build
+        working-directory: site-template
+      - run: cp -r site-template/dist dist/site-template
       - uses: actions/configure-pages@v5
         with:
           enablement: true
