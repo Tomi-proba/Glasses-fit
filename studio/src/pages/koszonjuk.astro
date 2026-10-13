@@ -3,22 +3,19 @@ import Layout from '../layouts/Layout.astro';
 import { business } from '../config/business';
 import { url } from '../lib/url';
 ---
-<Layout title="Köszönjük a megrendelést" noindex>
+<Layout title="Köszönjük az ajánlatkérést" noindex>
   <section class="container thanks">
-    <h1 class="display" id="thanks-title">Köszönjük a megrendelést.</h1>
-    <p class="lede" id="thanks-lede">Megkaptuk a megrendelésedet, hamarosan jelentkezünk.</p>
-    <dl class="order-box panel" id="order-box" hidden>
-      <div><dt>Rendelésszám</dt><dd class="mono" id="t-id"></dd></div>
-      <div><dt>Weboldal</dt><dd id="t-site"></dd></div>
-      <div><dt>Visszaigazolás ide</dt><dd id="t-email"></dd></div>
-    </dl>
+    <h1 class="display" id="thanks-title">Köszönjük!</h1>
+    <p class="lede">24-48 órán belül személyre szabott ajánlattal jelentkezünk.</p>
+    <p class="muted" id="thanks-detail" hidden></p>
     <h2 class="next-title">A következő lépések</h2>
     <ol class="next" role="list">
-      <li><span class="mono">01</span><div><h3>Visszaigazolás</h3><p class="muted">E-mailben elküldjük a megrendelés összefoglalóját és a számlát.</p></div></li>
-      <li><span class="mono">02</span><div><h3>Egyeztetés</h3><p class="muted">Egy munkanapon belül felvesszük veled a kapcsolatot, és egyeztetjük a domaint és a szövegeket.</p></div></li>
-      <li><span class="mono">03</span><div><h3>Élesítés</h3><p class="muted">Két kör finomítás után élesítjük az oldalt, általában 5-7 munkanapon belül.</p></div></li>
+      <li><span class="mono">01</span><div><h3>Ajánlat</h3><p class="muted">Átnézzük, amit küldtél, és e-mailben elküldjük a személyre szabott ajánlatot.</p></div></li>
+      <li><span class="mono">02</span><div><h3>Egyeztetés</h3><p class="muted">Ha megfelel, egyeztetjük a részleteket, a szövegeket és a képeket.</p></div></li>
+      <li><span class="mono">03</span><div><h3>Elkészítés</h3><p class="muted">Elkészítjük az oldalad, és két körben finomítjuk a visszajelzéseid alapján.</p></div></li>
+      <li><span class="mono">04</span><div><h3>Élesítés</h3><p class="muted">Élesítjük a saját domaineden, és megmutatjuk, hogyan kezeld.</p></div></li>
     </ol>
-    <p class="muted">Kérdésed van? Írj a <a class="link" href={`mailto:${business.email}`}>{business.email}</a> címre.</p>
+    <p class="muted">Kérdésed van addig is? Írj a <a class="link" href={`mailto:${business.email}`}>{business.email}</a> címre.</p>
     <a class="btn btn-ghost" href={url('')}>Vissza a főoldalra</a>
   </section>
 </Layout>
@@ -26,10 +23,6 @@ import { url } from '../lib/url';
 <style>
   .thanks { display: grid; gap: 28px; justify-items: start; padding-block: clamp(56px, 9vw, 120px) var(--section); }
   .thanks h1 { font-size: clamp(2.6rem, 6vw, 5rem); max-width: 14ch; }
-  .order-box { display: grid; gap: 0; padding: 8px 20px; min-width: min(100%, 480px); }
-  .order-box div { display: flex; justify-content: space-between; gap: 24px; padding: 12px 0; border-top: 1px solid var(--line); }
-  .order-box div:first-child { border-top: 0; }
-  .order-box dt { color: var(--muted); }
   .next-title { font-size: 1.6rem; margin-top: 16px; }
   .next { display: grid; gap: 0; width: 100%; max-width: 720px; }
   .next li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 12px; padding: 20px 0; border-top: 1px solid var(--line); }
@@ -38,14 +31,14 @@ import { url } from '../lib/url';
 </style>
 
 <script>
-  import { loadLastOrder } from '../lib/store.js';
-  const order = loadLastOrder();
-  if (order) {
-    const first = String(order.customer?.name || '').trim().split(/\s+/).pop();
+  import { loadLastQuote } from '../lib/store.js';
+  const q = loadLastQuote();
+  if (q) {
+    // Hungarian names put the given name last.
+    const first = String(q.name || '').trim().split(/\s+/).pop();
     if (first) document.getElementById('thanks-title')!.textContent = `Köszönjük, ${first}!`;
-    document.getElementById('t-id')!.textContent = order.orderId;
-    document.getElementById('t-site')!.textContent = order.siteName || '-';
-    document.getElementById('t-email')!.textContent = order.customer?.email || '-';
-    document.getElementById('order-box')!.hidden = false;
+    const detail = document.getElementById('thanks-detail')!;
+    detail.textContent = `Az ajánlatot a(z) ${q.email} címre küldjük.${q.hasDesign ? ' A tervezőben összeállított tervedet is megkaptuk.' : ''} Hivatkozási szám: ${q.requestId}.`;
+    detail.hidden = false;
   }
 </script>

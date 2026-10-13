@@ -1,11 +1,12 @@
-// The visitor's website design lives in localStorage, shared by /tervezo and /osszegzes.
+// The visitor's website design lives in localStorage, shared by /tervezo and /ajanlatkeres.
 import { defaultConfig, sampleConfig } from '../template/samples.js';
 
 const CONFIG_KEY = 'studio:config:v1';
 const BACKUP_KEY = 'studio:config:backup';
 const STEP_KEY = 'studio:step';
-const CUSTOMER_KEY = 'studio:customer';
-const ORDER_KEY = 'studio:last-order';
+const PACKAGE_KEY = 'studio:package';
+const QUOTE_DRAFT_KEY = 'studio:quote-draft';
+const LAST_QUOTE_KEY = 'studio:last-quote';
 
 const read = (key) => {
   try {
@@ -65,7 +66,11 @@ export const resetConfig = () => {
 
 export const loadStep = () => Number(read(STEP_KEY)) || 0;
 export const saveStep = (n) => write(STEP_KEY, n);
-export const loadCustomer = () => read(CUSTOMER_KEY) || {};
-export const saveCustomer = (c) => write(CUSTOMER_KEY, c);
-export const loadLastOrder = () => read(ORDER_KEY);
-export const saveLastOrder = (o) => write(ORDER_KEY, o);
+/** The package picked in the tervező: 'alap' or 'premium'. */
+export const loadPackage = () => (read(PACKAGE_KEY) === 'alap' ? 'alap' : 'premium');
+export const savePackage = (id) => write(PACKAGE_KEY, id);
+export const loadQuoteDraft = () => read(QUOTE_DRAFT_KEY) || {};
+export const saveQuoteDraft = (d) => write(QUOTE_DRAFT_KEY, d);
+export const clearQuoteDraft = () => { try { localStorage.removeItem(QUOTE_DRAFT_KEY); } catch { /* ignore */ } };
+export const loadLastQuote = () => read(LAST_QUOTE_KEY);
+export const saveLastQuote = (q) => write(LAST_QUOTE_KEY, q);

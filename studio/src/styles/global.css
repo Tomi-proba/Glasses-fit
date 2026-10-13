@@ -46,6 +46,7 @@ body {
 img, svg, iframe { display: block; max-width: 100%; }
 a { color: inherit; text-underline-offset: 0.22em; }
 button, input, textarea, select { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
 h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; }
 ul[role='list'], ol[role='list'] { list-style: none; padding: 0; }
 ::selection { background: var(--accent); color: var(--on-accent); }
@@ -109,7 +110,8 @@ h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em
   .nav-links a { padding: 14px 4px; border-radius: 0; font-size: 18px; color: var(--text); border-bottom: 1px solid var(--line); }
   .nav-links a:hover { background: transparent; }
 }
-@media (max-width: 520px) { .nav-cta .btn { display: none; } }
+.nav-quote { display: none; }
+@media (max-width: 520px) { .nav-cta .btn { display: none; } .nav-links .nav-quote { display: block; } }
 
 /* ------------------------------------------------------------- footer */
 .site-footer { border-top: 1px solid var(--line); padding: 72px 0 32px; margin-top: auto; }

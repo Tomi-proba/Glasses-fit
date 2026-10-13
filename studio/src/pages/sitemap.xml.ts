@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 
 // Public pages only; the configurator flow and legal placeholders stay out of the index.
-const PAGES = ['', 'tervezo'];
+const PAGES = ['', 'tervezo', 'ajanlatkeres'];
 
 export const GET: APIRoute = ({ site }) => {
   const base = new URL(import.meta.env.BASE_URL.replace(/\/?$/, '/'), site);

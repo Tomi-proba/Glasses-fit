@@ -1,34 +1,26 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero3D from '../components/Hero3D.astro';
-import { business, formatPrice } from '../config/business';
+import { business } from '../config/business';
+import { PACKAGES, VAT_NOTE, MONTHLY_NOTE, priceFrom } from '../config/pricing';
 import { SAMPLES } from '../template/samples.js';
 import { url } from '../lib/url';
 import { icon } from '../lib/icon';
 
-const price = formatPrice();
+const lowest = priceFrom(Math.min(...PACKAGES.map((p) => p.priceFrom)));
 const steps = [
-  ['Megtervezed', 'A tervezőben kiválasztod a színeket, a betűket, a 3D elemet, és megírod a szövegeket. Minden változás azonnal látszik.'],
-  ['Megnézed', 'Asztali és mobil nézetben is végignézed az oldalt. Pontosan azt kapod, amit az előnézetben látsz.'],
-  ['Megrendeled', `Online rendeled meg ${price} egyszeri díjért. Nincs havidíj és nincs rejtett tétel.`],
-  ['Élesítjük', 'Átnézzük, finomhangoljuk, és néhány munkanapon belül élesítjük a saját domaineden.'],
-];
-const included = [
-  ['pen', 'Egyedi dizájn', 'A tervezőben összeállított színek, betűk és szövegek alapján.'],
-  ['sparkles', '3D nyitókép', 'A logódból vagy egy jellegzetes képből készül, mobilon könnyített.'],
-  ['devices', 'Mobilra optimalizálva', 'Telefonon, tableten és asztali gépen is hibátlan.'],
-  ['gauge', 'Gyors betöltés', 'Lighthouse 90+ cél, optimalizált képek és betűk.'],
-  ['search', 'Alap SEO', 'Meta adatok, megosztási kép, sitemap és strukturált adatok.'],
-  ['mail', 'Kapcsolati űrlap és térkép', 'Az érdeklődők közvetlenül neked írnak.'],
-  ['globe', 'Élesítés a domaineden', 'Beállítjuk a domaint és a tárhelyet, vagy segítünk választani.'],
-  ['headset', 'Két kör módosítás', 'Élesítés előtt kétszer finomíthatsz, és 30 napig javítjuk a hibákat.'],
+  ['Megtervezed vagy leírod, mit szeretnél', 'A tervezőben élő előnézettel összerakod, milyen legyen az oldal: színek, betűk, blokkok, szövegek. Ha nincs kedved tervezni, elég pár mondatban leírnod.'],
+  ['Személyre szabott ajánlatot kapsz', '24-48 órán belül átnézzük, amit küldtél, és pontos ajánlatot adunk. Az ajánlatkérés ingyenes, és nem kötelez semmire.'],
+  ['Elkészítjük az oldalad', 'A tervedből kiindulva mi készítjük el a végleges oldalt, és két körben finomítjuk a visszajelzéseid alapján.'],
+  ['Élesítjük', 'Beállítjuk a domaint és a tárhelyet, és élesítjük az oldalt. A kész oldal és a forrásfájlok is a tieid.'],
 ];
 const faq = [
-  ['Mennyi idő alatt készül el az oldal?', 'A megrendeléstől számítva általában 5-7 munkanap, ha a szövegek és a képek megvannak. A tervezőben összeállított változat ehhez jó kiindulás, így a munka nagy része már kész.'],
-  ['Van havidíj?', `Nincs. A ${price} egyszeri díj. A domain és a tárhely díját közvetlenül a szolgáltatónak fizeted, ebben segítünk, és nem kérünk érte felárat.`],
-  ['Kell ÁFA-t fizetni az árra?', `Nem. ${business.taxNote} A számla ${price} összegről szól.`],
-  ['Módosíthatok a megrendelés után?', 'Igen. Élesítés előtt két kör módosítás benne van az árban, utána 30 napig díjmentesen javítjuk a hibákat.'],
-  ['Mi van, ha nincs saját fotóm?', 'Segítünk jogtiszta képeket választani, a feltöltött képeidet pedig méretre szabjuk és optimalizáljuk.'],
+  ['Mennyibe kerül egy weboldal?', `${PACKAGES.map((p) => `${p.name}: ${priceFrom(p.priceFrom)}`).join(', ')}. A pontos árat az ajánlatban adjuk meg, attól függően, hány oldal kell és mi van már meg (szövegek, fotók, logó).`],
+  ['Kötelez valamire az ajánlatkérés?', 'Nem. Az ajánlatkérés és a tervező használata is ingyenes. Csak akkor kezdünk dolgozni, ha az ajánlatot elfogadtad.'],
+  ['Pontosan azt kapom, amit a tervezőben összeállítok?', 'A terv kiindulópont: megmutatja, milyen stílust, színeket és tartalmat szeretnél. A végleges oldalt mi készítjük el, így olyasmit is beleteszünk, amit a tervezőben nem lehet beállítani.'],
+  ['Mennyi idő alatt készül el az oldal?', 'Általában 1-2 hét az ajánlat elfogadásától, ha a szövegek és a képek megvannak. A pontos határidőt az ajánlatban rögzítjük.'],
+  ['Van havidíj, és kell ÁFA-t fizetni?', `Nincs havidíj. ${VAT_NOTE} A domain és a tárhely díját közvetlenül a szolgáltatónak fizeted, ebben segítünk.`],
+  ['Mi van, ha nincs saját fotóm vagy szövegem?', 'Segítünk: jogtiszta képeket választunk, és a szövegek megírásában is részt veszünk. Az ajánlatkérőben jelezheted, mi van már meg.'],
   ['Az enyém lesz a weboldal?', 'Igen. A kész oldal és a forrásfájlok is a tieid, bármikor átviheted más tárhelyre.'],
 ];
 const layout = ['wide', 'narrow', 'narrow', 'wide'];
@@ -36,11 +28,11 @@ const layout = ['wide', 'narrow', 'narrow', 'wide'];
 <Layout>
   <section class="hero container">
     <div class="hero-copy">
-      <h1 class="display">Prémium weboldal napok alatt.</h1>
-      <p class="lede">Tervezd meg élő előnézettel, rendeld meg online, és néhány napon belül élesítjük. Egyszeri {price}.</p>
+      <h1 class="display">Tervezd meg 5 perc alatt, a többit mi intézzük.</h1>
+      <p class="lede">Rakd össze élő előnézettel, milyen weboldalt szeretnél, vagy csak írd le pár mondatban. Személyre szabott ajánlatot küldünk, aztán elkészítjük és élesítjük. Weboldal {lowest}, havidíj nélkül.</p>
       <div class="hero-actions">
         <a class="btn btn-lg" href={url('tervezo')}>Tervezd meg a weboldalad <Fragment set:html={icon('next')} /></a>
-        <a class="btn btn-lg btn-ghost" href="#mintak">Minták</a>
+        <a class="btn btn-lg btn-ghost" href={url('ajanlatkeres')}>Ajánlatot kérek</a>
       </div>
     </div>
     <div class="hero-visual">
@@ -50,8 +42,9 @@ const layout = ['wide', 'narrow', 'narrow', 'wide'];
 
   <section id="folyamat" class="section container steps" aria-labelledby="folyamat-title">
     <div class="steps-head">
-      <h2 id="folyamat-title" class="display">Négy lépés, és él az oldalad.</h2>
-      <a class="link" href={url('tervezo')}>Kezdd az első lépéssel</a>
+      <h2 id="folyamat-title" class="display">Így működik.</h2>
+      <p class="muted steps-note">Te megmutatod, mit szeretnél. A végleges oldalt mi készítjük el neked.</p>
+      <a class="link" href={url('tervezo')}>Kezdd a tervezővel</a>
     </div>
     <ol class="steps-list" role="list" data-stagger>
       {steps.map(([title, text], i) => (
@@ -63,27 +56,34 @@ const layout = ['wide', 'narrow', 'narrow', 'wide'];
     </ol>
   </section>
 
-  <section id="csomag" class="section container package" aria-labelledby="csomag-title">
-    <h2 id="csomag-title" class="display package-title" data-reveal>Minden benne van, ami egy prémium oldalhoz kell.</h2>
-    <div class="package-grid">
-      <div class="price-panel" data-reveal>
-        <p class="price-label">Egyszeri díj</p>
-        <p class="price-amount">{price}</p>
-        <p class="price-note">{business.taxNote}</p>
-        <a class="btn btn-lg price-btn" href={url('tervezo')}>Tervezd meg a weboldalad</a>
-      </div>
-      <ul class="included" role="list" data-stagger>
-        {included.map(([ic, title, text]) => (
-          <li><span class="inc-icon" set:html={icon(ic)} /><div><h3>{title}</h3><p class="muted">{text}</p></div></li>
-        ))}
-      </ul>
+  <section id="csomagok" class="section container packages" aria-labelledby="csomagok-title">
+    <div class="packages-head">
+      <h2 id="csomagok-title" class="display" data-reveal>Két csomag, egyszeri díjjal.</h2>
+      <p class="lede" data-reveal>{MONTHLY_NOTE} {VAT_NOTE} A pontos árat az ajánlatban adjuk meg.</p>
+    </div>
+    <div class="pkg-grid" data-stagger>
+      {PACKAGES.map((p) => (
+        <article class={`pkg${p.highlight ? ' pkg-hi' : ''}`} aria-labelledby={`pkg-${p.id}`}>
+          <div class="pkg-top">
+            <h3 id={`pkg-${p.id}`}>{p.name}</h3>
+            <p class="pkg-price">{priceFrom(p.priceFrom)}</p>
+            <p class="pkg-note">{VAT_NOTE} {MONTHLY_NOTE}</p>
+            <p class="pkg-summary">{p.summary}</p>
+          </div>
+          <p class="pkg-ft">{p.featuresTitle}:</p>
+          <ul class="pkg-list" role="list">
+            {p.features.map((f) => <li><Fragment set:html={icon('check')} /><span>{f}</span></li>)}
+          </ul>
+          <a class="btn btn-lg pkg-btn" href={url(`ajanlatkeres?csomag=${p.id}`)}>Ajánlatot kérek <Fragment set:html={icon('next')} /></a>
+        </article>
+      ))}
     </div>
   </section>
 
   <section id="mintak" class="section samples" aria-labelledby="mintak-title">
     <div class="container">
       <h2 id="mintak-title" class="display" data-reveal>Így nézhet ki a tiéd.</h2>
-      <p class="lede samples-lede" data-reveal>Négy példa ugyanabból a sablonból, más színekkel, betűkkel és 3D elemmel. Bármelyikből kiindulhatsz.</p>
+      <p class="lede samples-lede" data-reveal>Négy példa más színekkel, betűkkel és 3D elemmel. Bármelyikből kiindulhatsz a tervezőben, a végleges oldalt pedig a te vállalkozásodra szabjuk.</p>
       <ul class="samples-grid" role="list">
         {SAMPLES.map((s, i) => (
           <li class={`sample sample-${layout[i % 4]}`} data-reveal>
@@ -150,24 +150,27 @@ const layout = ['wide', 'narrow', 'narrow', 'wide'];
   .steps-list h3 { font-size: clamp(1.4rem, 2.4vw, 2rem); margin-bottom: 10px; }
   .steps-list p { max-width: 48ch; }
 
-  .package { border-top: 1px solid var(--line); }
-  .package-title { max-width: 18ch; margin-bottom: clamp(40px, 6vw, 72px); }
-  .package-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 24px; align-items: start; }
-  .price-panel {
-    position: sticky; top: calc(var(--header-h) + 24px); padding: clamp(28px, 4vw, 44px); border-radius: var(--r-panel);
-    background: radial-gradient(120% 90% at 100% 0%, #7ff0ff 0%, var(--accent) 40%, #009ec2 100%); color: var(--on-accent);
-  }
-  .price-label { font-weight: 500; }
-  .price-amount { font-family: var(--font-display); font-weight: 600; font-size: clamp(3rem, 6.5vw, 5.2rem); letter-spacing: -0.04em; line-height: 1; margin-top: 12px; font-variant-numeric: tabular-nums; }
-  .price-note { margin-top: 14px; max-width: 30ch; opacity: 0.85; }
-  .price-btn { margin-top: 32px; background: var(--on-accent); color: var(--text); }
-  .price-btn:hover { background: #000; color: var(--accent); box-shadow: none; }
-  .included { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
-  .included li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 14px; padding: 22px 0; border-top: 1px solid var(--line); }
-  .included h3 { font-size: 1.1rem; margin-bottom: 6px; }
-  .included p { font-size: 15px; }
-  .inc-icon { color: var(--accent); }
-  .inc-icon :global(.icon) { width: 24px; height: 24px; }
+  .steps-note { max-width: 34ch; }
+  .packages { border-top: 1px solid var(--line); }
+  .packages-head { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 24px 48px; align-items: end; margin-bottom: clamp(40px, 6vw, 72px); }
+  .packages-head h2 { max-width: 14ch; }
+  .pkg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
+  .pkg { display: grid; grid-template-rows: auto auto 1fr auto; gap: 18px; padding: clamp(28px, 4vw, 44px); border-radius: var(--r-panel); border: 1px solid var(--line); background: var(--surface); }
+  .pkg h3 { font-size: clamp(1.4rem, 2.2vw, 1.8rem); }
+  .pkg-price { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.4rem, 4.6vw, 3.8rem); letter-spacing: -0.04em; line-height: 1; margin-top: 18px; font-variant-numeric: tabular-nums; }
+  .pkg-note { margin-top: 10px; font-size: 14px; color: var(--muted); }
+  .pkg-summary { margin-top: 18px; max-width: 40ch; }
+  .pkg-ft { font-weight: 500; padding-top: 18px; border-top: 1px solid var(--line); }
+  .pkg-list { display: grid; gap: 12px; align-content: start; }
+  .pkg-list li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 12px; }
+  .pkg-list :global(.icon) { width: 20px; height: 20px; color: var(--accent); margin-top: 1px; }
+  .pkg-btn { justify-self: start; margin-top: 12px; }
+  .pkg-hi { border-color: transparent; background: radial-gradient(120% 90% at 100% 0%, #7ff0ff 0%, var(--accent) 40%, #009ec2 100%); color: var(--on-accent); }
+  .pkg-hi .pkg-note { color: inherit; opacity: 0.8; }
+  .pkg-hi .pkg-ft { border-color: rgba(0, 0, 0, 0.18); }
+  .pkg-hi .pkg-list :global(.icon) { color: var(--on-accent); }
+  .pkg-hi .pkg-btn { background: var(--on-accent); color: var(--text); }
+  .pkg-hi .pkg-btn:hover { background: #000; color: var(--accent); box-shadow: none; }
 
   .samples { border-top: 1px solid var(--line); }
   .samples-lede { margin-top: 20px; }
@@ -200,12 +203,12 @@ const layout = ['wide', 'narrow', 'narrow', 'wide'];
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 24px; }
     .hero-visual { order: -1; max-width: 360px; justify-self: center; }
-    .steps, .faq, .contact, .package-grid { grid-template-columns: 1fr; }
-    .steps-head, .price-panel { position: static; }
+    .steps, .faq, .contact, .pkg-grid, .packages-head { grid-template-columns: 1fr; }
+    .steps-head { position: static; }
     .sample-wide, .sample-narrow { grid-column: 1 / -1; }
   }
   @media (max-width: 600px) {
-    .included { grid-template-columns: 1fr; }
+    .pkg-btn { justify-self: stretch; }
     .hero-visual { max-width: 260px; }
     .hero-actions .btn { flex: 1 1 100%; }
     .sample-meta { flex-direction: column; align-items: flex-start; }

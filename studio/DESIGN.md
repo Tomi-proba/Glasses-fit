@@ -2,14 +2,14 @@
 
 Two visual systems live in this project:
 
-## 1. The studio site (/, /tervezo, /osszegzes, …)
+## 1. The studio site (/, /tervezo, /ajanlatkeres, …)
 Direction chosen with the client: **Framer-style "working artboard"** (voltagent/awesome-design-md), with a neon blue accent.
 
 - Canvas `#090909`, surfaces `#121212` / `#1a1a1a`, hairlines `#262626`, ink `#f5f5f3`, muted `#a3a3a0`.
-- One accent: `#00d4ff`. It is used for links, focus, selection and progress, plus one drenched panel (the price panel on the home page). Primary buttons are off-white and turn accent on hover.
+- One accent: `#00d4ff`. It is used for links, focus, selection and progress, plus one drenched panel (the Prémium 3D package card on the home page). Primary buttons are off-white and turn accent on hover.
 - Type: Bricolage Grotesque 600 for display, tight tracking (-0.028em) and balanced headings; Onest for body; Martian Mono only for data (step numbers, figures).
 - Shape rule: buttons are pills, panels 20px, inputs 10px, media 14px.
-- Layout families on the home page: split hero with 3D, sticky heading + numbered steps (a real sequence), drenched price panel + 2-column checklist, asymmetric 7/5 sample grid of live previews, FAQ accordion, contact split.
+- Layout families on the home page: split hero with 3D, sticky heading + numbered steps (a real sequence), two package cards side by side (the Prémium one drenched), asymmetric 7/5 sample grid of live previews, FAQ accordion, contact split.
 - Motion: the hero 3D object assembling from particles is the one authored moment; sections reveal once on scroll; reduced motion turns everything static.
 
 ## 2. The client template (the product)

@@ -74,5 +74,5 @@ scripts/
 
 ## Vonal Stúdió (weboldal-készítő oldal + tervező)
 
-A [`studio/`](studio/) mappában egy Astro projekt található: a stúdió bemutatkozó oldala, egy beépített, blokkalapú weboldal-tervező élő előnézettel, valamint az összegző és megrendelő folyamat. A GitHub Pages ezt az oldalt szolgálja ki. Részletek: [studio/README.md](studio/README.md).
+A [`studio/`](studio/) mappában egy Astro projekt található: a stúdió bemutatkozó oldala, egy beépített, blokkalapú weboldal-tervező élő előnézettel, valamint az ajánlatkérő folyamat. A GitHub Pages ezt az oldalt szolgálja ki. Részletek: [studio/README.md](studio/README.md).
 

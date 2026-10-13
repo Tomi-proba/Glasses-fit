@@ -3,10 +3,11 @@ import Layout from '../layouts/Layout.astro';
 import { url } from '../lib/url';
 import { icon } from '../lib/icon';
 ---
-<Layout title="Tervező" description="Tervezd meg a weboldalad lépésről lépésre, élő előnézettel." app>
+<Layout title="Tervező" description="Tervezd meg 5 perc alatt, milyen weboldalt szeretnél, élő előnézettel, és kérj rá ajánlatot." app>
   <h1 class="sr-only">Weboldal-tervező</h1>
   <div class="cfg" data-view="settings">
     <aside class="cfg-panel" id="panel" aria-label="Beállítások">
+      <p class="plan-note"><Fragment set:html={icon('info')} /><span>Ez egy előzetes terv, hogy lásd, milyen lehet az oldalad. A végleges oldalt mi készítjük el neked.</span></p>
       <div class="cfg-progress">
         <div class="progress-top">
           <p id="progress-text" class="mono">1/4 lépés</p>
@@ -18,7 +19,7 @@ import { icon } from '../lib/icon';
       <form class="cfg-body" id="step-body" autocomplete="off" novalidate></form>
       <footer class="cfg-nav">
         <button type="button" class="btn btn-ghost" data-action="prev">{'Vissza'}</button>
-        <a id="next-link" class="btn" href={url('osszegzes')}>Tovább</a>
+        <a id="next-link" class="btn" href={url('ajanlatkeres?terv=1')}>Tovább</a>
       </footer>
     </aside>
 
@@ -50,9 +51,26 @@ import { icon } from '../lib/icon';
 
 <style is:global>
   .cfg { display: grid; grid-template-columns: minmax(360px, 460px) minmax(0, 1fr); height: calc(100dvh - var(--header-h)); border-top: 1px solid var(--line); }
-  .cfg-panel { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; border-right: 1px solid var(--line); background: var(--bg); }
+  .cfg-panel { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; min-height: 0; border-right: 1px solid var(--line); background: var(--bg); }
   .cfg-panel > * { min-width: 0; }
   .cfg-panel { min-width: 0; overflow: hidden; }
+
+  .plan-note { display: flex; gap: 10px; align-items: flex-start; margin: 0; padding: 10px 20px; background: rgba(var(--accent-rgb), 0.08); border-bottom: 1px solid var(--line); font-size: 13px; line-height: 1.4; color: var(--text); }
+  .plan-note .icon { flex: none; width: 17px; height: 17px; color: var(--accent); margin-top: 1px; }
+
+  /* package choice */
+  .pkgs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pkg-pick { position: relative; }
+  .pkg-pick input { position: absolute; opacity: 0; }
+  .pkg-pick > span { display: grid; gap: 2px; height: 100%; padding: 12px 14px; border-radius: var(--r-input); border: 1px solid var(--line); background: var(--surface); cursor: pointer; transition: border-color 0.2s, background-color 0.2s; }
+  .pkg-pick strong { font-weight: 500; font-size: 14.5px; }
+  .pkg-pick small { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+  .pkg-pick em { font-style: normal; font-size: 12.5px; color: var(--muted); line-height: 1.35; margin-top: 4px; }
+  .pkg-pick input:checked + span { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.08); }
+  .pkg-pick input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .locked { display: grid; gap: 10px; justify-items: start; padding: 14px; border: 1px dashed var(--line-strong); border-radius: var(--r-input); }
+  .locked p { font-size: 14px; color: var(--muted); }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: 12px; font-weight: 500; }
 
   .cfg-progress { padding: 16px 20px 0; border-bottom: 1px solid var(--line); }
   .progress-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }

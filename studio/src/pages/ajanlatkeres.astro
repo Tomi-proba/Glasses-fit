@@ -1,0 +1,324 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { PACKAGES, VAT_NOTE, MONTHLY_NOTE, priceFrom } from '../config/pricing';
+import { QUOTE_OPTIONS, ASSET_KINDS } from '../lib/quote.js';
+import { url } from '../lib/url';
+import { icon } from '../lib/icon';
+
+const pkgPrice = Object.fromEntries(PACKAGES.map((p) => [p.id, priceFrom(p.priceFrom)]));
+const radios = (name: string, list: string[][], err = name) => list.map(([v, t]) => (
+  `<label class="opt"><input type="radio" name="${name}" value="${v}" aria-describedby="${err}-err"><span>${t}</span></label>`
+)).join('');
+---
+<Layout title="Ajánlatkérés" description="Írd le, milyen weboldalt szeretnél, és 24-48 órán belül személyre szabott ajánlatot küldünk.">
+  <section class="container quote-head">
+    <h1 class="display">Kérj ajánlatot.</h1>
+    <p class="lede">Írd le, milyen oldalt szeretnél. 24-48 órán belül személyre szabott ajánlattal jelentkezünk. Az ajánlatkérés ingyenes, és nem kötelez semmire.</p>
+  </section>
+
+  <section class="container quote-grid">
+    <form id="quote-form" class="quote-form" novalidate>
+      <div class="design-card panel" id="design-card" hidden>
+        <div class="design-thumb" aria-hidden="true"><iframe id="design-frame" title="A terved előnézete" tabindex="-1" loading="lazy"></iframe></div>
+        <div class="design-info">
+          <label class="check">
+            <input type="checkbox" id="attach-design" name="attachDesign" />
+            <span><strong id="design-title">Csatolom a tervezőben összeállított tervet</strong><small class="muted" id="design-meta"></small></span>
+          </label>
+          <a class="link" href={url('tervezo')}>Visszamegyek szerkeszteni</a>
+        </div>
+      </div>
+
+      <fieldset class="group">
+        <legend>Kapcsolat</legend>
+        <div class="row">
+          <div class="field"><label for="q-name">Név</label><input id="q-name" name="name" autocomplete="name" required aria-describedby="name-err" /><p class="field-err" id="name-err"></p></div>
+          <div class="field"><label for="q-company">Cégnév</label><input id="q-company" name="company" autocomplete="organization" required aria-describedby="company-err" /><p class="field-err" id="company-err"></p></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="q-email">E-mail</label><input id="q-email" name="email" type="email" autocomplete="email" required aria-describedby="email-err" /><p class="field-err" id="email-err"></p></div>
+          <div class="field"><label for="q-phone">Telefon <span class="opt-tag">nem kötelező</span></label><input id="q-phone" name="phone" type="tel" autocomplete="tel" aria-describedby="phone-err" /><p class="field-err" id="phone-err"></p></div>
+        </div>
+      </fieldset>
+
+      <fieldset class="group">
+        <legend>A vállalkozásod</legend>
+        <div class="field"><label for="q-activity">Mivel foglalkozik a vállalkozás?</label><textarea id="q-activity" name="activity" rows="3" required aria-describedby="activity-hint activity-err" placeholder="pl. kutyakozmetika Budapesten, főleg törzsvendégekkel"></textarea><p class="hint" id="activity-hint">Pár mondat is elég: mit csinálsz, kiknek, és mit várnál az oldaltól.</p><p class="field-err" id="activity-err"></p></div>
+      </fieldset>
+
+      <fieldset class="group">
+        <legend>Az oldal</legend>
+        <div class="choice-field" role="radiogroup" aria-labelledby="pkg-label">
+          <span class="label" id="pkg-label">Melyik csomag érdekel?</span>
+          <div class="pkg-opts">
+            {QUOTE_OPTIONS.package.map(([v, t]) => (
+              <label class="pkg-opt">
+                <input type="radio" name="package" value={v} aria-describedby="package-err" />
+                <span><strong>{t}</strong><small class="muted">{pkgPrice[v] ?? 'Segítünk választani'}</small></span>
+              </label>
+            ))}
+          </div>
+          <p class="field-err" id="package-err"></p>
+        </div>
+        <div class="choice-field" role="radiogroup" aria-labelledby="pages-label">
+          <span class="label" id="pages-label">Nagyjából hány aloldal kell?</span>
+          <div class="opts" set:html={radios('pages', QUOTE_OPTIONS.pages)} />
+          <p class="field-err" id="pages-err"></p>
+        </div>
+        <div class="choice-field">
+          <span class="label">Mi van már meg?</span>
+          <div class="asset-table">
+            {ASSET_KINDS.map(([k, t]) => (
+              <div class="asset-row" role="radiogroup" aria-labelledby={`asset-${k}-label`}>
+                <span id={`asset-${k}-label`}>{t}</span>
+                <div class="opts" set:html={radios(`asset_${k}`, QUOTE_OPTIONS.assets)} />
+                <p class="field-err" id={`asset_${k}-err`}></p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="choice-field" role="radiogroup" aria-labelledby="domain-label">
+          <span class="label" id="domain-label">Van már domained?</span>
+          <div class="opts" set:html={radios('domain', QUOTE_OPTIONS.domain)} />
+          <p class="field-err" id="domain-err"></p>
+          <div class="field domain-name" id="domain-name" hidden><label for="q-domain">Melyik? <span class="opt-tag">nem kötelező</span></label><input id="q-domain" name="domainName" placeholder="pl. mancskozmetika.hu" /></div>
+        </div>
+        <div class="field"><label for="q-examples">Példák olyan oldalakra, amik tetszenek <span class="opt-tag">nem kötelező</span></label><textarea id="q-examples" name="examples" rows="3" aria-describedby="examples-hint examples-err" placeholder="https://..."></textarea><p class="hint" id="examples-hint">Soronként egy link. Írhatod mellé, mi tetszik bennük, a megjegyzéshez.</p><p class="field-err" id="examples-err"></p></div>
+        <div class="choice-field" role="radiogroup" aria-labelledby="deadline-label">
+          <span class="label" id="deadline-label">Mikorra kell az oldal?</span>
+          <div class="opts" set:html={radios('deadline', QUOTE_OPTIONS.deadline)} />
+          <p class="field-err" id="deadline-err"></p>
+        </div>
+        <div class="field"><label for="q-notes">Egyéb kérés, megjegyzés <span class="opt-tag">nem kötelező</span></label><textarea id="q-notes" name="notes" rows="4" aria-describedby="notes-err"></textarea><p class="field-err" id="notes-err"></p></div>
+      </fieldset>
+
+      <div class="hp" aria-hidden="true"><label for="q-website">Weboldal</label><input id="q-website" name="website" tabindex="-1" autocomplete="off" /></div>
+
+      <div class="submit-area">
+        <label class="check">
+          <input type="checkbox" name="privacy" aria-describedby="privacy-err" />
+          <span>Elolvastam és elfogadom az <a class="link" href={url('adatvedelem')} target="_blank" rel="noopener">adatkezelési tájékoztatót</a>.</span>
+        </label>
+        <p class="field-err" id="privacy-err"></p>
+        <button class="btn btn-lg" type="submit" id="q-submit">Ajánlatot kérek <Fragment set:html={icon('next')} /></button>
+        <p class="hint" id="form-status" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+
+    <aside class="quote-side">
+      <div class="panel side-card">
+        <h2>Mi történik ezután?</h2>
+        <ol role="list">
+          <li><span class="mono">01</span>24-48 órán belül személyre szabott ajánlatot küldünk.</li>
+          <li><span class="mono">02</span>Ha megfelel, egyeztetjük a részleteket és a szövegeket.</li>
+          <li><span class="mono">03</span>Elkészítjük az oldalad, és két körben finomítjuk.</li>
+          <li><span class="mono">04</span>Élesítjük a saját domaineden.</li>
+        </ol>
+        <dl class="side-prices">
+          {PACKAGES.map((p) => <div><dt>{p.name}</dt><dd>{priceFrom(p.priceFrom)}</dd></div>)}
+        </dl>
+        <p class="hint">{VAT_NOTE} {MONTHLY_NOTE}</p>
+      </div>
+    </aside>
+  </section>
+</Layout>
+
+<style>
+  .quote-head { padding-block: clamp(48px, 7vw, 96px) clamp(28px, 4vw, 48px); display: grid; gap: 20px; }
+  .quote-head h1 { font-size: clamp(2.6rem, 6vw, 5rem); }
+  .quote-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: clamp(32px, 5vw, 72px); align-items: start; padding-bottom: var(--section); }
+  .quote-form { display: grid; gap: 40px; }
+  .group { border: 0; padding: 0; margin: 0; display: grid; gap: 20px; min-width: 0; }
+  .group legend { font-family: var(--font-display); font-weight: 600; font-size: 1.5rem; letter-spacing: -0.02em; padding: 0 0 20px; border-bottom: 1px solid var(--line); width: 100%; margin-bottom: 4px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .row > .field { min-width: 0; }
+  .opt-tag { color: var(--muted); font-weight: 400; font-size: 12.5px; margin-left: 4px; }
+  .choice-field { display: grid; gap: 10px; }
+  .choice-field > .label { font-size: 14px; font-weight: 500; }
+
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opts :global(.opt) { position: relative; }
+  .opts :global(.opt input), .pkg-opt input, .check input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .opts :global(.opt span) { display: block; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 14.5px; cursor: pointer; transition: border-color 0.2s, background-color 0.2s; }
+  .opts :global(.opt span:hover) { border-color: var(--line-strong); }
+  .opts :global(.opt input:checked + span) { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.1); }
+  .opts :global(.opt input:focus-visible + span) { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .pkg-opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .pkg-opt span { display: grid; gap: 4px; height: 100%; padding: 14px 16px; border-radius: var(--r-input); border: 1px solid var(--line); background: var(--surface); cursor: pointer; transition: border-color 0.2s, background-color 0.2s; }
+  .pkg-opt strong { font-weight: 500; }
+  .pkg-opt small { font-size: 13px; }
+  .pkg-opt span:hover { border-color: var(--line-strong); }
+  .pkg-opt input:checked + span { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.1); }
+  .pkg-opt input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .asset-table { display: grid; border-top: 1px solid var(--line); }
+  .asset-row { display: grid; grid-template-columns: 110px minmax(0, 1fr); align-items: center; gap: 8px 16px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .asset-row .field-err { grid-column: 2; }
+  .domain-name { margin-top: 6px; max-width: 420px; }
+
+  .check { position: relative; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+  .check > span:first-of-type { line-height: 1.45; }
+  .check::before { content: ''; flex: none; width: 22px; height: 22px; margin-top: 1px; border-radius: 6px; border: 1.5px solid var(--line-strong); background: var(--surface) no-repeat center / 14px; transition: background-color 0.2s, border-color 0.2s; }
+  .check:has(input:checked)::before { background-color: var(--accent); border-color: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5 6.5 12 13 4.5' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+  .check:has(input:focus-visible)::before { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .check:has(input[aria-invalid='true'])::before { border-color: var(--danger); }
+  .check strong { display: block; font-weight: 500; }
+  .check small { display: block; font-size: 13px; margin-top: 2px; }
+
+  .design-card { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 20px; align-items: center; padding: 14px; }
+  .design-thumb { position: relative; aspect-ratio: 16 / 10; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: var(--bg); }
+  .design-thumb iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 800px; max-width: none; border: 0; transform-origin: 0 0; transform: scale(calc(200 / 1280)); pointer-events: none; }
+  .design-info { display: grid; gap: 12px; justify-items: start; }
+  .design-card:has(input:not(:checked)) .design-thumb { opacity: 0.4; }
+
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .submit-area { display: grid; gap: 16px; justify-items: start; padding-top: 8px; border-top: 1px solid var(--line); padding-top: 28px; }
+
+  .quote-side { position: sticky; top: calc(var(--header-h) + 24px); }
+  .side-card { padding: clamp(22px, 3vw, 32px); display: grid; gap: 20px; }
+  .side-card h2 { font-size: 1.4rem; }
+  .side-card ol { display: grid; gap: 0; }
+  .side-card li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 8px; padding: 12px 0; border-top: 1px solid var(--line); font-size: 15px; }
+  .side-card .mono { color: var(--accent); padding-top: 3px; }
+  .side-prices { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .side-prices div { display: flex; justify-content: space-between; gap: 12px; }
+  .side-prices dt { color: var(--muted); }
+  .side-prices dd { font-variant-numeric: tabular-nums; font-weight: 500; white-space: nowrap; }
+
+  @media (max-width: 900px) {
+    .quote-grid { grid-template-columns: 1fr; }
+    .quote-side { position: static; order: -1; }
+    .side-card ol { display: none; }
+  }
+  @media (max-width: 600px) {
+    .row, .pkg-opts { grid-template-columns: 1fr; }
+    .asset-row { grid-template-columns: 1fr; }
+    .asset-row .field-err { grid-column: 1; }
+    .design-card { grid-template-columns: 1fr; }
+    .design-thumb { max-width: 240px; }
+    .design-thumb iframe { transform: scale(calc(240 / 1280)); }
+    .submit-area .btn { width: 100%; }
+  }
+</style>
+
+<script>
+  import { validateQuote, looksLikeSpam, buildQuoteRequest, sendQuoteRequest } from '../lib/quote.js';
+  import { hasSavedConfig, loadConfig, loadPackage, loadQuoteDraft, saveQuoteDraft, clearQuoteDraft } from '../lib/store.js';
+  import { pagesOf } from '../template/render.js';
+  import blank from '../template/site.config.json';
+
+  const BASE = document.documentElement.dataset.base || '/';
+  const startedAt = Date.now();
+  const form = document.getElementById('quote-form') as HTMLFormElement;
+  const params = new URLSearchParams(location.search);
+  const fromPlanner = params.has('terv');
+  const attach = document.getElementById('attach-design') as HTMLInputElement;
+  const set = (name: string, value: string) => {
+    const els = form.elements.namedItem(name);
+    if (!els) return;
+    if (els instanceof RadioNodeList) { for (const r of els as unknown as HTMLInputElement[]) r.checked = r.value === value; }
+    else if ((els as HTMLInputElement).type !== 'checkbox') (els as HTMLInputElement).value = value;
+  };
+
+  // Restore an unfinished request, then apply what the link or the tervező says.
+  const draft = loadQuoteDraft();
+  for (const [k, v] of Object.entries(draft)) if (typeof v === 'string') set(k, v);
+
+  const design = hasSavedConfig() ? loadConfig() : null;
+  if (design) {
+    const card = document.getElementById('design-card')!;
+    const pages = pagesOf(design);
+    const blocks = pages.reduce((n: number, p: { blocks?: unknown[] }) => n + (p.blocks?.length || 0), 0);
+    const pkg = loadPackage();
+    document.getElementById('design-title')!.textContent = fromPlanner ? 'A terved csatolva' : 'Csatolom a tervezőben összeállított tervet';
+    document.getElementById('design-meta')!.textContent = `${design.brand?.name || 'Névtelen terv'} · ${pages.length} oldal, ${blocks} blokk · ${pkg === 'alap' ? 'Alap' : 'Prémium 3D'} csomag`;
+    attach.checked = fromPlanner || draft.attachDesign === true;
+    card.hidden = false;
+    // Live thumbnail: the preview page renders whatever config it receives.
+    const frame = document.getElementById('design-frame') as HTMLIFrameElement;
+    addEventListener('message', (e) => {
+      if (e.origin === location.origin && e.data?.type === 'preview-ready') frame.contentWindow?.postMessage({ type: 'site-config', config: design, pageId: pages[0]?.id }, location.origin);
+    });
+    frame.src = `${BASE}sablon/elonezet?thumb`;
+    if (fromPlanner) {
+      set('package', pkg);
+      if (!draft.activity && design.brand?.activity) set('activity', design.brand.activity);
+      // The blank template's placeholder name is not a real company name.
+      if (!draft.company && design.brand?.name && design.brand.name !== blank.brand.name) set('company', design.brand.name);
+      const n = pages.length;
+      if (!draft.pages) set('pages', n <= 1 ? '1' : n <= 3 ? '2-3' : n <= 6 ? '4-6' : '7+');
+    }
+  }
+  const asked = params.get('csomag');
+  if (asked === 'alap' || asked === 'premium') set('package', asked);
+
+  const values = () => {
+    const d = new FormData(form);
+    const out: Record<string, string | boolean> = {};
+    for (const [k, v] of d.entries()) out[k] = String(v);
+    out.privacy = d.has('privacy');
+    out.attachDesign = attach.checked;
+    return out;
+  };
+
+  const domainName = document.getElementById('domain-name')!;
+  const syncDomain = () => { domainName.hidden = values().domain !== 'yes'; };
+  syncDomain();
+
+  let draftTimer: ReturnType<typeof setTimeout>;
+  form.addEventListener('input', () => {
+    syncDomain();
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(() => { const { privacy, website, ...rest } = values(); saveQuoteDraft(rest); }, 400);
+  });
+  form.addEventListener('change', (e) => {
+    const el = e.target as HTMLInputElement;
+    // Clear an error as soon as the field is fixed.
+    if (el.getAttribute('aria-invalid') === 'true' || el.type === 'radio' || el.type === 'checkbox') {
+      const errs = validateQuote(values());
+      if (!errs[el.name]) {
+        form.querySelectorAll(`[name="${el.name}"]`).forEach((f) => f.removeAttribute('aria-invalid'));
+        const msg = document.getElementById(`${el.name}-err`);
+        if (msg) msg.textContent = '';
+      }
+    }
+  });
+
+  const status = document.getElementById('form-status')!;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = values();
+    const errors = validateQuote(f);
+    form.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+    form.querySelectorAll('.field-err').forEach((el) => { el.textContent = ''; });
+    let first: HTMLElement | null = null;
+    for (const [name, msg] of Object.entries(errors)) {
+      const err = document.getElementById(`${name}-err`);
+      if (err) err.textContent = msg;
+      const fields = form.querySelectorAll<HTMLInputElement>(`[name="${name}"]`);
+      fields.forEach((el) => el.setAttribute('aria-invalid', 'true'));
+      if (!first && fields[0]) first = fields[0];
+    }
+    if (first) {
+      status.textContent = `${Object.keys(errors).length} mezőt kell még javítani.`;
+      first.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      first.focus({ preventScroll: true });
+      return;
+    }
+    const button = document.getElementById('q-submit') as HTMLButtonElement;
+    button.disabled = true;
+    status.textContent = 'Küldés…';
+    // Bots get a quiet "success" and nothing is sent.
+    if (looksLikeSpam(f, startedAt)) { location.href = `${BASE}koszonjuk`; return; }
+    const request = buildQuoteRequest({ fields: f, design: attach.checked ? design : null, designPackage: loadPackage() });
+    const result = await sendQuoteRequest(request).catch(() => ({ ok: false, message: '' }));
+    if (!result.ok) {
+      button.disabled = false;
+      status.textContent = (result as { message?: string }).message || 'Nem sikerült elküldeni. Próbáld újra, vagy írj nekünk e-mailt.';
+      return;
+    }
+    clearQuoteDraft();
+    location.href = `${BASE}koszonjuk`;
+  });
+</script>

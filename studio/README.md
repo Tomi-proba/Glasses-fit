@@ -1,13 +1,13 @@
-# Vonal Stúdió – weboldal-készítő oldal beépített tervezővel
+# Vonal Stúdió – weboldal-készítő oldal tervezővel és ajánlatkéréssel
 
 Egyetlen Astro projekt, egységes fejléccel, lábléccel és dizájnnal:
 
 | Útvonal | Mi ez |
 | --- | --- |
 | `/` | A stúdió bemutatása: hero 3D-vel, hogyan működik, mit kapsz, minták, GYIK, kapcsolat |
-| `/tervezo` | A tervező: bal oldalon a beállítások, jobb oldalon a sablon élő előnézete |
-| `/osszegzes` | Összegzés, nagy előnézet, megrendelő űrlap, „Megvásárlás – 250 000 Ft” |
-| `/koszonjuk` | Sikeres megrendelés utáni oldal |
+| `/tervezo` | A tervező: előzetes terv élő előnézettel, a végén „Ajánlatot kérek erre a tervre” |
+| `/ajanlatkeres` | Ajánlatkérő űrlap, a tervezőből a terv automatikusan csatolódik |
+| `/koszonjuk` | Az elküldött ajánlatkérés utáni oldal |
 | `/aszf`, `/adatvedelem` | Helyőrző jogi oldalak |
 | `/sablon/elonezet` | A termék (ügyfél-sablon) előnézete, ezt tölti be a tervező |
 | `/sablon/minta/<id>/…` | A négy minta weboldal, minden aloldalukkal |
@@ -28,22 +28,22 @@ GitHub Pages-re a `.github/workflows/deploy-pages.yml` buildel, `BASE_PATH=/Glas
 
 - Valódi, statikusan előrenderelt útvonalak (gyors, SEO-barát), közös layouttal. A navigáció oldalak között CSS View Transitions-szel finom.
 - Alapból nem küld JavaScriptet; csak a 3D, a tervező és az animációk töltődnek be ott, ahol kellenek (Lighthouse 97-100).
-- Ugyanez a projekt később szerveroldali végpontokat is kap (Claude API szövegjavaslat, fizetés, rendelés-küldés), csak egy tárhely-adapter kell hozzá.
+- Ugyanez a projekt később szerveroldali végpontokat is kap (Claude API szövegjavaslat, ajánlatkérés küldése), csak egy tárhely-adapter kell hozzá.
 
 ## Mappaszerkezet
 
 ```
 studio/
-├── src/config/business.ts      ← a stúdió neve, elérhetősége, ÁRA (pricing.amount)
+├── src/config/business.ts      ← a stúdió neve, elérhetősége
+├── src/config/pricing.json     ← CSOMAGOK ÉS ÁRAK (Alap, Prémium 3D, „-tól” árak)
 ├── src/layouts/Layout.astro    ← közös fejléc, lábléc, SEO, Lenis + GSAP
 ├── src/layouts/TemplatePage.astro ← a termék egy oldalának renderelése
 ├── src/pages/                  ← útvonalak (lásd fent), sitemap.xml, robots.txt
 ├── src/components/Hero3D.astro ← a főoldal 3D eleme
 ├── src/lib/
 │   ├── configurator.js         ← a tervező
-│   ├── store.js                ← mentés a böngészőbe (terv, ügyféladatok, utolsó rendelés)
-│   ├── payment.js              ← startPayment(): IDE KERÜL a Stripe/Barion
-│   ├── order.js                ← buildOrder(), validateOrder(), submitOrder(): IDE KERÜL az e-mail/adatbázis
+│   ├── store.js                ← mentés a böngészőbe (terv, csomag, ajánlatkérő piszkozat)
+│   ├── quote.js                ← validateQuote(), buildQuoteRequest(), sendQuoteRequest(): IDE KERÜL az e-mail-küldés
 │   └── ai-copy.js              ← suggestCopy(): IDE KERÜL a Claude API (szerveren keresztül)
 ├── src/template/               ← AZ ÜGYFÉL-SABLON (a termék)
 │   ├── blocks.js               ← a 16 blokktípus leírása (mezők, alapértékek)
@@ -103,7 +103,7 @@ A tervező a `fields` leírásból automatikusan elkészíti a szerkesztő űrla
 npm run export-site -- rendeles.json [kimeneti-mappa]
 ```
 
-A bemenet lehet egy site config, vagy a teljes rendelés JSON-je (ekkor a `siteConfig`-ot használja). A kimenet:
+A bemenet lehet egy site config, vagy a teljes ajánlatkérés JSON-je (ekkor a `design`-t használja). A kimenet:
 - oldalanként egy `index.html`: a főoldal a gyökérben, az aloldalak a `/<slug>/` mappákban, relatív linkekkel;
 - minifikált CSS és JS (a Three.js külön, lazy-loaded chunk);
 - a feltöltött képek fájlként kibontva (`assets/uploads/`);
@@ -111,11 +111,14 @@ A bemenet lehet egy site config, vagy a teljes rendelés JSON-je (ekkor a `siteC
 
 A mappa bármilyen statikus tárhelyre feltölthető. Élesítés előtt állítsd be a `meta.siteUrl`-t a végleges domainre.
 
-## Vásárlás (előkészítve, fizetés nélkül)
+## Üzleti modell: ajánlatkérés (nincs online fizetés)
 
-- **Ár:** `src/config/business.ts` → `pricing.amount` (250 000 Ft, alanyi adómentes, a `taxNote` szöveggel).
-- **Folyamat:** `/osszegzes` → `validateOrder()` → `buildOrder()` (config + ügyfél + számlázás + elfogadások egy JSON-ben) → `startPayment()` (most helyőrző ablak) → `submitOrder()` (most csak helyben menti a rendelés összefoglalóját) → `/koszonjuk`.
-- **Bekötés később:** a jól jelölt blokkok a `payment.js`-ben (Stripe Checkout / Barion vázlattal) és az `order.js`-ben (e-mail vagy adatbázis). Az árat mindig a szerver vegye a saját konfigurációjából, a böngészőtől kapottban nem szabad megbízni.
+A látogató a tervezőben ötletet kap és megmutatja, milyen oldalt szeretne; a végleges oldalt a stúdió készíti el.
+
+- **Csomagok és árak:** `src/config/pricing.json`. Itt módosítható a név, a „-tól” ár (`priceFrom`), a leírás és a lista; a főoldal csomag-összehasonlítója, a tervező csomagválasztója és az ajánlatkérő is ebből olvas. Az árak alanyi adómentesek, nincs ÁFA, és nincs havidíj.
+- **Tervező:** az első lépésben választható a csomag. Alapnál a 3D lehetőségek „Prémium” jelölést kapnak és nem választhatók (a nyitókép álló képként jelenik meg). Csak a fő beállítások maradtak: téma, színek, betűtípusok, 3D be/ki, oldalak, blokkok és sorrendjük, szövegek, képek, elérhetőségek.
+- **Ajánlatkérés (`/ajanlatkeres`):** a tervező végéről (`?terv=1`, a terv csatolva, a csomag és az aloldalak száma előtöltve) vagy közvetlenül (`?csomag=alap|premium`). Validáció mezőnként, honeypot mező és minimális kitöltési idő a spam ellen, a félkész űrlap a böngészőben megmarad.
+- **Küldés:** `buildQuoteRequest()` egy JSON-be gyűjti az űrlapot és a tervet (`design`, 2-es verziójú site config). A `sendQuoteRequest()` most csak helyben ment egy összefoglalót a /koszonjuk oldalnak; a függvényben jól jelölt helyen van a Formspree és a Resend / saját backend bekötésének vázlata. API-kulcs csak szerveren lehet.
 
 ## Szöveg javaslat (Claude API, később)
 

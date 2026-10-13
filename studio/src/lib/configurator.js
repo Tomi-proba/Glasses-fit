@@ -1,9 +1,11 @@
-// /tervezo: builds a site config (pages made of blocks + a global theme), streams it to the
-// live preview (iframe of /sablon/elonezet) and autosaves it for /osszegzes.
+// /tervezo: builds a draft site config (pages made of blocks + a global theme), streams it to the
+// live preview (iframe of /sablon/elonezet) and autosaves it, so /ajanlatkeres can attach it.
+// It is a sketch for the quote, not the final site, so only the main settings are offered.
 import { FONTS, SOCIAL_LABELS, SOCIAL_TYPES, THEME_PRESETS, contrast, esc, icon } from '../template/render.js';
 import { BLOCK_TYPES, BLOCK_ORDER, ICON_CHOICES, createBlock, duplicateBlock, withDefaults, newId, slugify } from '../template/blocks.js';
 import { SAMPLES, blankConfig, sampleConfig } from '../template/samples.js';
-import { loadConfig, saveConfig, loadStep, saveStep, hasSavedConfig } from './store.js';
+import { loadConfig, saveConfig, loadStep, saveStep, hasSavedConfig, loadPackage, savePackage } from './store.js';
+import pricing from '../config/pricing.json';
 import { suggestCopy, AI_COPY_ENABLED } from './ai-copy.js';
 
 const BASE = document.documentElement.dataset.base || '/';
@@ -13,6 +15,7 @@ const PALETTE = ['#00d4ff', '#3b6cff', '#7c5cff', '#ff4d8d', '#ff5d4f', '#ff8a2a
 
 let config = null;
 let step = 0;
+let pkg = 'premium';
 const ui = { pageId: null, openBlock: null, picker: false, customLinks: new Set() };
 
 /* ------------------------------------------------------------- utilities */
@@ -81,10 +84,10 @@ function textInput(label, path, { type = 'text', hint = '', rows = 0, placeholde
   return `<div class="field"><label for="${id}">${esc(label)}</label>${control}${hintEl(id, hint)}</div>`;
 }
 
-function select(label, path, options, { number = false, hint = '' } = {}) {
+function select(label, path, options, { number = false, hint = '', disabled = [] } = {}) {
   const id = uid();
   const value = getPath(config, path);
-  const opts = options.map(([v, text]) => `<option value="${esc(v)}"${String(v) === String(value) ? ' selected' : ''}>${esc(text)}</option>`).join('');
+  const opts = options.map(([v, text]) => `<option value="${esc(v)}"${String(v) === String(value) ? ' selected' : ''}${disabled.includes(v) ? ' disabled' : ''}>${esc(text)}</option>`).join('');
   return `<div class="field"><label for="${id}">${esc(label)}</label><select id="${id}" data-path="${esc(path)}"${number ? ' data-kind="number"' : ''}${described(id, hint)}>${opts}</select>${hintEl(id, hint)}</div>`;
 }
 
@@ -145,7 +148,12 @@ function renderField(def, path) {
     case 'textarea': return textInput(def.label, path, { rows: def.rows || 3, hint: def.hint });
     case 'paragraphs': return textInput(def.label, path, { rows: def.rows || 5, hint: def.hint, kind: 'paragraphs' });
     case 'markdown': return textInput(def.label, path, { rows: def.rows || 8, hint: def.hint });
-    case 'select': return select(def.label, path, def.options, { number: def.number, hint: def.hint });
+    case 'select':
+      // The 3D effects belong to the Prémium package.
+      if (def.key === 'visual' && pkg === 'alap') {
+        return select(def.label, path, def.options.map(([v, t]) => [v, IS_3D(v) ? `${t} (Prémium)` : t]), { disabled: ['particles', 'relief'], hint: 'A 3D látvány a Prémium 3D csomag része. Az első lépésben válthatsz.' });
+      }
+      return select(def.label, path, def.options, { number: def.number, hint: def.hint });
     case 'toggle': return toggle(def.label, path);
     case 'link': return linkField(def.label, path, def.hint);
     case 'icon': return select(def.label, path, ICON_CHOICES.map((n) => [n, n]));
@@ -164,13 +172,35 @@ function renderField(def, path) {
 
 const sub = (text) => `<h3 class="sub">${esc(text)}</h3>`;
 
+/* ------------------------------------------------------------- packages */
+
+const IS_3D = (v) => v === 'particles' || v === 'relief';
+const heroes = () => pages().flatMap((p) => (p.blocks || []).filter((b) => b.type === 'hero'));
+const has3D = () => heroes().some((b) => IS_3D(b.visual ?? 'particles'));
+const priceText = (n) => `${new Intl.NumberFormat(pricing.locale, { style: 'currency', currency: pricing.currency, maximumFractionDigits: 0 }).format(n)}-tól`;
+
+/** Turns the 3D effect of every hero on or off; off keeps the image as a still. */
+function set3D(on) {
+  for (const b of heroes()) {
+    const v = b.visual ?? 'particles';
+    if (on && !IS_3D(v) && v !== 'none') b.visual = b.last3d || 'particles';
+    if (!on && IS_3D(v)) { b.last3d = v; b.visual = 'image'; }
+  }
+}
+
 /* ------------------------------------------------------------------ steps */
 
 const STEPS = [
   {
     title: 'Kezdés',
-    lead: 'Indulj egy mintából vagy üres lappal, és add meg az alapadatokat. Később minden módosítható.',
+    lead: 'Válassz csomagot, indulj egy mintából vagy üres lappal, és add meg az alapadatokat. Később minden módosítható.',
     render: () => `
+      <div class="pkgs" role="radiogroup" aria-label="Csomag">
+        ${pricing.packages.map((p) => `<label class="pkg-pick"><input type="radio" name="package" value="${p.id}" data-action-change="package" ${p.id === pkg ? 'checked' : ''}>
+          <span><strong>${esc(p.name)}</strong><small>${esc(priceText(p.priceFrom))}</small><em>${esc(p.id === 'premium' ? '3D elemek, látványos animációk' : 'Letisztult, animált, 3D nélkül')}</em></span></label>`).join('')}
+      </div>
+      <p class="hint">${esc(pricing.vatNote)} ${esc(pricing.monthlyNote)} A pontos árat az ajánlatban adjuk meg.</p>
+      ${sub('Kiindulás')}
       <div class="starts">
         <button type="button" class="start" data-action="start" data-sample=""><span class="start-art blank">${icon('plus')}</span><span><strong>Kezdj üresen</strong><small>Néhány alapblokk, semleges stílus</small></span></button>
         ${SAMPLES.map((s) => `<button type="button" class="start" data-action="start" data-sample="${s.id}"><span class="start-art" style="--a:${esc(s.config.theme.colors.primary)};--b:${esc(s.config.theme.colors.background)}"></span><span><strong>${esc(s.label)}</strong><small>${esc(s.style)}</small></span></button>`).join('')}
@@ -178,22 +208,18 @@ const STEPS = [
       <p class="hint">A minta csak kiindulópont: lecseréli a mostani tervet, de az előzőt egy kattintással visszahozhatod.</p>
       ${sub('Alapadatok')}
       ${textInput('Cégnév', 'brand.name', { placeholder: 'pl. Mancs Kutyakozmetika' })}
-      ${textInput('Tevékenység', 'brand.activity', { placeholder: 'Bármi lehet: kutyakozmetika, könyvelőiroda, DJ…', hint: 'Szabadon írd be. A szövegjavaslat és a keresőknek szóló leírás is ebből indul ki.', list: 'activity-ideas' })}
+      ${textInput('Tevékenység', 'brand.activity', { placeholder: 'Bármi lehet: kutyakozmetika, könyvelőiroda, DJ…', hint: 'Szabadon írd be. A szövegjavaslat ebből indul ki.', list: 'activity-ideas' })}
       <datalist id="activity-ideas">${['fodrászszalon', 'kutyakozmetika', 'könyvelőiroda', 'DJ', 'fotós', 'étterem', 'masszőr', 'villanyszerelő', 'ügyvédi iroda', 'edzőstúdió', 'cukrászda', 'autószerviz'].map((a) => `<option value="${a}"></option>`).join('')}</datalist>
       ${textInput('Szlogen', 'brand.tagline')}
       <div class="suggest">
         <button type="button" class="btn btn-sm btn-ghost" data-action="suggest">${icon('magic')} Szöveg javaslat</button>
         <p class="hint">${AI_COPY_ENABLED ? 'A cégnév és a tevékenység alapján megírjuk a fő szövegeket.' : 'Előzetes változat: egyszerű sablonszövegeket ad. Hamarosan mesterséges intelligencia írja meg a szövegeket a megadott adatokból.'}</p>
       </div>
-      ${imageField('Logó', 'brand.logo', { maxSize: 400, alpha: true, alt: 'brand.logoAlt', hint: 'Négyzetes SVG vagy PNG ajánlott. Ha üres, csak a cégnév jelenik meg.' })}
-      <div class="row">${textInput('Fejléc gomb szövege', 'brand.ctaText', { hint: 'Üresen hagyva nincs gomb.' })}${linkField('Fejléc gomb célja', 'brand.ctaLink')}</div>
-      ${sub('Kereső és megosztás')}
-      ${textInput('Oldal címe (böngészőfül, Google)', 'meta.title', { hint: 'Ideálisan 50-60 karakter.' })}
-      ${textInput('Leírás (Google találat)', 'meta.description', { rows: 3, hint: 'Ideálisan 120-160 karakter.' })}`,
+      ${imageField('Logó', 'brand.logo', { maxSize: 400, alpha: true, alt: 'brand.logoAlt', hint: 'Négyzetes SVG vagy PNG ajánlott. Ha üres, csak a cégnév jelenik meg.' })}`,
   },
   {
     title: 'Stílus',
-    lead: 'Színek, betűk, formák és mozgás. Minden változás azonnal látszik.',
+    lead: 'Téma, színek, betűk és a 3D. A finomhangolást a végleges oldalnál mi végezzük el.',
     render: () => {
       const t = config.theme;
       const fonts = Object.keys(FONTS).map((f) => [f, f]);
@@ -206,22 +232,18 @@ const STEPS = [
           <label><input type="radio" name="mode" value="dark" data-action-change="mode" ${t.mode !== 'light' ? 'checked' : ''}><span>Sötét</span></label>
           <label><input type="radio" name="mode" value="light" data-action-change="mode" ${t.mode === 'light' ? 'checked' : ''}><span>Világos</span></label>
         </div>
-        <p class="hint">A téma váltása beállítja a háttér és a szöveg színét. Utána ezeket is egyenként módosíthatod.</p>
       </div>
       <div class="field"><span class="label">Gyors választás a fő színhez</span><div class="swatches">${swatches}</div></div>
       <div class="row">${colorField('Fő szín (gombok)', 'theme.colors.primary')}${colorField('Kiemelő szín', 'theme.colors.accent')}</div>
-      <div class="row">${colorField('Háttér', 'theme.colors.background')}${colorField('Szöveg', 'theme.colors.text')}</div>
       ${lowAccent ? '<p class="hint">A kiemelő szín halvány ezen a háttéren, ezért szövegben automatikusan kontrasztosabb árnyalatát használjuk.</p>' : ''}
-      ${sub('Tipográfia')}
-      <div class="row">${select('Címsor betűtípus', 'theme.headingFont', fonts)}${select('Szöveg betűtípus', 'theme.bodyFont', fonts)}</div>
-      ${select('Címsorok', 'theme.headingCase', [['normal', 'Normál'], ['upper', 'NAGYBETŰS, ritkított']])}
-      <div class="field"><label for="fs">Betűméret: <output id="fs-out">${Math.round(t.fontScale * 100)}%</output></label><input id="fs" type="range" min="0.85" max="1.25" step="0.05" value="${t.fontScale}" data-path="theme.fontScale" data-kind="number"></div>
-      ${sub('Formák')}
-      <div class="field"><label for="rad">Lekerekítés: <output id="rad-out">${t.radius}px</output></label><input id="rad" type="range" min="0" max="32" step="2" value="${t.radius}" data-path="theme.radius" data-kind="number"></div>
-      <div class="row">${select('Árnyékok', 'theme.shadow', [['none', 'Nincs'], ['soft', 'Lágy'], ['strong', 'Erős']])}${select('Térközök', 'theme.spacing', [['compact', 'Tömör'], ['normal', 'Normál'], ['airy', 'Levegős']])}</div>
-      <div class="row">${select('Gomb forma', 'theme.buttonShape', [['pill', 'Kerek'], ['rounded', 'Lekerekített'], ['square', 'Szögletes']])}${select('Gomb stílus', 'theme.buttonStyle', [['solid', 'Kitöltött'], ['outline', 'Körvonalas']])}</div>
-      ${sub('Mozgás')}
-      ${select('Animációk erőssége', 'theme.motion', [['none', 'Nincs'], ['subtle', 'Visszafogott'], ['normal', 'Normál'], ['strong', 'Erős']], { hint: 'A „csökkentett mozgás” beállítású eszközökön mindig kikapcsol.' })}`;
+      ${sub('Betűtípusok')}
+      <div class="row">${select('Címsor', 'theme.headingFont', fonts)}${select('Szöveg', 'theme.bodyFont', fonts)}</div>
+      ${sub('3D látvány')}
+      ${pkg === 'alap'
+        ? `<div class="locked"><span class="badge">Prémium</span><p>A 3D nyitókép a Prémium 3D csomag része. Az Alap csomagban a kép állóképként jelenik meg.</p><button type="button" class="btn btn-sm btn-ghost" data-action="go-premium">Prémium 3D csomagot választok</button></div>`
+        : heroes().length
+          ? `<div class="field toggle-field"><label class="switch-row" for="toggle-3d"><span>3D nyitókép</span><span class="switch"><input id="toggle-3d" type="checkbox" data-action-change="3d" ${has3D() ? 'checked' : ''}><span class="track" aria-hidden="true"></span></span></label><p class="hint">A nyitókép képéből részecskékből kirajzolódó vagy domborított 3D elem lesz. A hatást és a képet a Nyitókép blokkban választhatod ki.</p></div>`
+          : '<p class="hint">A 3D elem a Nyitókép blokkban jelenik meg. Adj hozzá egyet az Oldalak és blokkok lépésben.</p>'}`;
     },
   },
   {
@@ -276,7 +298,7 @@ const STEPS = [
   },
   {
     title: 'Elérhetőségek',
-    lead: 'Ezeket használja a kapcsolat blokk, a térkép és a lábléc.',
+    lead: 'Ezeket használja a kapcsolat blokk, a térkép és a lábléc. Ha végeztél, kérj ajánlatot erre a tervre.',
     render: () => {
       const hours = config.contact.hours.map((h, i, arr) => `<div class="item compact"><div class="row">${textInput('Napok', `contact.hours.${i}.days`)}${textInput('Időpont', `contact.hours.${i}.time`)}</div>${itemTools('contact.hours', i, arr.length, h.days || 'Sor')}</div>`).join('');
       const social = config.social.map((s, i, arr) => `<div class="item compact"><div class="row">${select('Platform', `social.${i}.type`, SOCIAL_TYPES.map((t) => [t, SOCIAL_LABELS[t]]))}${textInput('Link', `social.${i}.url`, { type: 'url', placeholder: 'https://' })}</div>${itemTools('social', i, arr.length, SOCIAL_LABELS[s.type] || 'Profil')}</div>`).join('');
@@ -284,8 +306,7 @@ const STEPS = [
         ${textInput('Cím', 'contact.address', { hint: 'A térkép blokk is ezt mutatja, ha ott nem adsz meg mást.' })}
         <div class="row">${textInput('Telefon', 'contact.phone', { type: 'tel' })}${textInput('E-mail', 'contact.email', { type: 'email' })}</div>
         ${sub('Nyitvatartás')}${hours}<button type="button" class="btn btn-sm btn-ghost" data-action="add-row" data-list="contact.hours">${icon('plus')} Sor</button>
-        ${sub('Közösségi média')}${social}<button type="button" class="btn btn-sm btn-ghost" data-action="add-row" data-list="social">${icon('plus')} Profil</button>
-        ${sub('Lábléc')}${textInput('Lábléc szöveg', 'footer.text')}${textInput('Copyright szöveg', 'footer.copyright')}`;
+        ${sub('Közösségi média')}${social}<button type="button" class="btn btn-sm btn-ghost" data-action="add-row" data-list="social">${icon('plus')} Profil</button>`;
     },
   },
 ];
@@ -302,7 +323,7 @@ function renderProgress() {
   $('[data-action="prev"]').disabled = step === 0;
   const next = $('#next-link');
   const last = step === STEPS.length - 1;
-  next.textContent = last ? 'Tovább az összegzéshez' : 'Tovább';
+  next.textContent = last ? 'Ajánlatot kérek erre a tervre' : 'Tovább';
   next.dataset.last = last ? '1' : '';
 }
 
@@ -377,6 +398,16 @@ function onInput(e) {
     changed({ rerender: true });
     return;
   }
+  if (el.dataset.actionChange === 'package') {
+    if (e.type === 'change') setPackage(el.value);
+    return;
+  }
+  if (el.dataset.actionChange === '3d') {
+    if (e.type !== 'change') return;
+    set3D(el.checked);
+    changed({ rerender: true });
+    return;
+  }
   if (el.dataset.actionChange === 'mode') {
     if (e.type !== 'change') return;
     config.theme.mode = el.value;
@@ -394,8 +425,6 @@ function onInput(e) {
   setPath(config, path, value);
 
   if (/^theme\.colors\./.test(path)) el.closest('.color-row')?.querySelectorAll('input').forEach((i) => { if (i !== el) i.value = value; });
-  if (path === 'theme.fontScale') $('#fs-out').textContent = `${Math.round(value * 100)}%`;
-  if (path === 'theme.radius') $('#rad-out').textContent = `${value}px`;
   if (/^pages\.\d+\.title$/.test(path)) {
     const page = getPath(config, path.replace(/\.title$/, ''));
     if (pages().indexOf(page) > 0) page.slug = uniqueSlug(value, page.id);
@@ -436,9 +465,23 @@ async function onSuggest(btn) {
   }
 }
 
+function setPackage(id) {
+  pkg = id === 'alap' ? 'alap' : 'premium';
+  savePackage(pkg);
+  if (pkg === 'alap' && has3D()) {
+    set3D(false);
+    toast('Alap csomag: a 3D helyett álló kép.');
+  } else if (pkg === 'premium' && heroes().length && !has3D()) {
+    set3D(true);
+    toast('Bekapcsoltuk a 3D nyitóképet.');
+  }
+  changed({ rerender: true });
+}
+
 function startWith(sampleId) {
   const before = clone(config);
   config = sampleId ? sampleConfig(sampleId) : blankConfig();
+  if (pkg === 'alap') set3D(false);
   ui.pageId = config.pages[0].id;
   ui.openBlock = null;
   changed({ rerender: true });
@@ -473,6 +516,7 @@ function onClick(e) {
   switch (action) {
     case 'prev': goTo(step - 1); break;
     case 'start': startWith(btn.dataset.sample); break;
+    case 'go-premium': setPackage('premium'); break;
     case 'suggest': onSuggest(btn); break;
     case 'swatch':
       config.theme.colors.primary = btn.dataset.value;
@@ -668,11 +712,15 @@ export function initConfigurator() {
   const q = new URLSearchParams(location.search);
   const sample = q.get('minta');
   config = loadConfig();
+  pkg = loadPackage();
+  const askedPkg = q.get('csomag');
+  if (askedPkg === 'alap' || askedPkg === 'premium') { pkg = askedPkg; savePackage(pkg); }
+  if (pkg === 'alap') set3D(false);
   step = Math.min(loadStep(), STEPS.length - 1);
   ui.pageId = config.pages[0].id;
   const asked = Number(q.get('lepes'));
   if (asked >= 1 && asked <= STEPS.length) step = asked - 1;
-  if (sample || asked) history.replaceState(null, '', location.pathname);
+  if (sample || asked || askedPkg) history.replaceState(null, '', location.pathname);
 
   const panel = $('#panel');
   panel.addEventListener('input', (e) => { if (e.target.type !== 'file') onInput(e); });

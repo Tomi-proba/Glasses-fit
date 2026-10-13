@@ -1,9 +1,9 @@
 // Exports a customer's design as a standalone static website.
 //
-//   npm run export-site -- path/to/order.json [out-dir]
+//   npm run export-site -- path/to/ajanlatkeres.json [out-dir]
 //
-// The input can be a site config (site.config.json structure) or a whole order JSON from
-// /osszegzes (then its `siteConfig` is used). Output: one index.html per page (home at the root,
+// The input can be a site config (site.config.json structure) or a whole quote request JSON from
+// /ajanlatkeres (then its `design` is used). Output: one index.html per page (home at the root,
 // sub-pages in /<slug>/), bundled CSS/JS, images (uploaded ones extracted from data URLs),
 // sitemap.xml and robots.txt. Upload the folder to any static host.
 import { mkdir, readFile, writeFile, cp, rm } from 'node:fs/promises';
@@ -15,11 +15,11 @@ import { buildPage, pagesOf, setAssetBase } from '../src/template/render.js';
 const root = resolve(fileURLToPath(import.meta.url), '../..');
 const [input, outArg] = process.argv.slice(2);
 if (!input) {
-  console.error('Használat: npm run export-site -- <config-vagy-rendeles.json> [kimeneti-mappa]');
+  console.error('Használat: npm run export-site -- <config-vagy-ajanlatkeres.json> [kimeneti-mappa]');
   process.exit(1);
 }
 const data = JSON.parse(await readFile(resolve(input), 'utf8'));
-const config = data.siteConfig || data;
+const config = data.design || data.siteConfig || data;
 if (config.version !== 2 || !Array.isArray(config.pages)) throw new Error('Ez nem 2-es verziójú site config.');
 const out = resolve(outArg || join(root, 'export', String(config.brand?.name || 'weboldal').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-')));
 

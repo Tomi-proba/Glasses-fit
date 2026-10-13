@@ -11,7 +11,7 @@ const NAMES = {
   flower: 'flower-lotus', dryer: 'hair-dryer', clock: 'clock', pin: 'map-pin', phone: 'phone', mail: 'envelope-simple',
   arrow: 'arrow-up-right', next: 'arrow-right', prev: 'arrow-left',
   check: 'check', menu: 'list', close: 'x', desktop: 'desktop', mobile: 'device-mobile', magic: 'magic-wand',
-  eye: 'eye', cart: 'shopping-cart-simple', rocket: 'rocket-launch', pen: 'pencil-simple-line', layout: 'layout',
+  eye: 'eye', info: 'info', cart: 'shopping-cart-simple', rocket: 'rocket-launch', pen: 'pencil-simple-line', layout: 'layout',
   lock: 'lock-simple', globe: 'globe-simple', gauge: 'gauge', search: 'magnifying-glass', devices: 'devices',
   headset: 'headset', upload: 'upload-simple', plus: 'plus', minus: 'minus', drag: 'dots-six-vertical',
   arrowDown: 'arrow-down', copy: 'copy-simple', trash: 'trash-simple', arrowUp: 'arrow-up', reset: 'arrow-counter-clockwise', download: 'download-simple',

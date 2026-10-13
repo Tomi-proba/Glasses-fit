@@ -1,0 +1,37 @@
+{
+  "_comment": "Csomagok és árak. Az árat (priceFrom, forintban) és a listákat itt kell módosítani, a főoldal, a tervező és az ajánlatkérő ebből olvas.",
+  "currency": "HUF",
+  "locale": "hu-HU",
+  "vatNote": "Alanyi adómentes, nincs ÁFA.",
+  "monthlyNote": "Nincs havidíj.",
+  "packages": [
+    {
+      "id": "alap",
+      "name": "Alap weboldal",
+      "priceFrom": 200000,
+      "summary": "Letisztult, modern bemutatkozó oldal, ami minden eszközön jól mutat.",
+      "featuresTitle": "Benne van",
+      "features": [
+        "Letisztult, modern dizájn",
+        "Finom animációk",
+        "Reszponzív: mobilon, tableten és asztali gépen",
+        "Alap SEO: meta adatok, sitemap, megosztási kép",
+        "Kapcsolatűrlap",
+        "Élesítés a saját domaineden"
+      ]
+    },
+    {
+      "id": "premium",
+      "name": "Prémium 3D weboldal",
+      "priceFrom": 250000,
+      "highlight": true,
+      "summary": "Emlékezetes oldal egyedi 3D elemekkel, ami kiemel a versenytársak közül.",
+      "featuresTitle": "Minden, ami az Alapban, plusz",
+      "features": [
+        "Egyedi 3D elemek, például a logódból vagy a termékedből",
+        "Látványos, görgetésre induló animációk",
+        "Egyedi dizájn a márkádra szabva"
+      ]
+    }
+  ]
+}
