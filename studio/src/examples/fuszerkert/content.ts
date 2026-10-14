@@ -91,11 +91,4 @@ export const reviews = [
   { quote: 'Születésnapra foglaltunk asztalt, kaptunk egy kis kóstolót a konyhától. Ilyen figyelmesség ritka.', name: 'Fodor Zsófia', source: 'TripAdvisor, 5/5' },
 ];
 
-/** The spice jars of the 3D cabinet, shelf by shelf (also the labels' text). */
-export const JARS = [
-  { name: 'Pirospaprika', color: '#b5301f' }, { name: 'Kurkuma', color: '#e0a21a' }, { name: 'Rozmaring', color: '#5f7a3c' }, { name: 'Fahéj', color: '#8a4b26' },
-  { name: 'Kömény', color: '#7a5a34' }, { name: 'Sáfrány', color: '#d9541e' }, { name: 'Kakukkfű', color: '#6d7d45' }, { name: 'Bors', color: '#2b2622' },
-  { name: 'Kardamom', color: '#8c9a55' }, { name: 'Szegfűszeg', color: '#4a2a1a' }, { name: 'Gyömbér', color: '#cfa35a' }, { name: 'Majoranna', color: '#7f8c58' },
-];
-
 export const formatFt = (n: number) => `${new Intl.NumberFormat('hu-HU').format(n)} Ft`;

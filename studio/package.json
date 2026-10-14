@@ -11,7 +11,8 @@
     "icons": "node scripts/gen-icons.mjs",
     "export-site": "node scripts/export-site.mjs",
     "example-photos": "node scripts/example-photos.mjs",
-    "example-shots": "node scripts/example-shots.mjs"
+    "example-shots": "node scripts/example-shots.mjs",
+    "video-frames": "node scripts/video-frames.mjs"
   },
   "dependencies": {
     "astro": "7.3.5",

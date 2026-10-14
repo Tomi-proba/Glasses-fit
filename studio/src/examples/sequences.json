@@ -1,0 +1,37 @@
+{
+  "_comment": "Scroll-driven video sequences of the Prémium examples. Frames are produced by `npm run video-frames` from a Pexels or Pixabay video; `frames` and `source` are filled in by the script.",
+  "sequences": {
+    "aurum-walk": {
+      "label": "Aurum Ingatlan: belső bejárás",
+      "source": {
+        "provider": "Saját felvétel",
+        "page": "",
+        "author": "",
+        "authorUrl": "",
+        "note": "A megrendelő által biztosított videó (10 mp, 720×720): a kamera a ház felé közelít, belép az üvegajtón, és megérkezik a nappaliba."
+      },
+      "frames": {
+        "desktop": {
+          "count": 144,
+          "width": 720,
+          "height": 720
+        },
+        "mobile": {
+          "count": 84,
+          "width": 406,
+          "height": 720
+        }
+      }
+    },
+    "fuszerkert-spices": {
+      "label": "Fűszerkert: fűszerek, nyitó jelenet",
+      "source": null,
+      "frames": null
+    },
+    "fuszerkert-kitchen": {
+      "label": "Fűszerkert: a konyhából",
+      "source": null,
+      "frames": null
+    }
+  }
+}

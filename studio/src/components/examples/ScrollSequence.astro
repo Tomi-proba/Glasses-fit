@@ -1,0 +1,86 @@
+---
+// A pinned, scroll-driven video section: WebP frames drawn on a canvas as you scroll (see
+// src/examples/scroll-sequence.js). Text layers sit on top; each has data-in / data-out (0..1).
+// Without frames it is a still photo; with reduced motion it shows the video's last frame. Layers marked
+// data-static stay visible in those still modes. `grain` adds a soft vignette and film grain (desktop).
+import manifest from '../../examples/sequences.json';
+import Photo from './Photo.astro';
+import { url } from '../../lib/url';
+
+interface Props { name: string; fallback: string; label: string; brand?: string; length?: number; loader?: boolean; grain?: boolean; class?: string; id?: string }
+const { name, fallback, label, brand = '', length = 3, loader = false, grain = false, class: cls = '', id } = Astro.props;
+type Size = { count: number; width: number; height: number };
+const seq = (manifest.sequences as Record<string, { frames: null | { desktop: Size; mobile: Size } }>)[name];
+const frames = seq?.frames;
+const base = url(`examples/seq/${name}/`);
+---
+<section id={id} class={`seq${grain ? ' seq--grain' : ''} ${cls}`} aria-label={label} data-seq={frames ? name : undefined} data-base={base}
+  data-count-desktop={frames?.desktop.count} data-count-mobile={frames?.mobile.count} data-length={length}>
+  <div class="seq-sticky">
+    <div class="seq-media">
+      {frames ? (
+        <picture class="seq-poster">
+          <source media="(prefers-reduced-motion: reduce) and (max-width: 760px)" srcset={`${base}poster-end-mobile.webp`} />
+          <source media="(prefers-reduced-motion: reduce)" srcset={`${base}poster-end.webp`} />
+          <source media="(max-width: 760px)" srcset={`${base}poster-mobile.webp`} />
+          <img src={`${base}poster.webp`} alt="" width={frames.desktop.width} height={frames.desktop.height} fetchpriority="high" decoding="async" />
+        </picture>
+      ) : (
+        <div class="seq-poster"><Photo slot={fallback} eager sizes="100vw" /></div>
+      )}
+      <canvas class="seq-canvas" aria-hidden="true"></canvas>
+      <div class="seq-shade" aria-hidden="true"></div>
+    </div>
+    <div class="seq-layers"><slot /></div>
+    {frames && loader && (
+      <div class="seq-loader" role="status" aria-live="polite" data-seq-loader hidden>
+        <p class="seq-loader-brand">{brand}</p>
+        <span class="seq-loader-bar" aria-hidden="true"><i data-seq-bar></i></span>
+        <p class="seq-loader-pct"><span data-seq-pct>0</span>%<span class="sr-only"> betöltve</span></p>
+      </div>
+    )}
+  </div>
+</section>
+
+<style is:global>
+  .seq { position: relative; }
+  .seq-sticky { position: relative; height: 100svh; min-height: 560px; overflow: hidden; }
+  .seq-media, .seq-poster, .seq-canvas, .seq-shade { position: absolute; inset: 0; }
+  .seq-poster img, .seq-poster .ph-img { width: 100%; height: 100%; object-fit: cover; }
+  .seq-poster .ph-empty { place-items: center end; padding: 0 var(--gutter, 24px); }
+  .seq-canvas { width: 100% !important; height: 100% !important; opacity: 0; transition: opacity 0.6s; }
+  .seq.is-live .seq-canvas { opacity: 1; }
+  .seq-shade { background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, transparent 28%, transparent 55%, rgba(0, 0, 0, 0.55) 100%); pointer-events: none; }
+  .seq-media { z-index: 0; } /* own stacking context: shade, vignette and grain stay under the text */
+  .seq-layers { position: absolute; inset: 0; z-index: 1; }
+  .seq-layer { position: absolute; inset: 0; display: grid; align-content: center; padding: calc(var(--header-h, 72px) + 24px) max(var(--gutter, 24px), calc((100vw - 1240px) / 2)) 96px; pointer-events: none; }
+  .seq-layer > * { pointer-events: auto; }
+  .seq[data-seq]:not(.is-static) .seq-layer:not([data-in='0']) { opacity: 0; visibility: hidden; }
+  /* Still mode (no frames or reduced motion): the first layer and any data-static layer, stacked. */
+  .seq.is-static .seq-layers { display: flex; flex-direction: column; justify-content: center; gap: 32px; padding: calc(var(--header-h, 72px) + 24px) max(var(--gutter, 24px), calc((100vw - 1240px) / 2)) 64px; }
+  .seq.is-static .seq-layer { position: relative; inset: auto; padding: 0; align-content: start; }
+  .seq.is-static .seq-layer:not(:first-child):not([data-static]) { display: none; }
+
+  /* Low-resolution footage on large screens: darker edges and a light, moving film grain. */
+  @media (min-width: 761px) {
+    .seq--grain .seq-media::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(ellipse 75% 70% at 50% 50%, transparent 45%, rgba(0, 0, 0, 0.62) 100%); }
+    .seq--grain .seq-media::after {
+      content: ''; position: absolute; inset: -60px; z-index: 1; pointer-events: none; opacity: 0.11; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      animation: seq-grain 0.8s steps(5) infinite;
+    }
+  }
+  @keyframes seq-grain { 0% { transform: translate(0, 0); } 20% { transform: translate(-22px, 14px); } 40% { transform: translate(18px, -26px); } 60% { transform: translate(-10px, 30px); } 80% { transform: translate(28px, 8px); } 100% { transform: translate(0, 0); } }
+  @media (prefers-reduced-motion: reduce) { .seq--grain .seq-media::after { animation: none; } }
+
+  .seq-loader {
+    position: fixed; inset: 0; z-index: 150; display: grid; place-content: center; justify-items: center; gap: 22px;
+    background: var(--bg, #0d0d0d); color: var(--text, #f2f2f2); transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.9s;
+  }
+  .seq-loader.is-done { opacity: 0; visibility: hidden; }
+  .seq-loader-brand { font-family: var(--display, serif); font-size: clamp(2rem, 4.5vw, 3.4rem); line-height: 1; letter-spacing: -0.01em; }
+  .seq-loader-bar { display: block; width: min(240px, 60vw); height: 1px; background: color-mix(in srgb, currentColor 18%, transparent); overflow: hidden; }
+  .seq-loader-bar i { display: block; height: 100%; background: currentColor; transform-origin: left; transform: scaleX(0); transition: transform 0.25s linear; }
+  .seq-loader-pct { font-size: 12px; letter-spacing: 0.2em; font-variant-numeric: tabular-nums; opacity: 0.7; }
+  html.is-loading { overflow: hidden; }
+</style>

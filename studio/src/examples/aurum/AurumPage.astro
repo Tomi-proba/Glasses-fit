@@ -1,7 +1,8 @@
 ---
-// Aurum Ingatlan example site. The same content renders as the Prémium 3D or the Alap package sample;
-// the route pages load the matching scripts (Three.js and GSAP only for Prémium).
+// Aurum Ingatlan example site. The same content renders as the Prémium or the Alap package sample;
+// Prémium opens with a scroll-driven video walkthrough and scroll effects on the photos.
 import Photo from '../../components/examples/Photo.astro';
+import ScrollSequence from '../../components/examples/ScrollSequence.astro';
 import { brand, stats, properties, services, agents, testimonials, FILTERS, formatHuf } from './content';
 import { icon } from '../../lib/icon';
 import './aurum.css';
@@ -31,22 +32,23 @@ const nav = [['#ingatlanok', 'Ingatlanok'], ['#szolgaltatasok', 'Szolgáltatáso
 
 <main id="tartalom">
   {premium ? (
-    <section class="au-hero au-hero-3d" aria-labelledby="au-title" data-hero>
-      <div class="au-stage" data-villa>
-        <div class="au-stage-poster"><Photo slot="aurum/hero" eager sizes="100vw" /></div>
-        <canvas class="au-canvas" aria-hidden="true"></canvas>
+    <ScrollSequence name="aurum-walk" fallback="aurum/hero" label="Bemutatkozás: séta egy otthonba" brand="Aurum" length={3.4} loader grain class="au-seq">
+      <div class="seq-layer au-l1" data-in="0" data-out="0.3">
+        <h1 id="au-title" class="au-display">Kivételes otthonok.<br /><em>Diszkrét képviselet.</em></h1>
+        <p class="au-lede">Prémium ingatlanok Budapesten és a Balaton-felvidéken. Személyes tanácsadó, értékbecslés 48 órán belül.</p>
+        <p class="au-scroll" aria-hidden="true"><span></span>Görgess, és lépj be</p>
       </div>
-      <div class="au-hero-shade" aria-hidden="true"></div>
-      <div class="au-wrap au-hero-copy">
-        <h1 id="au-title" class="au-display" data-hero-line>Kivételes otthonok.<br /><em>Diszkrét képviselet.</em></h1>
-        <p class="au-lede" data-hero-line>Prémium ingatlanok Budapesten és a Balaton-felvidéken. Személyes tanácsadó, értékbecslés 48 órán belül.</p>
-        <div class="au-actions" data-hero-line>
+      <div class="seq-layer au-l2" data-in="0.5" data-out="0.72">
+        <p class="au-seq-big">Lépj be<br /><em>az új otthonodba.</em></p>
+      </div>
+      <div class="seq-layer au-l3" data-in="0.84" data-out="1" data-static>
+        <p class="au-seq-small">Válogatott ingatlanok Budapesten és a Balaton-felvidéken, személyes bejárással.</p>
+        <div class="au-actions">
           <a class="au-btn" href="#ingatlanok">Ingatlanok böngészése <Fragment set:html={icon('next')} /></a>
           <a class="au-btn au-btn-ghost" href="#ertekbecsles">Ingyenes értékbecslés</a>
         </div>
       </div>
-      <p class="au-scroll" aria-hidden="true"><span></span>Görgess, és lépj be</p>
-    </section>
+    </ScrollSequence>
   ) : (
     <section class="au-hero au-hero-basic" aria-labelledby="au-title">
       <div class="au-wrap au-hero-grid">
@@ -102,7 +104,7 @@ const nav = [['#ingatlanok', 'Ingatlanok'], ['#szolgaltatasok', 'Szolgáltatáso
         {properties.map((p) => (
           <li class="au-card" data-type={p.type} data-price={p.price} data-rooms={p.rooms} style={`view-transition-name: card-${p.id}`}>
             <button class="au-card-btn" type="button" data-open={p.id} aria-haspopup="dialog">
-              <span class="au-card-media" data-tilt>
+              <span class="au-card-media" data-tilt data-zoom>
                 <Photo slot={p.photos[0]} sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" />
                 {p.badge && <span class="au-badge">{p.badge}</span>}
                 <span class="au-glare" aria-hidden="true"></span>
@@ -130,7 +132,7 @@ const nav = [['#ingatlanok', 'Ingatlanok'], ['#szolgaltatasok', 'Szolgáltatáso
 
   <section id="szolgaltatasok" class="au-section au-about" aria-labelledby="au-about-title">
     <div class="au-wrap au-about-grid">
-      <div class="au-about-photo" data-parallax><Photo slot="aurum/about" sizes="(max-width: 900px) 100vw, 45vw" /></div>
+      <div class="au-about-photo" data-mask><Photo slot="aurum/about" sizes="(max-width: 900px) 100vw, 45vw" /></div>
       <div class="au-about-copy">
         <h2 id="au-about-title" class="au-h2" data-reveal>Egy tanácsadó, az első bejárástól a kulcsátadásig.</h2>
         <p class="au-muted au-about-lede" data-reveal>Nem adunk el mindent. Évente legfeljebb negyven megbízást vállalunk, így minden ingatlanra és minden ügyfélre jut idő.</p>
@@ -152,7 +154,7 @@ const nav = [['#ingatlanok', 'Ingatlanok'], ['#szolgaltatasok', 'Szolgáltatáso
       <ul class="au-agents" role="list">
         {agents.map((a) => (
           <li class="au-agent" data-reveal>
-            <div class="au-agent-photo"><Photo slot={a.photo} sizes="(max-width: 700px) 100vw, 33vw" /></div>
+            <div class="au-agent-photo" data-zoom><Photo slot={a.photo} sizes="(max-width: 700px) 100vw, 33vw" /></div>
             <h3>{a.name}</h3>
             <p class="au-muted">{a.role} · {a.area}</p>
             <a class="au-link" href={`tel:${a.phone.replace(/\s/g, '')}`}>{a.phone}</a>

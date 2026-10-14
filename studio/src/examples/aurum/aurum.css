@@ -74,22 +74,21 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .au-menu { display: none; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: transparent; cursor: pointer; place-items: center; }
 .au-menu .icon { width: 20px; height: 20px; }
 
-/* hero: Prémium (3D) */
-.au-hero-3d { position: relative; height: 100svh; min-height: 620px; overflow: hidden; }
-.au-stage { position: absolute; inset: 0; background: radial-gradient(120% 80% at 70% 30%, #232a3a 0%, #121620 45%, var(--bg) 100%); }
-.au-stage-poster { position: absolute; inset: 0; transition: opacity 1.2s var(--ease); }
-.au-stage-poster .ph-img { width: 100%; height: 100%; object-fit: cover; color: var(--text); }
-.au-stage-poster .ph-empty { place-items: end end; padding: 120px var(--gutter); }
-.au-canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; opacity: 0; transition: opacity 1.4s var(--ease); }
-.au-stage.is-live .au-canvas { opacity: 1; }
-.au-stage.is-live .au-stage-poster { opacity: 0; }
-.au-hero-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(14, 13, 11, 0.86) 0%, rgba(14, 13, 11, 0.4) 46%, transparent 72%), linear-gradient(0deg, var(--bg) 0%, transparent 26%); }
-.au-hero-3d .au-hero-copy { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 28px; padding-top: var(--header-h); }
-.au-hero-3d .au-display { max-width: 11ch; }
+/* hero: Prémium (scroll-driven video) */
+.au-seq .seq-shade { z-index: 2; background: linear-gradient(90deg, rgba(14, 13, 11, 0.7) 0%, rgba(14, 13, 11, 0.25) 40%, transparent 65%), linear-gradient(0deg, rgba(14, 13, 11, 0.75) 0%, transparent 30%), linear-gradient(180deg, rgba(14, 13, 11, 0.5) 0%, transparent 18%); }
+.au-l1 { gap: 26px; align-content: center; }
+.au-l1 .au-display { max-width: 11ch; text-shadow: 0 2px 40px rgba(0, 0, 0, 0.35); }
+.au-l2 { align-content: center; justify-items: center; text-align: center; }
+.au-l2 .au-seq-big { max-width: none; }
+.au-l3 { gap: 22px; align-content: end; justify-items: start; padding-bottom: clamp(80px, 13vh, 130px); }
+.au-seq-big { font-family: var(--display); font-weight: 500; font-size: clamp(2.6rem, 6vw, 5.4rem); line-height: 1; letter-spacing: -0.01em; text-shadow: 0 2px 40px rgba(0, 0, 0, 0.5); }
+.au-seq-big em { font-style: italic; color: var(--gold-ink); }
+.au-seq-small { max-width: 38ch; font-size: clamp(1.05rem, 1.4vw, 1.2rem); color: color-mix(in srgb, var(--text) 88%, transparent); text-shadow: 0 1px 20px rgba(0, 0, 0, 0.6); }
 .au-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
-.au-scroll { position: absolute; z-index: 2; left: 50%; bottom: 28px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.au-scroll { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
 .au-scroll span { width: 1px; height: 44px; background: linear-gradient(var(--gold), transparent); animation: au-drip 2.4s var(--ease) infinite; transform-origin: top; }
 @keyframes au-drip { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+.au-seq.is-static .au-scroll { display: none; }
 
 /* hero: Alap (photo) */
 .au-hero-basic { padding: calc(var(--header-h) + clamp(32px, 6vw, 72px)) 0 clamp(56px, 8vw, 96px); }
@@ -245,6 +244,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* Prémium-only finish: tilt cards, view transitions for the filter */
 [data-tier='premium'] .au-card-media.is-tilting { box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.8); }
 [data-tier='premium'] .au-card-media.is-tilting .au-glare { opacity: 1; }
+/* Prémium photo effects start from these states (scroll-scrubbed in motion-premium.js) */
+[data-mask] { overflow: hidden; }
 ::view-transition-group(*) { animation-duration: 0.55s; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
 
 /* Alap: simple fade-in on scroll */
@@ -268,8 +269,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .au-slide .ph-img { min-height: 0; aspect-ratio: 4 / 3; }
   .au-agents, .au-quote-list { grid-template-columns: 1fr; }
   .au-agents { gap: 40px; }
-  .au-hero-shade { background: linear-gradient(0deg, rgba(14, 13, 11, 0.95) 0%, rgba(14, 13, 11, 0.55) 45%, transparent 75%); }
-  .au-hero-3d .au-hero-copy { justify-content: flex-end; padding-bottom: 96px; }
+  .au-seq .seq-shade { background: linear-gradient(0deg, rgba(14, 13, 11, 0.94) 0%, rgba(14, 13, 11, 0.5) 50%, rgba(14, 13, 11, 0.2) 100%); }
+  .au-l1 { align-content: end; }
 }
 @media (max-width: 640px) {
   .au-nav-cta { display: none; }
@@ -287,3 +288,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+/* Still mode (reduced motion): headline and buttons sit together on the living-room frame. */
+.au-seq.is-static .seq-shade { background: linear-gradient(90deg, rgba(14, 13, 11, 0.88) 0%, rgba(14, 13, 11, 0.6) 45%, rgba(14, 13, 11, 0.1) 75%), linear-gradient(0deg, rgba(14, 13, 11, 0.7) 0%, transparent 35%); }
+@media (max-width: 900px) { .au-seq.is-static .seq-shade { background: rgba(14, 13, 11, 0.62); } }

@@ -1,5 +1,5 @@
 // Motion layer of the Prémium examples: Lenis smooth scroll, GSAP ScrollTrigger reveals, counters,
-// parallax and pointer tilt. Everything is skipped with prefers-reduced-motion.
+// parallax, slow zoom, masked photo reveals and pointer tilt. Everything is skipped with prefers-reduced-motion.
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
@@ -72,7 +72,22 @@ export function initPremiumMotion({ headerSel = '[data-header]' } = {}) {
     const img = el.querySelector('.ph-img');
     if (!img) continue;
     el.style.overflow = 'hidden';
-    gsap.fromTo(img, { yPercent: -8, scale: 1.16 }, { yPercent: 8, scale: 1.16, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } });
+    const k = Number(el.dataset.speed || 1) * 8;
+    gsap.fromTo(img, { yPercent: -k, scale: 1.18 }, { yPercent: k, scale: 1.18, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } });
+  }
+
+  // Slow zoom: the photo settles from 1.18x to 1x while it crosses the screen.
+  for (const el of document.querySelectorAll('[data-zoom]')) {
+    const img = el.querySelector('.ph-img');
+    if (!img) continue;
+    gsap.fromTo(img, { scale: 1.18 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom 40%', scrub: true } });
+  }
+
+  // Masked reveal: the photo opens up from a small rounded window to the full frame.
+  for (const el of document.querySelectorAll('[data-mask]')) {
+    const img = el.querySelector('.ph-img');
+    gsap.fromTo(el, { clipPath: 'inset(16% 22% 16% 22% round 24px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none', scrollTrigger: { trigger: el, start: 'top 95%', end: 'top 25%', scrub: true } });
+    if (img) gsap.fromTo(img, { scale: 1.3 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: el, start: 'top 95%', end: 'bottom top', scrub: true } });
   }
 
   // Pointer tilt with a soft glare.

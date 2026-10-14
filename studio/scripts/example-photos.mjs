@@ -45,12 +45,24 @@ for (const [slot, def] of Object.entries(manifest.slots)) {
 const rows = Object.entries(manifest.slots)
   .filter(([, d]) => d.source?.download)
   .map(([slot, d]) => `| \`${slot}\` | ${d.alt} | [${d.source.author}](${d.source.authorUrl || d.source.page}) | ${d.source.provider} | ${d.source.page} |`);
-await writeFile(resolve(root, 'CREDITS.md'), `# Képek forrása
+const sequences = JSON.parse(await readFile(resolve(root, 'src/examples/sequences.json'), 'utf8')).sequences;
+const videoRows = Object.entries(sequences)
+  .filter(([, d]) => d.source)
+  .map(([key, d]) => `| \`${key}\` | ${d.label} | ${d.source.author ? `[${d.source.author}](${d.source.authorUrl || d.source.page})` : ''} | ${d.source.provider} | ${d.source.page || d.source.note || ''} |`);
+await writeFile(resolve(root, 'CREDITS.md'), `# Képek és videók forrása
 
 A példaoldalak (\`/peldak/…\`) fotói az [Unsplash](https://unsplash.com/license) és a [Pexels](https://www.pexels.com/license/) oldalról származnak. Mindkét licenc ingyenes, kereskedelmi célú felhasználást is megenged, a forrásmegjelölés nem kötelező, de itt feltüntetjük.
 
 | Hely | Kép | Fotós | Forrás | Eredeti |
 | --- | --- | --- | --- | --- |
 ${rows.join('\n') || '| | Még nincs letöltött kép. | | | |'}
+
+## Videók
+
+A görgetés-vezérelt jelenetek (a Prémium példaoldalak) videói a megrendelő saját felvételei, vagy a [Pexels](https://www.pexels.com/license/), illetve a [Pixabay](https://pixabay.com/service/license-summary/) oldalról származnak, ingyenes licenccel. Képkockákra bontva szerepelnek az oldalon.
+
+| Jelenet | Tartalom | Készítő | Forrás | Eredeti |
+| --- | --- | --- | --- | --- |
+${videoRows.join('\n') || '| | Még nincs videó. | | | |'}
 `);
 console.log(`${done} kép kész, ${missing} helyhez még nincs forrás megadva. CREDITS.md frissítve.`);

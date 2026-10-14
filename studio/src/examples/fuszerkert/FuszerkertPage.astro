@@ -1,7 +1,8 @@
 ---
-// Fűszerkert Bisztró example site. Prémium: 3D spice cabinet intro that settles into the hero.
-// Alap: the same content with a photo hero and simple fade-ins.
+// Fűszerkert Bisztró example site. Prémium: scroll-driven video scenes (spices, kitchen) and scroll
+// effects on the photos. Alap: the same content with a photo hero and simple fade-ins.
 import Photo from '../../components/examples/Photo.astro';
+import ScrollSequence from '../../components/examples/ScrollSequence.astro';
 import { brand, hours, menu, specials, SPICES, gallery, reviews, formatFt } from './content';
 import { icon } from '../../lib/icon';
 import './fuszerkert.css';
@@ -33,34 +34,42 @@ const nav = [['#etlap', 'Étlap'], ['#napi', 'Napi ajánlat'], ['#galeria', 'Gal
 </header>
 
 <main id="tartalom">
-  <section class={`fk-hero ${premium ? 'fk-hero-3d' : 'fk-hero-basic'}`} aria-labelledby="fk-title" data-hero>
-    <div class="fk-wrap fk-hero-grid">
-      <div class="fk-hero-copy">
-        <h1 id="fk-title" class="fk-display" data-hero-line>Fűszerkert<span>bisztró</span></h1>
-        <p class="fk-lede" data-hero-line>Szezonális konyha, saját őrlésű fűszerekkel. Kedvesen, lassan, a Klauzál tér sarkán.</p>
-        <div class="fk-actions" data-hero-line>
+  {premium ? (
+    <ScrollSequence name="fuszerkert-spices" fallback="fuszerkert/spices" label="Nyitó jelenet: fűszerek közelről" brand="Fűszerkert" length={3} loader class="fk-seq">
+      <div class="seq-layer fk-l1" data-in="0" data-out="0.22">
+        <h1 id="fk-title" class="fk-display">Fűszerkert<span>bisztró</span></h1>
+        <p class="fk-lede">Szezonális konyha, saját őrlésű fűszerekkel. Kedvesen, lassan, a Klauzál tér sarkán.</p>
+        <div class="fk-actions">
           <a class="fk-btn" href="#foglalas">Asztalt foglalok <Fragment set:html={icon('next')} /></a>
           <a class="fk-btn fk-btn-ghost" href="#etlap">Étlap</a>
         </div>
-        <p class="fk-open" data-hero-line data-open-now><span class="fk-dot" aria-hidden="true"></span><span data-open-text>Kedd-vasárnap nyitva</span></p>
+        <p class="fk-open" data-open-now><span class="fk-dot" aria-hidden="true"></span><span data-open-text>Kedd-vasárnap nyitva</span></p>
       </div>
-      {premium ? (
-        <div class="fk-stage-slot" data-stage-slot>
-          <div class="fk-stage" data-cabinet>
-            <div class="fk-stage-poster"><Photo slot="fuszerkert/spices" eager sizes="(max-width: 900px) 100vw, 45vw" /></div>
-            <canvas class="fk-canvas" aria-hidden="true"></canvas>
-            <div class="fk-intro-ui" aria-hidden="true" data-intro-ui>
-              <p class="fk-intro-mark">Fűszerkert<span>bisztró</span></p>
-              <i class="fk-intro-bar"><b data-intro-progress></b></i>
-            </div>
-            <button class="fk-skip-intro" type="button" data-skip hidden>Átugrás <Fragment set:html={icon('skip')} /></button>
-          </div>
+      <div class="seq-layer fk-l2" data-in="0.32" data-out="0.58">
+        <p class="fk-seq-big">Hetente kétszer<br /><em>pörköljük és őröljük.</em></p>
+        <p class="fk-seq-small">Ettől lesz minden fogás illata más, mint bárhol máshol.</p>
+      </div>
+      <div class="seq-layer fk-l3" data-in="0.7" data-out="1">
+        <p class="fk-seq-big">Kalocsai paprika,<br /><em>iráni sáfrány.</em></p>
+        <a class="fk-btn" href="#etlap">Nézd meg az étlapot <Fragment set:html={icon('next')} /></a>
+      </div>
+    </ScrollSequence>
+  ) : (
+    <section class="fk-hero fk-hero-basic" aria-labelledby="fk-title">
+      <div class="fk-wrap fk-hero-grid">
+        <div class="fk-hero-copy">
+        <h1 id="fk-title" class="fk-display">Fűszerkert<span>bisztró</span></h1>
+        <p class="fk-lede">Szezonális konyha, saját őrlésű fűszerekkel. Kedvesen, lassan, a Klauzál tér sarkán.</p>
+        <div class="fk-actions">
+          <a class="fk-btn" href="#foglalas">Asztalt foglalok <Fragment set:html={icon('next')} /></a>
+          <a class="fk-btn fk-btn-ghost" href="#etlap">Étlap</a>
         </div>
-      ) : (
+        <p class="fk-open" data-open-now><span class="fk-dot" aria-hidden="true"></span><span data-open-text>Kedd-vasárnap nyitva</span></p>
+        </div>
         <div class="fk-hero-photo"><Photo slot="fuszerkert/hero" eager sizes="(max-width: 900px) 100vw, 50vw" /></div>
-      )}
-    </div>
-  </section>
+      </div>
+    </section>
+  )}
 
   <section id="etlap" class="fk-section fk-menu-sec" aria-labelledby="fk-menu-title">
     <div class="fk-wrap">
@@ -96,7 +105,7 @@ const nav = [['#etlap', 'Étlap'], ['#napi', 'Napi ajánlat'], ['#galeria', 'Gal
 
   <section id="napi" class="fk-section fk-daily" aria-labelledby="fk-daily-title">
     <div class="fk-wrap fk-daily-grid">
-      <div class="fk-daily-photo" data-parallax><Photo slot="fuszerkert/daily" sizes="(max-width: 900px) 100vw, 50vw" /></div>
+      <div class="fk-daily-photo" data-mask><Photo slot="fuszerkert/daily" sizes="(max-width: 900px) 100vw, 50vw" /></div>
       <div class="fk-daily-copy">
         <h2 id="fk-daily-title" class="fk-h2" data-reveal>Napi ajánlat</h2>
         <article class="fk-today" data-today data-reveal aria-live="polite">
@@ -126,11 +135,27 @@ const nav = [['#etlap', 'Étlap'], ['#napi', 'Napi ajánlat'], ['#galeria', 'Gal
     </div>
   </section>
 
+  {premium && (
+    <ScrollSequence name="fuszerkert-kitchen" fallback="fuszerkert/kitchen" label="A konyhából" length={2.4} class="fk-seq fk-seq-kitchen">
+      <div class="seq-layer fk-k1" data-in="0" data-out="0.34">
+        <p class="fk-seq-big">A konyhából.</p>
+        <p class="fk-seq-small">Nyitott konyha: amit eszel, azt látod is készülni.</p>
+      </div>
+      <div class="seq-layer fk-k2" data-in="0.42" data-out="0.7">
+        <p class="fk-seq-big">Lassan főzünk,<br /><em>gyorsan tálalunk.</em></p>
+      </div>
+      <div class="seq-layer fk-k3" data-in="0.78" data-out="1">
+        <p class="fk-seq-big">Minden tányért<br /><em>a séf néz át.</em></p>
+        <a class="fk-btn" href="#foglalas">Asztalt foglalok <Fragment set:html={icon('next')} /></a>
+      </div>
+    </ScrollSequence>
+  )}
+
   <section id="galeria" class="fk-section fk-gallery-sec" aria-labelledby="fk-gallery-title">
     <div class="fk-wrap">
       <h2 id="fk-gallery-title" class="fk-h2" data-reveal>Galéria</h2>
       <ul class="fk-gallery" role="list">
-        {gallery.map((g, i) => <li class={`fk-g fk-g-${i + 1}`} data-reveal><Photo slot={g} sizes="(max-width: 700px) 100vw, 33vw" /></li>)}
+        {gallery.map((g, i) => <li class={`fk-g fk-g-${i + 1}`} data-reveal data-zoom><Photo slot={g} sizes="(max-width: 700px) 100vw, 33vw" /></li>)}
       </ul>
     </div>
   </section>

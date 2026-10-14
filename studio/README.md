@@ -142,21 +142,32 @@ Az API-kulcs csak a szerveren lehet.
 
 ## Példaoldalak (/peldak/…)
 
-Két kitalált cég, mindkettő mindkét csomagban, ugyanazzal a tartalommal:
+Két kitalált cég, mindkettő mindkét csomagban, ugyanazzal a tartalommal. A példaoldalakon nincs kódból rajzolt 3D: csak valódi fotók és videók.
 
-- **Aurum Ingatlan, Prémium 3D:**
-  - kódból épített Three.js villa alkonyatkor, görgetésre a kamera berepül az üvegfalon,
-  - ingatlankártyák 3D döntéssel, szűrő (típus, ár, szobaszám) animált átrendezéssel,
-  - részletes nézet galériával, térkép, értékbecslő űrlap, csapat, vélemények,
-  - Lenis, GSAP ScrollTrigger, parallax.
-- **Fűszerkert Bisztró, Prémium 3D:**
-  - nyitó animáció egy kódból épített fűszertartó szekrénnyel: kinyílnak az ajtók, a kamera bemegy a polcok közé, az üvegek megmozdulnak, majd a jelenet beúszik a nyitókártyába,
-  - látogatásonként egyszer fut („Átugrás” gomb, Esc).
-- **Alap változatok:** ugyanaz a tartalom 3D, GSAP és Lenis nélkül, fotós nyitóképpel és egyszerű beúszással (kb. 4 KB JavaScript).
-- **Mindegyiken:**
-  - lebegő sáv „Ez egy mintaoldal” felirattal; az „Ilyet szeretnék” gomb az ajánlatkérőre visz, előre kiválasztott csomaggal és a minta nevével,
-  - csökkentett mozgásnál nincs animáció,
-  - a 3D csak hardveres WebGL-en fut, mobilon könnyítve.
+- **Prémium:**
+  - **Görgetés-vezérelt videó a heróban:** képkocka-sorozat canvasra rajzolva, a GSAP ScrollTrigger rögzíti (pin) a szekciót. Lefelé görgetve előre, felfelé visszafelé halad.
+  - **Betöltés:** a képkockák előre töltődnek, közben töltőképernyő látszik.
+  - **Szövegrétegek:** görgetésre jelennek meg és tűnnek el.
+  - **Fotók:** lassú zoom, parallax, maszkolt felfedés.
+  - **Aurum Ingatlan:** a hero a megrendelő saját videója (a ház felé közelít, belép az ajtón, a nappaliba érkezik).
+  - **Fűszerkert Bisztró:** fűszeres nyitó jelenet és egy konyhai jelenet (videóra vár).
+- **Alap:** ugyanaz a tartalom görgetés-vezérelt videó, GSAP és Lenis nélkül, fotós nyitóképpel és egyszerű beúszással.
+- **Mindegyiken:** lebegő „Ez egy mintaoldal” sáv. Az „Ilyet szeretnék” gomb az ajánlatkérőre visz, előre kiválasztott csomaggal. Csökkentett mozgásnál nincs animáció, a videó helyén az utolsó képkocka látszik.
+
+### Videók
+
+```bash
+npm run video-frames -- aurum-walk video.mp4 --desktop 144 --mobile 84 --provider "Saját felvétel" --note "…"
+npm run video-frames -- fuszerkert-spices video.mp4 --start 1 --end 9 --provider Pexels --page <URL> --author "Név"
+```
+
+A szkript:
+- WebP képkockákat készít asztali (legfeljebb 1600 px széles) és mobil (9:16-os, középre vágott) méretben;
+- a kis felbontású forrást nem nagyítja fel, hanem enyhén élesíti;
+- elkészíti az első és az utolsó képkockát állóképnek;
+- kitölti a `src/examples/sequences.json`-t, és frissíti a `CREDITS.md`-t.
+
+Asztali nézetben a `grain` beállítás finom sötét szélt és filmszemcsét ad a videóhoz. Külső videó csak Pexelsről vagy Pixabayről származhat.
 
 ### Fotók
 
