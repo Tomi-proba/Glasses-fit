@@ -13,6 +13,7 @@ Egyetlen Astro projekt, egységes fejléccel, lábléccel és dizájnnal:
 | `/sablon/minta/<id>/…` | A tervező négy kiinduló mintája, minden aloldalukkal |
 | `/peldak/ingatlan-premium`, `/peldak/ingatlan-alap` | Aurum Ingatlan példaoldal, Prémium 3D és Alap változatban |
 | `/peldak/jatekterem-premium`, `/peldak/jatekterem-alap` | Pixel Pont Játékterem példaoldal, Prémium 3D és Alap változatban |
+| `/peldak/medence-premium` | Kékvíz Medence példaoldal (medenceépítés és medencefedések), Prémium 3D |
 
 ## Indítás
 
@@ -43,6 +44,7 @@ studio/
 ├── src/pages/                  ← útvonalak (lásd fent), sitemap.xml, robots.txt
 ├── src/examples/               ← A PÉLDAOLDALAK (Aurum Ingatlan, Pixel Pont Játékterem)
 │   ├── aurum/                  ← tartalom, oldal, stílus, szűrő és galéria, ld.ts (strukturált adat)
+│   ├── pool/                   ← Kékvíz Medence: tartalom, oldal, pool.js (görgetésre épülő medence, fedés-csúszka), ld.ts
 │   ├── arcade/                 ← Pixel Pont: tartalom, Prémium (berepülés + játékmenü), Alap, warp.js (fénycsíkok), sound.js
 │   ├── motion-premium.js       ← Prémium: Lenis, GSAP reveal, számlálók, parallax, 3D döntés
 │   ├── motion-basic.js         ← Alap: egyszerű beúszás
@@ -141,7 +143,7 @@ Az API-kulcs csak a szerveren lehet.
 
 ## Példaoldalak (/peldak/…)
 
-Két kitalált cég, mindkettő mindkét csomagban, ugyanazzal a tartalommal. A példaoldalakon nincs kódból rajzolt 3D: csak valódi fotók és videók.
+Három kitalált cég. Az Aurum és a Pixel Pont mindkét csomagban, ugyanazzal a tartalommal, a Kékvíz Medence csak Prémiumban. A példaoldalakon nincs kódból rajzolt 3D: csak valódi fotók és videók.
 
 - **Prémium:**
   - **Görgetés-vezérelt videó a heróban:** képkocka-sorozat canvasra rajzolva, a GSAP ScrollTrigger rögzíti (pin) a szekciót. Lefelé görgetve előre, felfelé visszafelé halad.
@@ -149,6 +151,7 @@ Két kitalált cég, mindkettő mindkét csomagban, ugyanazzal a tartalommal. A 
   - **Szövegrétegek:** görgetésre jelennek meg és tűnnek el.
   - **Fotók:** lassú zoom, parallax, maszkolt felfedés.
   - **Aurum Ingatlan:** a hero a megrendelő saját videója (a ház felé közelít, belép az ajtón, a nappaliba érkezik).
+  - **Kékvíz Medence:** nincs videó, hanem a megrendelő nyolc saját (AI-generált) fotója ugyanabból a szögből. Görgetésre a medence felépül az üres kertből: a képek lágyan áttűnnek egymásba, közben az egész kép folyamatosan, lassan közelít, ami elsimítja a képek közti kis eltéréseket. A 07 → 08 váltásnál a zárt fedés egy puha szélű maszkkal, a sínek irányában „rácsúszik” a medencére. Fázisfelirat bal alul, számláló jobb alul, vékony folyamatjelző. Utána a fedést a látogató maga nyithatja és zárhatja (csúszka vagy húzás a képen). A képeket a `npm run pool-images -- <mappa>` készíti el (asztali és mobil WebP, a mért 2 px-es eltolások kiigazításával). Csökkentett mozgásnál a zárt fedéses kép áll.
   - **Pixel Pont Játékterem:** nincs videó. A nyitókép a megrendelő saját (AI-generált) játékgépfotója, a képernyőjén villogó pixeles felirat. Kattintásra, Enterre, Space-re vagy görgetésre a kamera berepül a képernyőbe neon fénycsíkok között (Three.js, asztali gépen bloom), a végén villanás, és a képernyő lesz az oldal: retró játékmenü (Gépeink, Árak és zsetonok, Szülinapi bulik, Nyitvatartás, Hol vagyunk, High score, Kapcsolat), nyilakkal és Enterrel is kezelhető. A pixeles hangok alapból némák. Csökkentett mozgásnál rögtön a menü jelenik meg.
 - **Alap:** ugyanaz a tartalom görgetés-vezérelt videó, GSAP és Lenis nélkül, fotós nyitóképpel és egyszerű beúszással.
 - **Mindegyiken:** lebegő „Ez egy mintaoldal” sáv. Az „Ilyet szeretnék” gomb az ajánlatkérőre visz, előre kiválasztott csomaggal. Csökkentett mozgásnál nincs animáció, a videó helyén az utolsó képkocka látszik.
@@ -240,6 +243,9 @@ Megjegyzés: a Google 2023 óta csak kormányzati és egészségügyi oldalakná
   | Aurum Alap | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 1,3 s |
   | Pixel Pont Prémium | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 1,7 s |
   | Pixel Pont Alap | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 1,2 s |
+  | Kékvíz Medence Prémium | 95 / 100 / 100 / 100 | 100 / 96* / 100 / 100 | 2,9 s |
+
+  \* az asztali mérés a kontrasztjavítás előtt futott; a javítás után a mobil akadálymentesség 100.
 
   Az alapértelmezett (noindex-es) buildben a minták SEO-pontja 66: egyetlen hibás pont van, hogy az oldal nem indexelhető, és ez szándékos.
 - Ami a teljesítményhez kellett: a görgetés-vezérelt videó képkockái csak az oldal és a betűk betöltése után kezdenek letöltődni, és a töltőképernyő már nem tartja vissza az oldalt (vékony folyamatjelző lett belőle). A példaoldalak betűtípus-CSS-e nem blokkolja a megjelenést, a Pixel Pont nyitóképe előtöltődik.

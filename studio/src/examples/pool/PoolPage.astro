@@ -1,0 +1,211 @@
+---
+// Kékvíz Medence (Prémium). The opening scene builds the pool as you scroll: seven photos of the same
+// garden cross-fade under one slow, continuous zoom; the cover slides shut over the last one (pool.js).
+// Then a cover you can open and close yourself, the build steps, cover types with prices, references,
+// questions and the quote form. Everything is HTML text; the photos only illustrate it.
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { brand, phases, benefits, steps, pools, covers, coverNote, references, quote, faq, ft } from './content';
+import { url } from '../../lib/url';
+import '../exhibit.css';
+import './pool.css';
+
+const has = (nn: string) => existsSync(resolve(process.cwd(), `public/examples/pool/${nn}-1600.webp`));
+const src = (nn: string) => ({
+  ok: has(nn),
+  src: url(`examples/pool/${nn}-1100.webp`),
+  srcset: `${url(`examples/pool/${nn}-1100.webp`)} 1100w, ${url(`examples/pool/${nn}-1600.webp`)} 1600w`,
+  mobile: url(`examples/pool/${nn}-m.webp`),
+});
+const ALT: Record<string, string> = {
+  '01': 'Üres, füves kert sövénnyel és fiatal fákkal, a háttérben fehér családi ház',
+  '02': 'Kiásott medencegödör a kertben, kitűzőzsinórral és kotrógéppel',
+  '03': 'A medence betonvázza zsaluzattal és lépcsővel',
+  '04': 'Kék fóliával burkolt, még üres medence szegélykővel',
+  '05': 'Vízzel feltöltött medence, mellette épülő fa terasz',
+  '06': 'Kész medence a kertben, fa terasszal',
+  '07': 'Teleszkópos fedés félig a medencére tolva, esti fényben',
+  '08': 'Teljesen zárt teleszkópos medencefedés esti fényben',
+};
+const pad = (n: number) => String(n).padStart(2, '0');
+const total = pad(phases.length);
+---
+<a class="x-sr" href="#tartalom">Ugrás a tartalomra</a>
+<header class="x-header kv-header">
+  <a class="x-mark" href="#" aria-label={`${brand.name}, vissza a lap tetejére`}>Kékvíz</a>
+  <nav class="x-nav" id="kv-nav" aria-label="Fő navigáció">
+    <a href="#medenceepites">Medenceépítés</a>
+    <a href="#fedesek">Fedések</a>
+    <a href="#referenciak">Referenciák</a>
+    <a href="#kapcsolat">Kapcsolat</a>
+    <a class="kv-quote-link" href="#ajanlat">Ajánlatkérés</a>
+  </nav>
+  <button class="x-menu" type="button" aria-expanded="false" aria-controls="kv-nav">Menü</button>
+</header>
+
+<main id="tartalom">
+  <section class="kv-build" aria-labelledby="kv-title" data-build>
+    <div class="kv-sticky" data-sticky>
+      <div class="kv-media" data-media>
+        {phases.map((p, i) => {
+          const s = src(p.img);
+          return (
+            <picture class="kv-shot" data-shot={i} data-img={p.img}>
+              {s.ok ? (
+                <>
+                  <source media="(max-width: 760px)" srcset={i === 0 ? s.mobile : undefined} data-srcset={i === 0 ? undefined : s.mobile} />
+                  <img src={i === 0 ? s.src : undefined} srcset={i === 0 ? s.srcset : undefined} data-src={i === 0 ? undefined : s.src} data-srcset={i === 0 ? undefined : s.srcset}
+                    sizes="100vw" width="1600" height="901" alt={ALT[p.img]} fetchpriority={i === 0 ? 'high' : undefined} decoding="async" />
+                </>
+              ) : (
+                <span class="kv-missing" role="img" aria-label={ALT[p.img]}>{p.img}. kép</span>
+              )}
+            </picture>
+          );
+        })}
+      </div>
+      <div class="kv-veil" aria-hidden="true"></div>
+      <div class="x-frame" aria-hidden="true"></div>
+
+      <div class="kv-heads">
+        <div class="kv-head" data-head="day">
+          <h1 id="kv-title" class="x-display">Az álommedence egy üres kertből indul.</h1>
+          <p class="x-measure">Vasbeton medencék kulcsrakészen és teleszkópos fedések, Budaörsről, Budapest környékén.</p>
+        </div>
+        <div class="kv-head" data-head="night">
+          <p class="x-display">Egész évben a tiéd.</p>
+          <div class="x-actions">
+            <a class="x-btn is-solid" href="#ajanlat">Ajánlatot kérek</a>
+            <a class="x-link" href="#fedesek">Fedéseink</a>
+          </div>
+        </div>
+      </div>
+
+      <ol class="kv-phases" aria-label="Az építés fázisai">
+        {phases.map((p, i) => (
+          <li data-phase={i} class={i === 0 ? 'is-on' : undefined}>
+            <p class="kv-phase-name">{p.name}</p>
+            <p class="kv-phase-text">{p.text}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="kv-count x-label" aria-hidden="true"><span data-phase-count>01</span> / {total}</p>
+      <div class="kv-progress" aria-hidden="true"><i data-bar></i></div>
+    </div>
+  </section>
+
+  <section id="fedes-demo" class="x-plate x-pad kv-demo" aria-labelledby="kv-demo-title">
+    <div class="kv-demo-stage">
+      <div class="kv-demo-pics" data-demo-pics>
+        {['06', '07', '08'].map((nn, i) => {
+          const s = src(nn);
+          return s.ok
+            ? <img class="kv-demo-pic" data-demo={i} src={s.src} srcset={s.srcset} sizes="(max-width: 960px) 100vw, 62vw" width="1600" height="901" alt={ALT[nn]} loading="lazy" decoding="async" />
+            : <span class="kv-demo-pic kv-missing" data-demo={i} role="img" aria-label={ALT[nn]}>{nn}. kép</span>;
+        })}
+      </div>
+      <label class="kv-range">
+        <span class="x-label x-dim" data-demo-state>Nyitva</span>
+        <input type="range" min="0" max="100" value="0" step="1" data-demo-range aria-label="A fedés nyitása és zárása" aria-valuetext="nyitva" />
+        <span class="kv-range-ends x-label x-dim" aria-hidden="true"><span>Nyitva</span><span>Zárva</span></span>
+      </label>
+    </div>
+    <div class="kv-demo-copy">
+      <h2 id="kv-demo-title" class="x-display">Próbáld ki: húzd a csúszkát.</h2>
+      <ul class="x-list kv-benefits">
+        {benefits.map(([t, d]) => <li><strong>{t}</strong><span class="x-dim">{d}</span></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section id="medenceepites" class="x-plate x-pad kv-steps" aria-labelledby="kv-steps-title">
+    <h2 id="kv-steps-title" class="x-display" data-reveal>Medenceépítés kulcsrakészen.</h2>
+    <ol class="kv-step-list">
+      {steps.map(([t, d], i) => (
+        <li data-reveal><span class="x-label x-dim">{pad(i + 1)}</span><h3>{t}</h3><p class="x-dim">{d}</p></li>
+      ))}
+    </ol>
+    <ul class="x-list kv-prices" aria-label="Medenceépítés árak">
+      {pools.map((p) => <li><span>{p.name}</span><span class="x-dim">{p.note}</span><span class="kv-price">{ft(p.price)}-tól</span></li>)}
+    </ul>
+  </section>
+
+  <section id="fedesek" class="x-plate x-pad kv-covers" aria-labelledby="kv-covers-title">
+    <h2 id="kv-covers-title" class="x-display" data-reveal>Teleszkópos medencefedések.</h2>
+    <ul class="kv-cover-list">
+      {covers.map((c) => (
+        <li data-reveal>
+          <h3>{c.name}</h3>
+          <p class="x-label x-dim">Magasság {c.height}</p>
+          <p class="kv-cover-price">{ft(c.price)}-tól</p>
+          <p class="x-dim">{c.text}</p>
+        </li>
+      ))}
+    </ul>
+    <p class="x-dim x-measure kv-cover-note">{coverNote}</p>
+  </section>
+
+  <section id="referenciak" class="kv-refs" aria-labelledby="kv-refs-title">
+    <div class="kv-refs-pic">
+      {src('06').ok
+        ? <img src={src('06').src} srcset={src('06').srcset} sizes="100vw" width="1600" height="901" alt={ALT['06']} loading="lazy" decoding="async" data-zoom />
+        : <span class="kv-missing" role="img" aria-label={ALT['06']}>06. kép</span>}
+    </div>
+    <div class="x-pad x-plate kv-refs-copy">
+      <h2 id="kv-refs-title" class="x-display" data-reveal>Referenciák.</h2>
+      <ul class="x-list kv-ref-list">
+        {references.map((r) => <li><span>{r.place}</span><span class="x-dim">{r.year}</span><span class="x-dim">{r.text}</span></li>)}
+      </ul>
+      <figure class="kv-quote">
+        <blockquote><p>„{quote.text}”</p></blockquote>
+        <figcaption class="x-label x-dim">{quote.name}, {quote.role}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="gyik" class="x-plate x-pad kv-faq" aria-labelledby="kv-faq-title">
+    <h2 id="kv-faq-title" class="x-display" data-reveal>Kérdések.</h2>
+    <dl class="kv-faq-list">
+      {faq.map(([q, a]) => <div><dt>{q}</dt><dd class="x-dim">{a}</dd></div>)}
+    </dl>
+  </section>
+
+  <section id="kapcsolat" class="x-plate x-pad kv-contact" aria-labelledby="kv-contact-title">
+    <div class="kv-contact-info">
+      <h2 id="kv-contact-title" class="x-display">Ingyenes felmérés.</h2>
+      <dl class="kv-contact-list">
+        <div><dt class="x-label x-dim">{brand.showroom}</dt><dd>{brand.address}</dd></div>
+        <div><dt class="x-label x-dim">Telefon</dt><dd><a href={`tel:${brand.phone.replace(/\s/g, '')}`}>{brand.phone}</a></dd></div>
+        <div><dt class="x-label x-dim">E-mail</dt><dd><a href={`mailto:${brand.email}`}>{brand.email}</a></dd></div>
+        <div><dt class="x-label x-dim">Nyitvatartás</dt><dd>Hétfő-péntek 8:00-17:00, szombat 9:00-13:00</dd></div>
+        <div><dt class="x-label x-dim">Ahol dolgozunk</dt><dd>{brand.area}</dd></div>
+      </dl>
+    </div>
+    <form id="ajanlat" class="x-form kv-form" novalidate data-quote-form aria-labelledby="kv-form-title">
+      <p id="kv-form-title" class="x-label">Ajánlatkérés</p>
+      <div class="x-row">
+        <div class="x-field"><label for="q-name">Név</label><input id="q-name" name="name" autocomplete="name" required /></div>
+        <div class="x-field"><label for="q-phone">Telefon</label><input id="q-phone" name="phone" type="tel" autocomplete="tel" required /></div>
+      </div>
+      <div class="x-row">
+        <div class="x-field"><label for="q-email">E-mail</label><input id="q-email" name="email" type="email" autocomplete="email" required /></div>
+        <div class="x-field"><label for="q-town">Település</label><input id="q-town" name="town" autocomplete="address-level2" required /></div>
+      </div>
+      <div class="x-row">
+        <div class="x-field"><label for="q-what">Mi érdekli?</label>
+          <select id="q-what" name="what"><option>Medenceépítés</option><option>Medencefedés meglévő medencére</option><option>Medence fedéssel</option></select>
+        </div>
+        <div class="x-field"><label for="q-size">Méret (ha tudja)</label><input id="q-size" name="size" placeholder="pl. 8 × 4 m" /></div>
+      </div>
+      <div class="x-field"><label for="q-msg">Üzenet</label><textarea id="q-msg" name="message" rows="2"></textarea></div>
+      <p class="x-err" data-form-err aria-live="polite"></p>
+      <div class="x-actions"><button class="x-btn is-solid" type="submit">Ajánlatot kérek</button></div>
+      <p class="x-status" data-form-ok hidden>Köszönjük! Két munkanapon belül hívjuk, hogy egyeztessük a felmérés idejét. (Mintaoldal, nem küldtünk el semmit.)</p>
+    </form>
+  </section>
+</main>
+
+<footer class="x-pad kv-footer">
+  <p class="x-label">{brand.name}</p>
+  <p class="x-dim">Kitalált cég, ez a weboldal minta. A képek AI-generáltak.</p>
+</footer>

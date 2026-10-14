@@ -8,7 +8,7 @@
  */
 export const INDEX_EXAMPLES = process.env.INDEX_EXAMPLES === '1';
 
-export const EXAMPLE_SLUGS = ['ingatlan-premium', 'ingatlan-alap', 'jatekterem-premium', 'jatekterem-alap'];
+export const EXAMPLE_SLUGS = ['ingatlan-premium', 'ingatlan-alap', 'jatekterem-premium', 'jatekterem-alap', 'medence-premium'];
 
 const DAYS: Record<string, string> = {
   hétfő: 'Monday', kedd: 'Tuesday', szerda: 'Wednesday', csütörtök: 'Thursday', péntek: 'Friday', szombat: 'Saturday', vasárnap: 'Sunday',

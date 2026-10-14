@@ -16,6 +16,7 @@ Direction (from the client's references, a surreal painted "pear" site and a pho
 | --- | --- | --- | --- |
 | Vonal Stúdió (/, tervező, ajánlatkérés) | Instrument Serif | Geist (+ Geist Mono for step numbers) | near-black, neon blue only for links and focus |
 | Aurum Ingatlan | Newsreader, upright, light | Instrument Sans | warm near-black; the picture carries the colour |
+| Kékvíz Medence | Libre Caslon Display | Hanken Grotesk | cool white, deep blue and anthracite; turquoise only for the progress line and the slider |
 | Pixel Pont Játékterem | Tiny5 (pixel) | VT323 | black room, pink and cyan neon, a blue CRT; taken from the arcade photo |
 
 Shared grammar for the examples: `src/examples/exhibit.css` (Pixel Pont has its own `arcade.css`: the arcade is a game, so its UI is a game menu, but it keeps the rules: two typefaces, 1px lines, no cards). Pixel fonts were checked visually: Press Start 2P, Pixelify Sans and Silkscreen draw ő/ű wrong, Tiny5 and VT323 get them right. Prémium adds the scroll-driven video, hover previews, the pinned film strip and slow zooms; Alap keeps the same scenes with still photos and one fade.

@@ -256,6 +256,14 @@
         "provider": "AI-generált (saját)",
         "note": "A megrendelő által adott, mesterséges intelligenciával készített saját kép (1456×819). A képernyő szövegét és a fényeffekteket kód rajzolja rá."
       }
+    },
+    "pool/kertepites": {
+      "file": "public/examples/pool/*.webp",
+      "label": "Kékvíz Medence: ugyanaz a kert nyolc fázisban (üres kert, gödör, betonváz, burkolt, feltöltött, kész, félig és teljesen zárt fedés)",
+      "source": {
+        "provider": "AI-generált (saját)",
+        "note": "A megrendelő által adott, mesterséges intelligenciával készített saját képek (1671×941). WebP-be alakítva asztali és mobil méretben, a 03-05., 07. és 08. kép 2 px-es függőleges igazításával. A 05-ös kép kétszer érkezett, egyszer szerepel."
+      }
     }
   }
 }

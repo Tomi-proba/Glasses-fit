@@ -1,0 +1,21 @@
+---
+import ExampleLayout from '../../layouts/ExampleLayout.astro';
+import PoolPage from '../../examples/pool/PoolPage.astro';
+import { poolLd } from '../../examples/pool/ld';
+import { url } from '../../lib/url';
+
+const title = 'Kékvíz Medence: medenceépítés kulcsrakészen és teleszkópos medencefedések';
+const description = 'Vasbeton medence kulcsrakészen 4 900 000 Ft-tól, teleszkópos medencefedés 1 690 000 Ft-tól, meglévő medencére is. Ingyenes felmérés Budapesten és Pest megyében. Budaörs, +36 23 555 0190.';
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = poolLd(pageUrl, new URL(url('images/og/medence-premium.jpg'), Astro.site).href);
+const img = (s: string) => url(`examples/pool/01-${s}.webp`);
+const preload = { href: img('1100'), srcset: `${img('m')} 760w, ${img('1100')} 1100w, ${img('1600')} 1600w`, sizes: '100vw' };
+---
+<ExampleLayout {title} {description} {jsonLd} tier="premium" slug="medence-premium" themeColor="#0b3a5b" preloadImage={preload}
+  fonts="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Hanken+Grotesk:wght@400;500&family=Geist:wght@400;500&display=swap">
+  <PoolPage />
+</ExampleLayout>
+
+<script>
+  import '../../examples/pool/pool.js';
+</script>

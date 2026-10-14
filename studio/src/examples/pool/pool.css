@@ -1,0 +1,141 @@
+/* Kékvíz Medence: white, deep blue and anthracite, turquoise only for thin details (the progress line,
+   the slider, the rails of the cover). Libre Caslon Display for the one display size, Hanken Grotesk for the rest. */
+:root {
+  --bg: #f6f8f9;
+  --ink: #15232d;
+  --dim: rgba(21, 35, 45, 0.7);
+  --line: rgba(21, 35, 45, 0.16);
+  --deep: #0b3a5b;
+  --accent: #14a8b8;
+  --display: 'Libre Caslon Display', Georgia, serif;
+  --display-weight: 400;
+  --display-tracking: -0.01em;
+  --small: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --small-size: 15px;
+  --btn-fill: var(--deep);
+  --btn-text: #fff;
+  color-scheme: light;
+}
+.x-display { font-size: clamp(2.5rem, 5.2vw, 5.2rem); line-height: 1.04; }
+h3 { margin: 0; font-weight: 500; font-size: inherit; }
+.kv-header .kv-quote-link { padding: 7px 12px; border: 1px solid currentColor; }
+.kv-header .kv-quote-link:hover { text-decoration: none; background: #fff; color: #000; }
+.kv-missing { display: grid; place-items: center; width: 100%; height: 100%; background: linear-gradient(160deg, #20425a, #0b1d2a); color: rgba(255, 255, 255, 0.7); text-transform: uppercase; letter-spacing: 0.16em; }
+
+/* ---------- the opening: the pool gets built ---------- */
+.kv-build { position: relative; background: #0b1d2a; }
+.kv-sticky { position: relative; height: 100svh; min-height: 560px; overflow: hidden; color: #fff; }
+.kv-media { position: absolute; inset: 0; transform-origin: 56% 58%; will-change: transform; }
+.kv-shot { position: absolute; inset: 0; opacity: 0; }
+.kv-shot:first-child { opacity: 1; }
+.kv-shot img { width: 100%; height: 100%; object-fit: cover; object-position: 56% 50%; display: block; }
+/* the cover slides shut: the last photo is revealed by a soft-edged mask moving along the rails */
+.kv-shot[data-mask], .kv-demo-pic[data-mask] { --r: 0; --a: 104deg; --from: 0.3;
+  /* the edge starts where the folded cover stands in 07 and sweeps to the far end; 8% soft edge */
+  --edge: calc((var(--from) + var(--r) * (1.1 - var(--from))) * 100%);
+  -webkit-mask-image: linear-gradient(var(--a), #000 calc(var(--edge) - 8%), transparent var(--edge));
+  mask-image: linear-gradient(var(--a), #000 calc(var(--edge) - 8%), transparent var(--edge)); }
+.kv-veil { position: absolute; inset: 0; pointer-events: none; background:
+  linear-gradient(180deg, rgba(5, 18, 28, 0.55) 0%, rgba(5, 18, 28, 0.12) 30%, transparent 48%),
+  linear-gradient(0deg, rgba(5, 18, 28, 0.62) 0%, rgba(5, 18, 28, 0.18) 26%, transparent 42%); }
+.kv-sticky .x-frame { border-color: rgba(255, 255, 255, 0.28); }
+
+.kv-heads { position: absolute; z-index: 3; left: clamp(32px, 4.4vw, 64px); right: clamp(32px, 4.4vw, 64px); top: clamp(96px, 15vh, 150px); }
+.kv-head { position: absolute; inset: 0 auto auto 0; display: grid; gap: 18px; max-width: min(48vw, 720px); --btn-fill: #fff; --btn-text: var(--deep); }
+.kv-head > .x-display { font-size: clamp(2.5rem, 5.2vw, 5.2rem); text-shadow: 0 1px 24px rgba(0, 0, 0, 0.25); }
+.kv-head .x-measure { max-width: 30em; color: rgba(255, 255, 255, 0.86); }
+.kv-head[data-head='night'] { opacity: 0; visibility: hidden; }
+.kv-head .x-btn.is-solid { background: #fff; border-color: #fff; color: var(--deep); }
+.kv-head .x-btn.is-solid:hover { background: transparent; color: #fff; }
+
+.kv-phases { position: absolute; z-index: 3; left: clamp(32px, 4.4vw, 64px); bottom: clamp(44px, 6vh, 64px); width: min(26em, 70vw); height: 4.6em; }
+.kv-phases li { position: absolute; inset: auto 0 0 0; display: grid; gap: 4px; opacity: 0; transform: translateY(8px); transition: opacity 0.5s, transform 0.5s; }
+.kv-phases li.is-on { opacity: 1; transform: none; }
+.kv-phase-name { font-family: var(--display); font-size: clamp(1.7rem, 2.4vw, 2.3rem); line-height: 1; }
+.kv-phase-text { color: rgba(255, 255, 255, 0.82); }
+.kv-count { position: absolute; z-index: 3; right: clamp(32px, 4.4vw, 64px); bottom: clamp(48px, 6.4vh, 68px); font-variant-numeric: tabular-nums; color: rgba(255, 255, 255, 0.86); }
+.kv-progress { position: absolute; z-index: 3; left: clamp(12px, 1.6vw, 22px); right: clamp(12px, 1.6vw, 22px); bottom: clamp(12px, 1.6vw, 22px); height: 1px; background: rgba(255, 255, 255, 0.22); }
+.kv-progress i { position: absolute; inset: 0; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+
+/* still mode (reduced motion): the finished, covered pool */
+.kv-still .kv-shot { opacity: 0 !important; }
+.kv-still .kv-shot:last-child { opacity: 1 !important; -webkit-mask-image: none; mask-image: none; }
+.kv-still .kv-head[data-head='day'] { display: none; }
+.kv-still .kv-head[data-head='night'] { opacity: 1; visibility: visible; }
+
+/* ---------- open and close the cover yourself ---------- */
+.kv-demo { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 48px clamp(40px, 5vw, 80px); align-items: center; }
+.kv-demo-stage { display: grid; gap: 18px; }
+.kv-demo-pics { position: relative; aspect-ratio: 1600 / 901; overflow: hidden; background: #0b1d2a; cursor: ew-resize; touch-action: pan-y; user-select: none; }
+.kv-demo-pic { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; -webkit-user-drag: none; }
+.kv-demo-pic[data-demo='1'], .kv-demo-pic[data-demo='2'] { opacity: 0; }
+.kv-range { display: grid; grid-template-columns: 6em minmax(0, 1fr); align-items: center; gap: 6px 18px; }
+.kv-range input { width: 100%; margin: 0; accent-color: var(--accent); height: 28px; cursor: pointer; }
+.kv-range-ends { grid-column: 2; display: flex; justify-content: space-between; }
+.kv-demo-copy { display: grid; gap: 32px; align-content: center; }
+.kv-demo-copy .x-display { font-size: clamp(2rem, 3.4vw, 3.3rem); }
+.kv-benefits li { display: grid; gap: 4px; padding: 16px 0; }
+.kv-benefits strong { font-weight: 500; }
+
+/* ---------- steps and prices ---------- */
+.kv-steps, .kv-covers, .kv-faq, .kv-contact { border-top: 1px solid var(--line); }
+.kv-steps > .x-display, .kv-covers > .x-display { margin-bottom: clamp(40px, 6vw, 80px); max-width: 14em; }
+.kv-step-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 28px; }
+.kv-step-list li { display: grid; gap: 10px; align-content: start; padding-top: 16px; border-top: 1px solid var(--ink); }
+.kv-prices { margin-top: clamp(56px, 8vw, 96px); max-width: 980px; }
+.kv-prices li { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr) auto; gap: 20px; padding: 16px 0; align-items: baseline; }
+.kv-price, .kv-cover-price { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.kv-cover-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.kv-cover-list li { display: grid; gap: 8px; align-content: start; padding-top: 16px; border-top: 1px solid var(--ink); }
+.kv-cover-list h3 { font-family: var(--display); font-weight: 400; font-size: clamp(1.5rem, 2.2vw, 2.1rem); line-height: 1.1; }
+.kv-cover-price { color: var(--deep); font-weight: 500; }
+.kv-cover-note { margin-top: 40px; }
+
+/* ---------- references ---------- */
+.kv-refs-pic { position: relative; height: min(88svh, 56vw); overflow: hidden; }
+.kv-refs-pic img, .kv-refs-pic .kv-missing { width: 100%; height: 100%; object-fit: cover; display: block; }
+.kv-refs-copy { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 40px 72px; align-items: start; }
+.kv-ref-list li { display: grid; grid-template-columns: 9em 4em minmax(0, 1fr); gap: 16px; padding: 14px 0; }
+.kv-quote { grid-column: 2; display: grid; gap: 14px; margin-top: 24px; }
+.kv-quote blockquote { margin: 0; font-family: var(--display); font-size: clamp(1.4rem, 2vw, 1.9rem); line-height: 1.25; max-width: 24em; }
+
+/* ---------- questions, contact ---------- */
+.kv-faq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 40px 72px; }
+.kv-faq-list > div { display: grid; gap: 6px; padding: 18px 0; border-top: 1px solid var(--line); }
+.kv-faq-list > div:last-child { border-bottom: 1px solid var(--line); }
+.kv-faq-list dt { font-weight: 500; }
+.kv-faq-list dd { margin: 0; max-width: 42em; }
+.kv-contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 56px 96px; }
+.kv-contact-info { display: grid; gap: 32px; align-content: start; }
+.kv-contact-list { display: grid; gap: 14px; }
+.kv-contact-list div { display: grid; grid-template-columns: 12em minmax(0, 1fr); gap: 16px; }
+.kv-contact-list dd { margin: 0; }
+.kv-contact-list a { text-decoration-color: var(--line); text-underline-offset: 5px; }
+.kv-form .x-btn.is-solid { color: #fff; }
+.kv-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding-block: 32px 110px; border-top: 1px solid var(--line); }
+
+@media (max-width: 960px) {
+  .kv-demo, .kv-refs-copy, .kv-faq, .kv-contact { grid-template-columns: 1fr; }
+  .kv-quote { grid-column: 1; }
+  .kv-step-list { grid-template-columns: 1fr 1fr; }
+  .kv-cover-list { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  /* phones: the picture fills the top two thirds and melts into deep blue; the phase text sits below it */
+  .kv-media { inset: 0 0 auto 0; height: 72svh; transform-origin: 50% 62%; -webkit-mask-image: linear-gradient(180deg, #000 76%, transparent 100%); mask-image: linear-gradient(180deg, #000 76%, transparent 100%); }
+  .kv-shot img { object-position: 50% 50%; }
+  .kv-head { max-width: none; right: 0; }
+  .kv-heads { top: 88px; }
+  .kv-head > .x-display { font-size: 2.35rem; }
+  .kv-phases { bottom: 92px; width: auto; right: clamp(32px, 4.4vw, 64px); }
+  .kv-count { bottom: auto; top: 64px; right: clamp(32px, 4.4vw, 64px); }
+  .kv-progress { bottom: 72px; }
+  .kv-veil { background: linear-gradient(180deg, rgba(5, 18, 28, 0.62) 0%, rgba(5, 18, 28, 0.12) 30%, transparent 42%); }
+  .kv-step-list { grid-template-columns: 1fr; }
+  .kv-prices li { grid-template-columns: 1fr auto; }
+  .kv-prices li > .x-dim { grid-column: 1 / -1; grid-row: 2; }
+  .kv-ref-list li { grid-template-columns: 1fr auto; }
+  .kv-ref-list li > :last-child { grid-column: 1 / -1; }
+  .kv-contact-list div { grid-template-columns: 1fr; gap: 2px; }
+  .kv-refs-pic { height: 62svh; }
+}

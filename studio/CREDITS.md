@@ -16,6 +16,7 @@ A példaoldalak (`/peldak/…`) fotói az [Unsplash](https://unsplash.com/licens
 | Hely | Kép | Forrás | Megjegyzés |
 | --- | --- | --- | --- |
 | `arcade/arcade` | Pixel Pont: álló játékgép neonfényben (a Prémium nyitóképe és az Alap hero) | AI-generált (saját) | A megrendelő által adott, mesterséges intelligenciával készített saját kép (1456×819). A képernyő szövegét és a fényeffekteket kód rajzolja rá. |
+| `pool/kertepites` | Kékvíz Medence: ugyanaz a kert nyolc fázisban (üres kert, gödör, betonváz, burkolt, feltöltött, kész, félig és teljesen zárt fedés) | AI-generált (saját) | A megrendelő által adott, mesterséges intelligenciával készített saját képek (1671×941). WebP-be alakítva asztali és mobil méretben, a 03-05., 07. és 08. kép 2 px-es függőleges igazításával. A 05-ös kép kétszer érkezett, egyszer szerepel. |
 
 ## Videók
 

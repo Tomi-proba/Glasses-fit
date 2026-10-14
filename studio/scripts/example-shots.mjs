@@ -19,7 +19,7 @@ const out = resolve(root, 'public/images/examples');
 await mkdir(out, { recursive: true });
 await mkdir(resolve(root, 'public/images/og'), { recursive: true });
 
-const PAGES = ['ingatlan-premium', 'ingatlan-alap', 'jatekterem-premium', 'jatekterem-alap'];
+const PAGES = ['ingatlan-premium', 'ingatlan-alap', 'jatekterem-premium', 'jatekterem-alap', 'medence-premium'];
 const browser = await chromium.launch({
   executablePath: process.env.CHROME_PATH || undefined,
   args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--no-sandbox'],
