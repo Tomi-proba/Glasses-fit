@@ -18,6 +18,8 @@ const radios = (name: string, list: string[][], err = name) => list.map(([v, t])
 
   <section class="container quote-grid">
     <form id="quote-form" class="quote-form" novalidate>
+      <p class="example-note panel" id="example-note" hidden><span id="example-text"></span><button type="button" class="link" id="example-clear">Eltávolítás</button></p>
+      <input type="hidden" name="example" id="q-example" />
       <div class="design-card panel" id="design-card" hidden>
         <div class="design-thumb" aria-hidden="true"><iframe id="design-frame" title="A terved előnézete" tabindex="-1" loading="lazy"></iframe></div>
         <div class="design-info">
@@ -172,6 +174,8 @@ const radios = (name: string, list: string[][], err = name) => list.map(([v, t])
   .design-info { display: grid; gap: 12px; justify-items: start; }
   .design-card:has(input:not(:checked)) .design-thumb { opacity: 0.4; }
 
+  .example-note { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 18px; font-size: 15px; }
+  .example-note .link { border: 0; padding: 0; background: none; cursor: pointer; font-size: 14px; }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .submit-area { display: grid; gap: 16px; justify-items: start; padding-top: 8px; border-top: 1px solid var(--line); padding-top: 28px; }
 
@@ -252,6 +256,21 @@ const radios = (name: string, list: string[][], err = name) => list.map(([v, t])
   }
   const asked = params.get('csomag');
   if (asked === 'alap' || asked === 'premium') set('package', asked);
+  // Coming from an example site's "Ilyet szeretnék" button.
+  const EXAMPLES: Record<string, string> = {
+    'ingatlan-premium': 'Aurum Ingatlan, Prémium 3D', 'ingatlan-alap': 'Aurum Ingatlan, Alap',
+    'etterem-premium': 'Fűszerkert Bisztró, Prémium 3D', 'etterem-alap': 'Fűszerkert Bisztró, Alap',
+  };
+  const example = params.get('minta') || '';
+  if (EXAMPLES[example]) {
+    (document.getElementById('q-example') as HTMLInputElement).value = example;
+    document.getElementById('example-text')!.textContent = `Ez a mintaoldal tetszett: ${EXAMPLES[example]}`;
+    document.getElementById('example-note')!.hidden = false;
+    document.getElementById('example-clear')!.addEventListener('click', () => {
+      (document.getElementById('q-example') as HTMLInputElement).value = '';
+      document.getElementById('example-note')!.hidden = true;
+    });
+  }
 
   const values = () => {
     const d = new FormData(form);
@@ -270,7 +289,7 @@ const radios = (name: string, list: string[][], err = name) => list.map(([v, t])
   form.addEventListener('input', () => {
     syncDomain();
     clearTimeout(draftTimer);
-    draftTimer = setTimeout(() => { const { privacy, website, ...rest } = values(); saveQuoteDraft(rest); }, 400);
+    draftTimer = setTimeout(() => { const { privacy, website, example, ...rest } = values(); saveQuoteDraft(rest); }, 400);
   });
   form.addEventListener('change', (e) => {
     const el = e.target as HTMLInputElement;

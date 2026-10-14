@@ -1,9 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero3D from '../components/Hero3D.astro';
+import StudioHero3D from '../components/StudioHero3D.astro';
 import { business } from '../config/business';
 import { PACKAGES, VAT_NOTE, MONTHLY_NOTE, priceFrom } from '../config/pricing';
-import { SAMPLES } from '../template/samples.js';
+import Showcase from '../components/Showcase.astro';
 import { url } from '../lib/url';
 import { icon } from '../lib/icon';
 
@@ -23,12 +23,11 @@ const faq = [
   ['Mi van, ha nincs saját fotóm vagy szövegem?', 'Segítünk: jogtiszta képeket választunk, és a szövegek megírásában is részt veszünk. Az ajánlatkérőben jelezheted, mi van már meg.'],
   ['Az enyém lesz a weboldal?', 'Igen. A kész oldal és a forrásfájlok is a tieid, bármikor átviheted más tárhelyre.'],
 ];
-const layout = ['wide', 'narrow', 'narrow', 'wide'];
 ---
 <Layout>
   <section class="hero container">
     <div class="hero-copy">
-      <h1 class="display">Tervezd meg 5 perc alatt, a többit mi intézzük.</h1>
+      <h1 class="display" data-split>Tervezd meg 5 perc alatt, a többit mi intézzük.</h1>
       <p class="lede">Rakd össze élő előnézettel, milyen weboldalt szeretnél, vagy csak írd le pár mondatban. Személyre szabott ajánlatot küldünk, aztán elkészítjük és élesítjük. Weboldal {lowest}, havidíj nélkül.</p>
       <div class="hero-actions">
         <a class="btn btn-lg" href={url('tervezo')}>Tervezd meg a weboldalad <Fragment set:html={icon('next')} /></a>
@@ -36,7 +35,7 @@ const layout = ['wide', 'narrow', 'narrow', 'wide'];
       </div>
     </div>
     <div class="hero-visual">
-      <Hero3D image="images/hero-object.webp" alt="Két egymásra csúszó böngészőablak részecskékből" />
+      <StudioHero3D />
     </div>
   </section>
 
@@ -80,28 +79,7 @@ const layout = ['wide', 'narrow', 'narrow', 'wide'];
     </div>
   </section>
 
-  <section id="mintak" class="section samples" aria-labelledby="mintak-title">
-    <div class="container">
-      <h2 id="mintak-title" class="display" data-reveal>Így nézhet ki a tiéd.</h2>
-      <p class="lede samples-lede" data-reveal>Négy példa más színekkel, betűkkel és 3D elemmel. Bármelyikből kiindulhatsz a tervezőben, a végleges oldalt pedig a te vállalkozásodra szabjuk.</p>
-      <ul class="samples-grid" role="list">
-        {SAMPLES.map((s, i) => (
-          <li class={`sample sample-${layout[i % 4]}`} data-reveal>
-            <a class="sample-frame" href={url(`sablon/minta/${s.id}`)} target="_blank" rel="noopener" aria-label={`${s.config.brand.name} minta megnyitása új lapon`}>
-              <iframe src={url(`sablon/minta/${s.id}?thumb`)} title={`${s.config.brand.name} minta előnézete`} loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-            </a>
-            <div class="sample-meta">
-              <div>
-                <h3>{s.config.brand.name}</h3>
-                <p class="muted sample-style">{s.label}. {s.style}.</p>
-              </div>
-              <a class="btn btn-sm btn-ghost" href={url(`tervezo?minta=${s.id}`)}>Ezzel kezdem</a>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
+  <Showcase />
 
   <section id="gyik" class="section container faq" aria-labelledby="gyik-title">
     <h2 id="gyik-title" class="display" data-reveal>Gyakori kérdések</h2>
@@ -135,11 +113,11 @@ const layout = ['wide', 'narrow', 'narrow', 'wide'];
 </Layout>
 
 <style>
-  .hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); align-items: center; gap: clamp(24px, 4vw, 64px); min-height: calc(100svh - var(--header-h)); padding-block: 48px; }
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: center; gap: clamp(24px, 4vw, 64px); min-height: calc(100svh - var(--header-h)); padding-block: 48px; }
   .hero h1 { max-width: 16ch; font-size: clamp(2.6rem, 5.3vw, 4.8rem); }
   .hero .lede { margin-top: 28px; }
   .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
-  .hero-visual { max-width: 600px; width: 100%; justify-self: end; }
+  .hero-visual { width: 100%; justify-self: end; }
 
   .steps { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(40px, 6vw, 96px); border-top: 1px solid var(--line); }
   .steps-head { position: sticky; top: calc(var(--header-h) + 32px); align-self: start; display: grid; gap: 28px; justify-items: start; }
@@ -172,18 +150,6 @@ const layout = ['wide', 'narrow', 'narrow', 'wide'];
   .pkg-hi .pkg-btn { background: var(--on-accent); color: var(--text); }
   .pkg-hi .pkg-btn:hover { background: #000; color: var(--accent); box-shadow: none; }
 
-  .samples { border-top: 1px solid var(--line); }
-  .samples-lede { margin-top: 20px; }
-  .samples-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; margin-top: clamp(40px, 6vw, 72px); }
-  .sample-wide { grid-column: span 7; }
-  .sample-narrow { grid-column: span 5; }
-  .sample-frame { display: block; position: relative; height: clamp(360px, 44vw, 600px); border-radius: var(--r-media); overflow: hidden; border: 1px solid var(--line); background: var(--surface); transition: border-color 0.3s, transform 0.5s var(--ease); }
-  .sample-frame:hover { border-color: rgba(var(--accent-rgb), 0.6); transform: translateY(-4px); }
-  .sample-frame iframe { position: absolute; top: 0; left: 0; width: 1280px; max-width: none; height: 800px; border: 0; transform-origin: 0 0; transform: scale(var(--s, 0.4)); pointer-events: none; }
-  .sample-meta { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 16px; }
-  .sample-meta h3 { font-size: 1.15rem; }
-  .sample-meta p { margin-top: 4px; font-size: 14.5px; }
-
   .faq { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(40px, 6vw, 96px); border-top: 1px solid var(--line); }
   .faq-list details { border-top: 1px solid var(--line); }
   .faq-list details:last-child { border-bottom: 1px solid var(--line); }
@@ -202,33 +168,18 @@ const layout = ['wide', 'narrow', 'narrow', 'wide'];
 
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 24px; }
-    .hero-visual { order: -1; max-width: 360px; justify-self: center; }
+    .hero-visual { order: -1; max-width: 560px; justify-self: center; }
     .steps, .faq, .contact, .pkg-grid, .packages-head { grid-template-columns: 1fr; }
     .steps-head { position: static; }
-    .sample-wide, .sample-narrow { grid-column: 1 / -1; }
   }
   @media (max-width: 600px) {
     .pkg-btn { justify-self: stretch; }
-    .hero-visual { max-width: 260px; }
+    .hero-visual { max-width: none; }
     .hero-actions .btn { flex: 1 1 100%; }
-    .sample-meta { flex-direction: column; align-items: flex-start; }
   }
 </style>
 
 <script>
-  // Scale the live sample previews (rendered at 1280px) to their card width.
-  const frames = document.querySelectorAll<HTMLElement>('.sample-frame');
-  const ro = new ResizeObserver((entries) => {
-    for (const e of entries) {
-      const s = e.contentRect.width / 1280;
-      const el = e.target as HTMLElement;
-      el.style.setProperty('--s', String(s));
-      // Fill the card's height too, so wide and narrow cards both show a full page.
-      el.querySelector('iframe')?.style.setProperty('height', `${Math.ceil(e.contentRect.height / s)}px`);
-    }
-  });
-  frames.forEach((f) => ro.observe(f));
-
   // Contact form: validates, then opens the visitor's mail app with the message (no backend yet).
   const form = document.querySelector<HTMLFormElement>('.contact-form');
   form?.addEventListener('submit', (e) => {

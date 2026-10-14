@@ -1,0 +1,55 @@
+---
+// Home hero visual: our example sites stacked in 3D (Three.js), with a CSS 3D still underneath that
+// shows immediately and stays for reduced motion or without fast WebGL.
+import { url } from '../lib/url';
+const shots = ['etterem-alap', 'ingatlan-premium', 'etterem-premium'];
+const desk = (s: string, w: number) => url(`images/examples/${s}-desktop-${w}.webp`);
+const phone = url('images/examples/ingatlan-premium-mobile-390.webp');
+---
+<div class="showcase3d" data-showcase data-desktops={JSON.stringify(shots.map((s) => desk(s, 1280)))} data-desktops-small={JSON.stringify(shots.map((s) => desk(s, 720)))} data-phone={phone}>
+  <div class="sc-still" aria-hidden="true">
+    {shots.map((s, i) => <img class={`sc-win sc-win-${i + 1}`} src={desk(s, 720)} width="720" height="450" alt="" decoding="async" fetchpriority={i === 2 ? 'high' : undefined} />)}
+    <img class="sc-phone" src={phone} width="390" height="844" alt="" decoding="async" />
+  </div>
+  <canvas class="sc-canvas" aria-hidden="true"></canvas>
+  <p class="sr-only">Három példaoldalunk böngészőablakban és egy telefonon: Fűszerkert Bisztró és Aurum Ingatlan.</p>
+</div>
+
+<style>
+  .showcase3d { position: relative; width: 100%; aspect-ratio: 1 / 0.92; }
+  .sc-still { position: absolute; inset: 0; perspective: 1400px; transition: opacity 0.9s var(--ease); }
+  .sc-still img { position: absolute; border-radius: 10px; border: 2px solid #2a2a2a; box-shadow: 0 40px 60px -30px rgba(0, 0, 0, 0.9); background: #121212; }
+  .sc-win { width: 64%; transform-origin: center; }
+  .sc-win-1 { left: 2%; top: 4%; transform: rotateY(-24deg) rotateX(4deg) translateZ(-160px); opacity: 0.8; }
+  .sc-win-2 { left: 16%; top: 26%; transform: rotateY(-19deg) rotateX(4deg) translateZ(-60px); }
+  .sc-win-3 { left: 26%; top: 48%; transform: rotateY(-14deg) rotateX(4deg); }
+  .sc-phone { width: 19%; right: 2%; top: 38%; border-radius: 16px; border-width: 4px; transform: rotateY(-8deg) translateZ(60px); }
+  .sc-canvas { position: absolute; inset: -6% -10% -6% -6%; width: 116% !important; height: 112% !important; opacity: 0; transition: opacity 0.9s var(--ease); }
+  .showcase3d:global(.is-live) .sc-canvas { opacity: 1; }
+  .showcase3d:global(.is-live) .sc-still { opacity: 0; }
+</style>
+
+<script>
+  import { hasFastWebGL } from '../lib/gpu';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  const el = document.querySelector<HTMLElement>('[data-showcase]');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mobile = matchMedia('(max-width: 760px), (pointer: coarse)').matches;
+  const boot = async () => {
+    if (!el || !hasFastWebGL()) return;
+    const { createShowcase3D } = await import('../lib/showcase3d.js');
+    const desktops = JSON.parse(el.dataset[mobile ? 'desktopsSmall' : 'desktops']!);
+    const sc = await createShowcase3D(el.querySelector('canvas')!, { desktops, phone: el.dataset.phone!, mobile }).catch(() => null);
+    if (!sc) return;
+    if (reduce) { sc.renderStill(); el.classList.add('is-live'); return; }
+    sc.start();
+    requestAnimationFrame(() => el.classList.add('is-live'));
+    if (!mobile) addEventListener('pointermove', (e) => sc.setPointer(e.clientX / innerWidth - 0.5, e.clientY / innerHeight - 0.5), { passive: true });
+    ScrollTrigger.create({ trigger: el, start: 'top top+=80', end: 'bottom top', scrub: true, onUpdate: ({ progress }) => sc.setSpread(progress) });
+    new IntersectionObserver((entries) => (entries.at(-1)!.isIntersecting ? sc.start() : sc.stop())).observe(el);
+  };
+  const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(boot, { timeout: 1500 }) : setTimeout(boot, 300));
+  if (document.readyState === 'complete') idle();
+  else addEventListener('load', idle, { once: true });
+</script>

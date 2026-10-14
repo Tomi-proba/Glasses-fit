@@ -20,5 +20,5 @@ export const packageById = (id: string) => PACKAGES.find((p) => p.id === id);
 /** "200 000 Ft-tól" */
 export function priceFrom(amount: number) {
   const money = new Intl.NumberFormat(data.locale, { style: 'currency', currency: data.currency, maximumFractionDigits: 0 }).format(amount);
-  return `${money}-tól`;
+  return `${money}\u2011tól`; // non-breaking hyphen: "Ft-tól" never wraps
 }

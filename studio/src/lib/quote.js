@@ -76,6 +76,8 @@ export function buildQuoteRequest({ fields: f, design = null, designPackage = ''
       examples: clean(f.examples).split(/\s+/).filter(Boolean),
       deadline: { id: f.deadline, label: label('deadline', f.deadline) },
       notes: clean(f.notes),
+      // The example site the visitor came from ("Ilyet szeretnék"), if any.
+      example: clean(f.example),
     },
     consents: { privacy: f.privacy === true, acceptedAt: new Date().toISOString() },
     // The full design from the tervező (site config v2), or null when the request came without one.

@@ -10,7 +10,12 @@ Direction chosen with the client: **Framer-style "working artboard"** (voltagent
 - Type: Bricolage Grotesque 600 for display, tight tracking (-0.028em) and balanced headings; Onest for body; Martian Mono only for data (step numbers, figures).
 - Shape rule: buttons are pills, panels 20px, inputs 10px, media 14px.
 - Layout families on the home page: split hero with 3D, sticky heading + numbered steps (a real sequence), two package cards side by side (the Prémium one drenched), asymmetric 7/5 sample grid of live previews, FAQ accordion, contact split.
-- Motion: the hero 3D object assembling from particles is the one authored moment; sections reveal once on scroll; reduced motion turns everything static.
+- Motion: the hero is our own work in 3D (example sites as floating browser windows and a phone; pointer tilts, scroll fans them out); headlines reveal word by word behind a mask; buttons carry a pointer-following sheen and a slight magnetic lean; sections reveal once on scroll; reduced motion turns everything static.
+
+## 3. The example sites (/peldak/)
+- Aurum Ingatlan: warm black, champagne gold, Cormorant Garamond (justified: luxury property, editorial) + Hanken Grotesk; crisp 4px media.
+- Fűszerkert Bisztró: deep olive, saffron and paprika, Young Serif (justified: homely bistro) + Figtree; soft 18px media.
+- Prémium and Alap share content and palette; Prémium adds the 3D hero, Lenis, GSAP reveals, parallax, tilt and counters.
 
 ## 2. The client template (the product)
 Every visual decision is a token generated from the site config, so each customer's site has its own identity. The defaults ("Kezdj üresen") are neutral dark with the studio accent.

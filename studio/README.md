@@ -10,7 +10,9 @@ Egyetlen Astro projekt, egységes fejléccel, lábléccel és dizájnnal:
 | `/koszonjuk` | Az elküldött ajánlatkérés utáni oldal |
 | `/aszf`, `/adatvedelem` | Helyőrző jogi oldalak |
 | `/sablon/elonezet` | A termék (ügyfél-sablon) előnézete, ezt tölti be a tervező |
-| `/sablon/minta/<id>/…` | A négy minta weboldal, minden aloldalukkal |
+| `/sablon/minta/<id>/…` | A tervező négy kiinduló mintája, minden aloldalukkal |
+| `/peldak/ingatlan-premium`, `/peldak/ingatlan-alap` | Aurum Ingatlan példaoldal, Prémium 3D és Alap változatban |
+| `/peldak/etterem-premium`, `/peldak/etterem-alap` | Fűszerkert Bisztró példaoldal, Prémium 3D és Alap változatban |
 
 ## Indítás
 
@@ -39,7 +41,14 @@ studio/
 ├── src/layouts/Layout.astro    ← közös fejléc, lábléc, SEO, Lenis + GSAP
 ├── src/layouts/TemplatePage.astro ← a termék egy oldalának renderelése
 ├── src/pages/                  ← útvonalak (lásd fent), sitemap.xml, robots.txt
-├── src/components/Hero3D.astro ← a főoldal 3D eleme
+├── src/components/StudioHero3D.astro ← a főoldal 3D eleme (a példaoldalaink lebegő böngészőablakokban)
+├── src/components/Showcase.astro ← „Munkáink”: a példaoldalak párban, Prémium 3D és Alap
+├── src/examples/               ← A PÉLDAOLDALAK (Aurum Ingatlan, Fűszerkert Bisztró)
+│   ├── aurum/                  ← tartalom, oldal, stílus, villa.js (Three.js), szűrő és galéria
+│   ├── fuszerkert/             ← tartalom, oldal, stílus, cabinet.js (Three.js fűszertartó)
+│   ├── motion-premium.js       ← Prémium: Lenis, GSAP reveal, számlálók, parallax, 3D döntés
+│   ├── motion-basic.js         ← Alap: egyszerű beúszás
+│   └── photos.json             ← a fotók helyei (alt szöveg, arány, forrás, fotós)
 ├── src/lib/
 │   ├── configurator.js         ← a tervező
 │   ├── store.js                ← mentés a böngészőbe (terv, csomag, ajánlatkérő piszkozat)
@@ -55,7 +64,9 @@ studio/
 │   ├── samples.js              ← minták („Kezdj egy mintával”)
 │   └── standalone.html         ← oldalsablon az exporthoz
 ├── public/template/assets/     ← a sablon képei (3D forrásképek, galéria, logó)
-└── scripts/export-site.mjs     ← önálló weboldal exportja egy configból
+├── scripts/export-site.mjs     ← önálló weboldal exportja egy configból
+├── scripts/example-photos.mjs  ← példaoldal-fotók letöltése (WebP) és a CREDITS.md megírása
+└── scripts/example-shots.mjs   ← a „Munkáink” képernyőképei a példaoldalakról
 ```
 
 ## A termék: blokkalapú ügyfél-sablon
@@ -128,6 +139,32 @@ A tervező „Szöveg javaslat” gombja most egyszerű sablonszöveget ad (`src
 3. Az `AI_COPY_ENABLED` értékét `true`-ra kell állítani.
 
 Az API-kulcs csak a szerveren lehet.
+
+## Példaoldalak (/peldak/…)
+
+Két kitalált cég, mindkettő mindkét csomagban, ugyanazzal a tartalommal:
+
+- **Aurum Ingatlan, Prémium 3D:**
+  - kódból épített Three.js villa alkonyatkor, görgetésre a kamera berepül az üvegfalon,
+  - ingatlankártyák 3D döntéssel, szűrő (típus, ár, szobaszám) animált átrendezéssel,
+  - részletes nézet galériával, térkép, értékbecslő űrlap, csapat, vélemények,
+  - Lenis, GSAP ScrollTrigger, parallax.
+- **Fűszerkert Bisztró, Prémium 3D:**
+  - nyitó animáció egy kódból épített fűszertartó szekrénnyel: kinyílnak az ajtók, a kamera bemegy a polcok közé, az üvegek megmozdulnak, majd a jelenet beúszik a nyitókártyába,
+  - látogatásonként egyszer fut („Átugrás” gomb, Esc).
+- **Alap változatok:** ugyanaz a tartalom 3D, GSAP és Lenis nélkül, fotós nyitóképpel és egyszerű beúszással (kb. 4 KB JavaScript).
+- **Mindegyiken:**
+  - lebegő sáv „Ez egy mintaoldal” felirattal; az „Ilyet szeretnék” gomb az ajánlatkérőre visz, előre kiválasztott csomaggal és a minta nevével,
+  - csökkentett mozgásnál nincs animáció,
+  - a 3D csak hardveres WebGL-en fut, mobilon könnyítve.
+
+### Fotók
+
+Csak Unsplash vagy Pexels kép használható. A helyük a `src/examples/photos.json`-ben van; amíg egy kép nincs letöltve, a helyén „Fotó helye” keret látszik.
+
+1. Minden helyhez töltsd ki a `source` mezőt: `provider`, `page`, `download` (közvetlen kép URL), `author`, `authorUrl`.
+2. `npm run example-photos`: letölti, WebP-be alakítja (640/1280 vagy 960/1600/2400 px), és megírja a `CREDITS.md`-t.
+3. `npm run build && npm run preview`, majd egy másik terminálban `npm run example-shots`: frissíti a főoldal képernyőképeit (Playwright kell hozzá).
 
 ## Akadálymentesség és teljesítmény
 
