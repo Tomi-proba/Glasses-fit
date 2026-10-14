@@ -1,0 +1,203 @@
+---
+// Fűszerkert Bisztró example site. Prémium: 3D spice cabinet intro that settles into the hero.
+// Alap: the same content with a photo hero and simple fade-ins.
+import Photo from '../../components/examples/Photo.astro';
+import { brand, hours, menu, specials, SPICES, gallery, reviews, formatFt } from './content';
+import { icon } from '../../lib/icon';
+import './fuszerkert.css';
+
+interface Props { tier: 'premium' | 'alap' }
+const { tier } = Astro.props;
+const premium = tier === 'premium';
+const { lat, lon } = brand.map;
+const bbox = [lon - 0.008, lat - 0.004, lon + 0.008, lat + 0.004].join(',');
+const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`;
+const DAYS = ['Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat'];
+const week = [2, 3, 4, 5, 6, 0].map((d) => ({ d, day: DAYS[d], ...specials[d]! }));
+const times = Array.from({ length: 20 }, (_, i) => `${String(12 + Math.floor(i / 2)).padStart(2, '0')}:${i % 2 ? '30' : '00'}`);
+const nav = [['#etlap', 'Étlap'], ['#napi', 'Napi ajánlat'], ['#galeria', 'Galéria'], ['#foglalas', 'Foglalás'], ['#kapcsolat', 'Kapcsolat']];
+---
+<a class="fk-skip" href="#tartalom">Ugrás a tartalomra</a>
+<header class="fk-header" data-header>
+  <div class="fk-wrap fk-nav">
+    <a class="fk-logo" href="#" aria-label={`${brand.name}, vissza a lap tetejére`}>
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 34V14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /><path d="M20 22c-6 0-9-4-9-9 6 0 9 4 9 9Zm0-4c5 0 8-3 8-8-5 0-8 3-8 8Zm0 10c-5 0-8-3-8-7 5 0 8 3 8 7Z" fill="var(--saffron)" /></svg>
+      <span>Fűszerkert<small>bisztró</small></span>
+    </a>
+    <nav class="fk-links" id="fk-links" aria-label="Fő navigáció">
+      {nav.map(([href, label]) => <a href={href}>{label}</a>)}
+    </nav>
+    <a class="fk-btn fk-btn-sm fk-nav-cta" href="#foglalas">Asztalt foglalok</a>
+    <button class="fk-menu" type="button" aria-expanded="false" aria-controls="fk-links"><span class="fk-sr">Menü</span><Fragment set:html={icon('menu')} /></button>
+  </div>
+</header>
+
+<main id="tartalom">
+  <section class={`fk-hero ${premium ? 'fk-hero-3d' : 'fk-hero-basic'}`} aria-labelledby="fk-title" data-hero>
+    <div class="fk-wrap fk-hero-grid">
+      <div class="fk-hero-copy">
+        <h1 id="fk-title" class="fk-display" data-hero-line>Fűszerkert<span>bisztró</span></h1>
+        <p class="fk-lede" data-hero-line>Szezonális konyha, saját őrlésű fűszerekkel. Kedvesen, lassan, a Klauzál tér sarkán.</p>
+        <div class="fk-actions" data-hero-line>
+          <a class="fk-btn" href="#foglalas">Asztalt foglalok <Fragment set:html={icon('next')} /></a>
+          <a class="fk-btn fk-btn-ghost" href="#etlap">Étlap</a>
+        </div>
+        <p class="fk-open" data-hero-line data-open-now><span class="fk-dot" aria-hidden="true"></span><span data-open-text>Kedd-vasárnap nyitva</span></p>
+      </div>
+      {premium ? (
+        <div class="fk-stage-slot" data-stage-slot>
+          <div class="fk-stage" data-cabinet>
+            <div class="fk-stage-poster"><Photo slot="fuszerkert/spices" eager sizes="(max-width: 900px) 100vw, 45vw" /></div>
+            <canvas class="fk-canvas" aria-hidden="true"></canvas>
+            <div class="fk-intro-ui" aria-hidden="true" data-intro-ui>
+              <p class="fk-intro-mark">Fűszerkert<span>bisztró</span></p>
+              <i class="fk-intro-bar"><b data-intro-progress></b></i>
+            </div>
+            <button class="fk-skip-intro" type="button" data-skip hidden>Átugrás <Fragment set:html={icon('skip')} /></button>
+          </div>
+        </div>
+      ) : (
+        <div class="fk-hero-photo"><Photo slot="fuszerkert/hero" eager sizes="(max-width: 900px) 100vw, 50vw" /></div>
+      )}
+    </div>
+  </section>
+
+  <section id="etlap" class="fk-section fk-menu-sec" aria-labelledby="fk-menu-title">
+    <div class="fk-wrap">
+      <div class="fk-head">
+        <h2 id="fk-menu-title" class="fk-h2" data-reveal>Étlap</h2>
+        <p class="fk-muted" data-reveal>Minden fogásnak van egy főszereplő fűszere. Vidd rá az egeret, és megmutatjuk, melyik.</p>
+      </div>
+      <div class="fk-tabs" role="tablist" aria-label="Étlap kategóriák" data-reveal>
+        {menu.map((c, i) => (
+          <button type="button" role="tab" id={`tab-${c.id}`} aria-controls={`panel-${c.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+            <Fragment set:html={icon(c.icon)} />{c.title}
+          </button>
+        ))}
+      </div>
+      {menu.map((c, i) => (
+        <div class="fk-panel" role="tabpanel" id={`panel-${c.id}`} aria-labelledby={`tab-${c.id}`} hidden={i !== 0} tabindex="0">
+          <ul class="fk-dishes" role="list">
+            {c.dishes.map((d) => (
+              <li class="fk-dish" tabindex="-1">
+                <div class="fk-dish-main">
+                  <h3>{d.name}{d.veg && <span class="fk-veg" title="Vegetáriánus">V</span>}</h3>
+                  <p class="fk-muted">{d.desc}</p>
+                </div>
+                <span class="fk-spice" aria-label={`Fő fűszer: ${SPICES[d.spice].label}`}><Fragment set:html={icon(SPICES[d.spice].icon)} /><span>{SPICES[d.spice].label}</span></span>
+                <span class="fk-dish-price">{formatFt(d.price)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section id="napi" class="fk-section fk-daily" aria-labelledby="fk-daily-title">
+    <div class="fk-wrap fk-daily-grid">
+      <div class="fk-daily-photo" data-parallax><Photo slot="fuszerkert/daily" sizes="(max-width: 900px) 100vw, 50vw" /></div>
+      <div class="fk-daily-copy">
+        <h2 id="fk-daily-title" class="fk-h2" data-reveal>Napi ajánlat</h2>
+        <article class="fk-today" data-today data-reveal aria-live="polite">
+          <p class="fk-today-day" data-today-day>A hét ajánlatai</p>
+          <h3 data-today-name>Minden nap más, a piac alapján</h3>
+          <p class="fk-muted" data-today-desc>Kedden és vasárnap között minden nap új fogás, amíg a készlet tart.</p>
+          <p class="fk-today-price" data-today-price></p>
+        </article>
+        <ol class="fk-week" role="list" data-reveal>
+          {week.map((w) => <li data-day={w.d}><span>{w.day}</span><span>{w.name}</span><span>{formatFt(w.price)}</span></li>)}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="fk-section fk-story" aria-labelledby="fk-story-title">
+    <div class="fk-wrap fk-story-grid">
+      <div class="fk-story-copy">
+        <h2 id="fk-story-title" class="fk-h2" data-reveal>A fűszereinket mi őröljük.</h2>
+        <p class="fk-muted" data-reveal>Hetente kétszer pörköljük és őröljük a fűszereket, a paprikát egy kalocsai családi gazdaságból hozzuk. Ettől lesz minden fogás illata más, mint bárhol máshol.</p>
+        <p class="fk-muted" data-reveal>A konyhát Szalai Márton vezeti, aki tíz évig főzött Lisszabonban és Isztambulban, mielőtt hazajött a Klauzál térre.</p>
+      </div>
+      <div class="fk-story-photos">
+        <div class="fk-story-a" data-parallax><Photo slot="fuszerkert/kitchen" sizes="(max-width: 900px) 60vw, 30vw" /></div>
+        <div class="fk-story-b" data-parallax data-speed="1.6"><Photo slot="fuszerkert/spices" sizes="(max-width: 900px) 50vw, 22vw" /></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="galeria" class="fk-section fk-gallery-sec" aria-labelledby="fk-gallery-title">
+    <div class="fk-wrap">
+      <h2 id="fk-gallery-title" class="fk-h2" data-reveal>Galéria</h2>
+      <ul class="fk-gallery" role="list">
+        {gallery.map((g, i) => <li class={`fk-g fk-g-${i + 1}`} data-reveal><Photo slot={g} sizes="(max-width: 700px) 100vw, 33vw" /></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="fk-section fk-reviews" aria-labelledby="fk-reviews-title">
+    <div class="fk-wrap">
+      <h2 id="fk-reviews-title" class="fk-h2" data-reveal>Vendégeink mondták</h2>
+      <ul class="fk-review-list" role="list">
+        {reviews.map((r) => (
+          <li data-reveal>
+            <p class="fk-stars" aria-label="5 csillagból 5">★★★★★</p>
+            <blockquote><p>{r.quote}</p></blockquote>
+            <p class="fk-review-by"><strong>{r.name}</strong><span class="fk-muted">{r.source}</span></p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="foglalas" class="fk-section fk-booking" aria-labelledby="fk-book-title">
+    <div class="fk-wrap fk-book-grid">
+      <div class="fk-book-copy">
+        <h2 id="fk-book-title" class="fk-h2" data-reveal>Foglalj asztalt</h2>
+        <p class="fk-muted" data-reveal>Hétvégére érdemes pár nappal korábban foglalni. Nyolc főnél nagyobb társaságnak egyedi menüt állítunk össze.</p>
+        <dl class="fk-hours" data-reveal>
+          {hours.map((h) => <div data-days={h.days}><dt>{h.days}</dt><dd>{h.time}</dd></div>)}
+        </dl>
+      </div>
+      <form class="fk-form" novalidate data-booking data-reveal>
+        <div class="fk-row three">
+          <div class="fk-field"><label for="b-date">Dátum</label><input id="b-date" name="date" type="date" required aria-describedby="b-date-err" /><p class="fk-err" id="b-date-err"></p></div>
+          <div class="fk-field"><label for="b-time">Időpont</label><select id="b-time" name="time" required aria-describedby="b-time-err"><option value="">Válassz</option>{times.map((t) => <option>{t}</option>)}</select><p class="fk-err" id="b-time-err"></p></div>
+          <div class="fk-field"><label for="b-guests">Létszám</label><select id="b-guests" name="guests" required aria-describedby="b-guests-err">{[1, 2, 3, 4, 5, 6, 7, 8].map((n) => <option selected={n === 2}>{n}</option>)}<option value="9+">9 vagy több</option></select><p class="fk-err" id="b-guests-err"></p></div>
+        </div>
+        <div class="fk-field"><label for="b-name">Név</label><input id="b-name" name="name" autocomplete="name" required aria-describedby="b-name-err" /><p class="fk-err" id="b-name-err"></p></div>
+        <div class="fk-row">
+          <div class="fk-field"><label for="b-phone">Telefon</label><input id="b-phone" name="phone" type="tel" autocomplete="tel" required aria-describedby="b-phone-err" /><p class="fk-err" id="b-phone-err"></p></div>
+          <div class="fk-field"><label for="b-email">E-mail</label><input id="b-email" name="email" type="email" autocomplete="email" required aria-describedby="b-email-err" /><p class="fk-err" id="b-email-err"></p></div>
+        </div>
+        <div class="fk-field"><label for="b-note">Megjegyzés <span class="fk-muted">nem kötelező</span></label><textarea id="b-note" name="note" rows="3" placeholder="Allergia, születésnap, teraszra kérnénk…"></textarea></div>
+        <button class="fk-btn" type="submit">Foglalás küldése <Fragment set:html={icon('next')} /></button>
+        <p class="fk-form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <section id="kapcsolat" class="fk-section fk-contact" aria-labelledby="fk-contact-title">
+    <div class="fk-wrap fk-contact-grid">
+      <div>
+        <h2 id="fk-contact-title" class="fk-h2" data-reveal>Itt találsz minket</h2>
+        <dl class="fk-contact-list" data-reveal>
+          <div><dt>Cím</dt><dd>{brand.address}</dd></div>
+          <div><dt>Telefon</dt><dd><a class="fk-link" href={`tel:${brand.phone.replace(/\s/g, '')}`}>{brand.phone}</a></dd></div>
+          <div><dt>E-mail</dt><dd><a class="fk-link" href={`mailto:${brand.email}`}>{brand.email}</a></dd></div>
+          <div><dt>Megközelítés</dt><dd>Wesselényi utca / Erzsébet körút villamosmegálló, 4 perc gyalog</dd></div>
+        </dl>
+      </div>
+      <div class="fk-map" data-reveal><iframe src={mapSrc} title={`${brand.name} a térképen`} loading="lazy" referrerpolicy="no-referrer"></iframe></div>
+    </div>
+  </section>
+</main>
+
+<footer class="fk-footer">
+  <div class="fk-wrap fk-footer-grid">
+    <p class="fk-footer-brand">{brand.name}<span class="fk-muted">{brand.tagline}</span></p>
+    <p class="fk-muted">© {new Date().getFullYear()} {brand.name}. Kitalált étterem, a weboldal minta.</p>
+  </div>
+</footer>
+
+<script type="application/json" id="fk-specials" set:html={JSON.stringify({ specials, spices: Object.fromEntries(Object.entries(SPICES).map(([k, v]) => [k, v.label])) })} />

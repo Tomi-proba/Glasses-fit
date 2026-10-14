@@ -18,7 +18,7 @@ const NAMES = {
   pepper: 'pepper', plant: 'plant', flame: 'flame', grains: 'grains', orangeSlice: 'orange-slice', flowerTulip: 'flower-tulip', coffeeBean: 'coffee-bean', bowl: 'bowl-steam',
   bed: 'bed', bath: 'bathtub', ruler: 'ruler', house: 'house-line', building: 'buildings', key: 'key', quote: 'quotes', forkKnife: 'fork-knife', wine: 'wine',
   cookingPot: 'cooking-pot', chefHat: 'chef-hat', users: 'users', sliders: 'sliders-horizontal', caretLeft: 'caret-left', caretRight: 'caret-right', cube: 'cube',
-  tree: 'tree', expand: 'arrows-out-simple', image: 'image', skip: 'skip-forward',
+  tree: 'tree', expand: 'arrows-out-simple', image: 'image', skip: 'skip-forward', cookie: 'cookie', play: 'play',
   instagram: 'instagram-logo', facebook: 'facebook-logo', tiktok: 'tiktok-logo', youtube: 'youtube-logo', linkedin: 'linkedin-logo', x: 'x-logo',
 };
 const out = {};

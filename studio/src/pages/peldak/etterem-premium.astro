@@ -1,0 +1,13 @@
+---
+import ExampleLayout from '../../layouts/ExampleLayout.astro';
+import FuszerkertPage from '../../examples/fuszerkert/FuszerkertPage.astro';
+import { brand } from '../../examples/fuszerkert/content';
+---
+<ExampleLayout title={`${brand.name} | ${brand.tagline}`} description={brand.description} tier="premium" slug="etterem-premium" themeColor="#13160f"
+  fonts="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600&display=swap">
+  <FuszerkertPage tier="premium" />
+</ExampleLayout>
+
+<script>
+  import '../../examples/fuszerkert/premium.js';
+</script>
