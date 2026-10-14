@@ -1,0 +1,16 @@
+---
+import ExampleLayout from '../../layouts/ExampleLayout.astro';
+import ArcadeBasic from '../../examples/arcade/ArcadeBasic.astro';
+import { brand } from '../../examples/arcade/content';
+---
+<ExampleLayout title={`${brand.full} | Budapest`} description={brand.description} tier="alap" slug="jatekterem-alap" themeColor="#05040b"
+  fonts="https://fonts.googleapis.com/css2?family=Tiny5&family=VT323&family=Geist:wght@400;500&display=swap">
+  <ArcadeBasic />
+</ExampleLayout>
+
+<script>
+  import { initArcadeShared } from '../../examples/arcade/shared.js';
+  import { initBasicReveal } from '../../examples/motion-basic.js';
+  initArcadeShared();
+  initBasicReveal();
+</script>

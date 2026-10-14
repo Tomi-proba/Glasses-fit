@@ -246,96 +246,16 @@
       ],
       "query": "business woman portrait",
       "source": null
-    },
-    "fuszerkert/hero": {
-      "alt": "Meleg fényű étterem terített asztalokkal",
-      "ratio": [
-        16,
-        10
-      ],
-      "query": "restaurant interior warm",
-      "source": null
-    },
-    "fuszerkert/spices": {
-      "alt": "Színes fűszerek tálkákban",
-      "ratio": [
-        4,
-        5
-      ],
-      "query": "spices",
-      "source": null
-    },
-    "fuszerkert/kitchen": {
-      "alt": "Séf tálal a konyhában",
-      "ratio": [
-        4,
-        5
-      ],
-      "query": "chef plating",
-      "source": null
-    },
-    "fuszerkert/daily": {
-      "alt": "A napi ajánlat tányéron",
-      "ratio": [
-        4,
-        3
-      ],
-      "query": "gourmet food plate",
-      "source": null
-    },
-    "fuszerkert/g1": {
-      "alt": "Báránycsülök rozmaringgal",
-      "ratio": [
-        4,
-        5
-      ],
-      "query": "gourmet lamb dish",
-      "source": null
-    },
-    "fuszerkert/g2": {
-      "alt": "Az étterem belső tere",
-      "ratio": [
-        4,
-        3
-      ],
-      "query": "restaurant interior",
-      "source": null
-    },
-    "fuszerkert/g3": {
-      "alt": "Fűszerek közelről",
-      "ratio": [
-        4,
-        3
-      ],
-      "query": "spices close up",
-      "source": null
-    },
-    "fuszerkert/g4": {
-      "alt": "Desszert tányéron",
-      "ratio": [
-        4,
-        5
-      ],
-      "query": "gourmet dessert",
-      "source": null
-    },
-    "fuszerkert/g5": {
-      "alt": "Bor és előétel",
-      "ratio": [
-        4,
-        3
-      ],
-      "query": "wine appetizer",
-      "source": null
-    },
-    "fuszerkert/g6": {
-      "alt": "Leves fűszerekkel",
-      "ratio": [
-        4,
-        3
-      ],
-      "query": "soup spices",
-      "source": null
+    }
+  },
+  "assets": {
+    "arcade/arcade": {
+      "file": "public/examples/arcade/arcade-*.webp",
+      "label": "Pixel Pont: álló játékgép neonfényben (a Prémium nyitóképe és az Alap hero)",
+      "source": {
+        "provider": "AI-generált (saját)",
+        "note": "A megrendelő által adott, mesterséges intelligenciával készített saját kép (1456×819). A képernyő szövegét és a fényeffekteket kód rajzolja rá."
+      }
     }
   }
 }

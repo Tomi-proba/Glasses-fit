@@ -1,14 +1,14 @@
 {
-	"pid": 578,
+	"pid": 1316,
 	"port": 4321,
-	"url": "http://127.0.0.1:4321",
+	"url": "http://localhost:4321",
 	"urls": {
 		"local": [
-			"http://127.0.0.1:4321/"
+			"http://localhost:4321/Glasses-fit/"
 		],
 		"network": [],
 		"networkInterfaceNames": []
 	},
 	"background": true,
-	"startedAt": "2026-10-14T07:47:57.126Z"
+	"startedAt": "2026-10-14T09:46:55.229Z"
 }

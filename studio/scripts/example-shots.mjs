@@ -18,7 +18,7 @@ const base = (process.argv[2] || 'http://127.0.0.1:4321/').replace(/\/?$/, '/');
 const out = resolve(root, 'public/images/examples');
 await mkdir(out, { recursive: true });
 
-const PAGES = ['ingatlan-premium', 'ingatlan-alap', 'etterem-premium', 'etterem-alap'];
+const PAGES = ['ingatlan-premium', 'ingatlan-alap', 'jatekterem-premium', 'jatekterem-alap'];
 const browser = await chromium.launch({
   executablePath: process.env.CHROME_PATH || undefined,
   args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--no-sandbox'],
@@ -27,9 +27,9 @@ for (const slug of PAGES) {
   for (const [kind, viewport] of [['desktop', { width: 1440, height: 900 }], ['mobile', { width: 390, height: 844 }]]) {
     const ctx = await browser.newContext({ viewport, deviceScaleFactor: kind === 'mobile' ? 2 : 1, isMobile: kind === 'mobile', hasTouch: kind === 'mobile' });
     const page = await ctx.newPage();
-    // Skip the restaurant intro and hide the sample strip: the card shows the site itself.
+    // Hide the sample strip: the card shows the site itself.
     await page.addInitScript(() => {
-      try { sessionStorage.setItem('fuszerkert:intro-seen', '1'); sessionStorage.setItem('sample-bar:hidden', '1'); } catch { /* about:blank */ }
+      try { sessionStorage.setItem('sample-bar:hidden', '1'); } catch { /* about:blank */ }
     });
     await page.goto(`${base}peldak/${slug}/?3d=force`, { waitUntil: 'load' });
     await page.waitForTimeout(slug.endsWith('premium') ? 9000 : 2500);

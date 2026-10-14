@@ -1,0 +1,107 @@
+---
+// One content block of Pixel Pont, shared by the Prémium "game screens" and the Alap sections.
+// Rows are table-like lines with dotted leaders, the way an arcade lists its high scores.
+import { brand, machines, tokens, tokenNotes, parties, partyNote, hours, hoursNote, scores, ft, pts } from './content';
+
+interface Props { name: 'machines' | 'prices' | 'parties' | 'hours' | 'location' | 'contact' | 'scores'; id: string }
+const { name, id } = Astro.props;
+const { lat, lon } = brand.map;
+const bbox = [lon - 0.006, lat - 0.003, lon + 0.006, lat + 0.003].join(',');
+const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`;
+---
+{name === 'machines' && (
+  <ul class="pp-rows pp-machines">
+    {machines.map((m) => (
+      <li>
+        <p class="pp-row"><span class="pp-hi">{m.name}</span><i aria-hidden="true"></i><span>{m.count} db</span></p>
+        <p class="pp-dim">{m.kind}, {m.players} játékos, {m.tokens} zseton. {m.note}</p>
+      </li>
+    ))}
+  </ul>
+)}
+
+{name === 'prices' && (
+  <>
+    <ul class="pp-rows">
+      {tokens.map((t) => (
+        <li><p class="pp-row"><span class="pp-hi">{t.what}</span>{t.note && <span class="pp-dim">{t.note}</span>}<i aria-hidden="true"></i><span>{ft(t.price)}</span></p></li>
+      ))}
+    </ul>
+    <ul class="pp-notes">{tokenNotes.map((n) => <li>{n}</li>)}</ul>
+  </>
+)}
+
+{name === 'parties' && (
+  <>
+    <ul class="pp-rows pp-parties">
+      {parties.map((p) => (
+        <li>
+          <p class="pp-row"><span class="pp-hi">{p.name}</span><span class="pp-dim">{p.guests}, {p.length}</span><i aria-hidden="true"></i><span>{ft(p.price)}</span></p>
+          <p class="pp-dim">{p.includes.join('. ')}.</p>
+        </li>
+      ))}
+    </ul>
+    <p class="pp-notes">{partyNote}</p>
+  </>
+)}
+
+{name === 'hours' && (
+  <>
+    <ul class="pp-rows pp-hours" data-hours>
+      {hours.map(([d, h], i) => (
+        <li data-day={(i + 1) % 7}><p class="pp-row"><span class="pp-hi">{d}</span><i aria-hidden="true"></i><span>{h}</span></p></li>
+      ))}
+    </ul>
+    <p class="pp-notes">{hoursNote}</p>
+  </>
+)}
+
+{name === 'location' && (
+  <div class="pp-where">
+    <div>
+      <p class="pp-hi pp-addr">{brand.address}</p>
+      <ul class="pp-rows">
+        {brand.transit.map(([k, v]) => (
+          <li><p class="pp-row pp-row-text"><span class="pp-hi">{k}</span><span>{v}</span></p></li>
+        ))}
+      </ul>
+      <p class="pp-notes"><a href={`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=18/${lat}/${lon}`} target="_blank" rel="noopener">Térkép nagyban</a></p>
+    </div>
+    <div class="pp-map"><iframe title={`Térkép: ${brand.address}`} src={mapSrc} loading="lazy"></iframe></div>
+  </div>
+)}
+
+{name === 'scores' && (
+  <ol class="pp-rows pp-scores">
+    {scores.map((s, i) => (
+      <li>
+        <p class="pp-row"><span class="pp-rank">{i + 1}.</span><span class="pp-hi">{s.name}</span><i aria-hidden="true"></i><span class="pp-score">{pts(s.score)}</span></p>
+        <blockquote class="pp-dim">{s.text}</blockquote>
+      </li>
+    ))}
+  </ol>
+)}
+
+{name === 'contact' && (
+  <div class="pp-contact">
+    <ul class="pp-rows">
+      <li><p class="pp-row pp-row-text"><span class="pp-hi">Telefon</span><a href={`tel:${brand.phone.replace(/\s/g, '')}`}>{brand.phone}</a></p></li>
+      <li><p class="pp-row pp-row-text"><span class="pp-hi">E-mail</span><a href={`mailto:${brand.email}`}>{brand.email}</a></p></li>
+      <li><p class="pp-row pp-row-text"><span class="pp-hi">Cím</span><span>{brand.address}</span></p></li>
+    </ul>
+    <form class="pp-form" data-party-form novalidate>
+      <p class="pp-hi">Szülinap foglalása</p>
+      <div class="pp-field"><label for={`${id}-name`}>Név</label><input id={`${id}-name`} name="name" autocomplete="name" required /></div>
+      <div class="pp-field"><label for={`${id}-phone`}>Telefon</label><input id={`${id}-phone`} name="phone" type="tel" autocomplete="tel" required /></div>
+      <div class="pp-pair">
+        <div class="pp-field"><label for={`${id}-date`}>Nap</label><input id={`${id}-date`} name="date" type="date" required /></div>
+        <div class="pp-field"><label for={`${id}-pkg`}>Csomag</label>
+          <select id={`${id}-pkg`} name="pkg">{parties.map((p) => <option>{p.name}, {p.guests}</option>)}</select>
+        </div>
+      </div>
+      <p class="pp-err" data-form-err aria-live="polite"></p>
+      <button class="pp-btn" type="submit">Foglalás elküldése</button>
+      <p class="pp-ok" data-form-ok hidden>Köszönjük! Egy munkanapon belül visszahívunk. (Mintaoldal, nem küldtünk el semmit.)</p>
+    </form>
+  </div>
+)}

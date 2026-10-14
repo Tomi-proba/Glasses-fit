@@ -1,0 +1,58 @@
+---
+// Pixel Pont Alap: the same content as the Prémium, on one page with ordinary scrolling.
+// The arcade photo is the opening picture; its screen shows the name, still. No fly-in, no streaks.
+import Block from './Block.astro';
+import { brand } from './content';
+import { url } from '../../lib/url';
+import './arcade.css';
+
+const sections = [
+  { id: 'gepek', title: 'Gépeink', block: 'machines' },
+  { id: 'arak', title: 'Árak és zsetonok', block: 'prices' },
+  { id: 'szulinap', title: 'Szülinapi bulik', block: 'parties' },
+  { id: 'nyitvatartas', title: 'Nyitvatartás', block: 'hours' },
+  { id: 'highscore', title: 'High score', block: 'scores' },
+  { id: 'hol', title: 'Hol vagyunk', block: 'location' },
+  { id: 'kapcsolat', title: 'Kapcsolat', block: 'contact' },
+] as const;
+const img = (w: number) => url(`examples/arcade/arcade-${w}.webp`);
+---
+<a class="x-sr" href="#tartalom">Ugrás a tartalomra</a>
+<header class="pa-head">
+  <a class="pa-mark" href="#">Pixel Pont</a>
+  <nav class="pa-nav" aria-label="Fő navigáció">
+    <a href="#gepek">Gépek</a>
+    <a href="#arak">Árak</a>
+    <a href="#nyitvatartas">Nyitvatartás</a>
+    <a href="#hol">Hol vagyunk</a>
+    <a class="pa-book" href="#kapcsolat">Szülinap foglalása</a>
+  </nav>
+</header>
+
+<main id="tartalom">
+  <section class="pa-hero" aria-labelledby="pa-title">
+    <img src={img(1456)} srcset={`${img(640)} 640w, ${img(960)} 960w, ${img(1456)} 1456w`} sizes="(max-width: 760px) 200vw, 110vw" width="1456" height="819"
+      alt="Régi álló játékgép rózsaszín és türkiz neonfényben, sötét teremben" fetchpriority="high" />
+    <p class="pa-screen" aria-hidden="true"><strong>Pixel Pont</strong><span>Játékterem</span></p>
+    <div class="pa-hero-copy">
+      <h1 id="pa-title" class="pa-display">Pixel Pont Játékterem</h1>
+      <p class="pp-dim">{brand.slogan} {brand.addressShort}. <span data-today>Minden nap nyitva</span>.</p>
+      <div class="pa-actions">
+        <a class="pp-btn is-solid" href="#kapcsolat">Szülinap foglalása</a>
+        <a class="pp-link" href="#arak">Árak</a>
+      </div>
+    </div>
+  </section>
+
+  {sections.map((s) => (
+    <section id={s.id} class="pa-section" aria-labelledby={`${s.id}-t`}>
+      <h2 id={`${s.id}-t`} class="pa-display" data-reveal>{s.title}</h2>
+      <div data-reveal><Block name={s.block} id={s.id} /></div>
+    </section>
+  ))}
+</main>
+
+<footer class="pa-foot">
+  <p>{brand.full}, {brand.address}</p>
+  <p>Kitalált cég, mintaoldal</p>
+</footer>

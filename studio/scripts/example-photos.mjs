@@ -45,6 +45,8 @@ for (const [slot, def] of Object.entries(manifest.slots)) {
 const rows = Object.entries(manifest.slots)
   .filter(([, d]) => d.source)
   .map(([slot, d]) => `| \`${slot}\` | ${d.alt} | ${d.source.author ? `[${d.source.author}](${d.source.authorUrl || d.source.page})` : ''} | ${d.source.provider} | ${d.source.page || d.source.note || ''} |`);
+const assetRows = Object.entries(manifest.assets || {})
+  .map(([key, d]) => `| \`${key}\` | ${d.label} | ${d.source.provider} | ${d.source.note || ''} |`);
 const sequences = JSON.parse(await readFile(resolve(root, 'src/examples/sequences.json'), 'utf8')).sequences;
 const videoRows = Object.entries(sequences)
   .filter(([, d]) => d.source)
@@ -56,6 +58,12 @@ A példaoldalak (\`/peldak/…\`) fotói az [Unsplash](https://unsplash.com/lice
 | Hely | Kép | Fotós | Forrás | Eredeti |
 | --- | --- | --- | --- | --- |
 ${rows.join('\n') || '| | Még nincs letöltött kép. | | | |'}
+
+## Egyéb képek
+
+| Hely | Kép | Forrás | Megjegyzés |
+| --- | --- | --- | --- |
+${assetRows.join('\n') || '| | Nincs. | | |'}
 
 ## Videók
 

@@ -22,16 +22,6 @@
           "height": 720
         }
       }
-    },
-    "fuszerkert-spices": {
-      "label": "Fűszerkert: fűszerek, nyitó jelenet",
-      "source": null,
-      "frames": null
-    },
-    "fuszerkert-kitchen": {
-      "label": "Fűszerkert: a konyhából",
-      "source": null,
-      "frames": null
     }
   }
 }

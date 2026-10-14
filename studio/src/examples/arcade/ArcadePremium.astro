@@ -1,0 +1,87 @@
+---
+// Pixel Pont Prémium. Two states:
+// 1. The machine: the arcade photo on black with a live CRT text on its screen. Start (click, tap,
+//    Enter, Space or scrolling) flies the camera into the screen through neon streaks (see premium.js).
+// 2. Inside: the screen is the page, a game main menu. Each item opens a "game screen".
+// Without JavaScript both states are plain sections one after the other.
+import Block from './Block.astro';
+import { brand, scores, parties, ft } from './content';
+import { url } from '../../lib/url';
+import './arcade.css';
+
+const items = [
+  { id: 'gepek', title: 'Gépeink', hint: '40 gép, 8 fajta', block: 'machines' },
+  { id: 'arak', title: 'Árak és zsetonok', hint: '1 zseton 200 Ft', block: 'prices' },
+  { id: 'szulinap', title: 'Szülinapi bulik', hint: `8-30 fő, ${ft(parties[0]!.price)}-tól`, block: 'parties' },
+  { id: 'nyitvatartas', title: 'Nyitvatartás', hint: 'Minden nap nyitva', block: 'hours' },
+  { id: 'hol', title: 'Hol vagyunk', hint: brand.addressShort, block: 'location' },
+  { id: 'highscore', title: 'High score', hint: `1. ${scores[0]!.name} ${scores[0]!.score}`, block: 'scores' },
+  { id: 'kapcsolat', title: 'Kapcsolat', hint: brand.phone, block: 'contact' },
+] as const;
+const img = (w: number) => url(`examples/arcade/arcade-${w}.webp`);
+---
+<a class="x-sr" href="#tartalom">Ugrás a tartalomra</a>
+<div class="pp-bar">
+  <p class="pp-mark">Pixel Pont</p>
+  <button class="pp-sound" type="button" data-sound aria-pressed="false">Hang: <span data-sound-label>ki</span></button>
+  <p class="pp-credit" aria-live="polite">Kredit: <span data-credit>00</span></p>
+</div>
+
+<section class="pp-intro" data-intro aria-labelledby="pp-title">
+  <div class="pp-stage" data-stage>
+    <div class="pp-cam" data-cam>
+      <div class="pp-floor" data-floor aria-hidden="true"></div>
+      <img class="pp-machine" data-machine src={img(1456)} srcset={`${img(640)} 640w, ${img(960)} 960w, ${img(1456)} 1456w`} sizes="(max-width: 760px) 200vw, 110vw"
+        width="1456" height="819" alt="Régi álló játékgép rózsaszín és türkiz neonfényben, sötét teremben" fetchpriority="high" decoding="async" />
+      <button class="pp-crt" type="button" data-start aria-label="Indítás: belépés a játékterembe">
+        <span class="pp-crt-text" aria-hidden="true">
+          <span class="pp-blink"><span class="pp-fine">Nyomd meg a startot</span><span class="pp-coarse">Érintsd meg a starthoz</span></span>
+          <span class="pp-crt-sub pp-fine">vagy görgess le</span>
+        </span>
+      </button>
+    </div>
+    <div class="pp-rays" data-rays aria-hidden="true"></div>
+    <canvas class="pp-warp" data-warp aria-hidden="true"></canvas>
+    <div class="pp-flash" data-flash aria-hidden="true"></div>
+    <div class="pp-intro-copy" data-intro-copy>
+      <h1 id="pp-title" class="pp-title">Pixel Pont</h1>
+      <p class="pp-slogan">{brand.slogan}</p>
+    </div>
+    <p class="pp-intro-meta" data-intro-copy><span>Játékterem, Budapest VII.</span><span data-today>Minden nap nyitva</span></p>
+  </div>
+</section>
+
+<main class="pp-inside" id="tartalom" data-inside>
+  <div class="pp-tube" data-tube>
+    <div class="pp-screen pp-menu" data-screen="menu">
+      <div class="pp-menu-head">
+        <h2 class="pp-logo"><span>Pixel</span> <span>Pont</span></h2>
+        <p class="pp-dim">Játékterem, {brand.addressShort}</p>
+      </div>
+      <nav class="pp-nav" aria-label="Főmenü">
+        <ul data-menu>
+          {items.map((it, i) => (
+            <li><button type="button" class="pp-item" data-open={it.id} data-hint={it.hint} tabindex={i === 0 ? 0 : -1}>{it.title}</button></li>
+          ))}
+        </ul>
+      </nav>
+      <p class="pp-hint" data-hint-out aria-hidden="true">{items[0].hint}</p>
+      <div class="pp-menu-foot">
+        <p class="pp-dim pp-keys pp-fine">Nyilak: választás. Enter: belépés. Esc: vissza.</p>
+        <button class="pp-link" type="button" data-to-machine>Vissza a géphez</button>
+      </div>
+    </div>
+
+    {items.map((it) => (
+      <section class="pp-screen pp-panel" id={it.id} data-screen={it.id} aria-labelledby={`${it.id}-t`} tabindex="-1">
+        <div class="pp-panel-head">
+          <h2 id={`${it.id}-t`} class="pp-h">{it.title}</h2>
+          <button class="pp-link" type="button" data-back>Vissza</button>
+        </div>
+        <div class="pp-panel-body"><Block name={it.block} id={it.id} /></div>
+      </section>
+    ))}
+  </div>
+  <div class="pp-scan" aria-hidden="true"></div>
+  <div class="pp-on" data-on aria-hidden="true"></div>
+</main>

@@ -12,7 +12,7 @@ Egyetlen Astro projekt, egységes fejléccel, lábléccel és dizájnnal:
 | `/sablon/elonezet` | A termék (ügyfél-sablon) előnézete, ezt tölti be a tervező |
 | `/sablon/minta/<id>/…` | A tervező négy kiinduló mintája, minden aloldalukkal |
 | `/peldak/ingatlan-premium`, `/peldak/ingatlan-alap` | Aurum Ingatlan példaoldal, Prémium 3D és Alap változatban |
-| `/peldak/etterem-premium`, `/peldak/etterem-alap` | Fűszerkert Bisztró példaoldal, Prémium 3D és Alap változatban |
+| `/peldak/jatekterem-premium`, `/peldak/jatekterem-alap` | Pixel Pont Játékterem példaoldal, Prémium 3D és Alap változatban |
 
 ## Indítás
 
@@ -43,9 +43,9 @@ studio/
 ├── src/pages/                  ← útvonalak (lásd fent), sitemap.xml, robots.txt
 ├── src/components/StudioHero3D.astro ← a főoldal 3D eleme (a példaoldalaink lebegő böngészőablakokban)
 ├── src/components/Showcase.astro ← „Munkáink”: a példaoldalak párban, Prémium 3D és Alap
-├── src/examples/               ← A PÉLDAOLDALAK (Aurum Ingatlan, Fűszerkert Bisztró)
+├── src/examples/               ← A PÉLDAOLDALAK (Aurum Ingatlan, Pixel Pont Játékterem)
 │   ├── aurum/                  ← tartalom, oldal, stílus, villa.js (Three.js), szűrő és galéria
-│   ├── fuszerkert/             ← tartalom, oldal, stílus, cabinet.js (Three.js fűszertartó)
+│   ├── arcade/                 ← Pixel Pont: tartalom, Prémium (berepülés + játékmenü), Alap, warp.js (fénycsíkok), sound.js
 │   ├── motion-premium.js       ← Prémium: Lenis, GSAP reveal, számlálók, parallax, 3D döntés
 │   ├── motion-basic.js         ← Alap: egyszerű beúszás
 │   └── photos.json             ← a fotók helyei (alt szöveg, arány, forrás, fotós)
@@ -150,7 +150,7 @@ Két kitalált cég, mindkettő mindkét csomagban, ugyanazzal a tartalommal. A 
   - **Szövegrétegek:** görgetésre jelennek meg és tűnnek el.
   - **Fotók:** lassú zoom, parallax, maszkolt felfedés.
   - **Aurum Ingatlan:** a hero a megrendelő saját videója (a ház felé közelít, belép az ajtón, a nappaliba érkezik).
-  - **Fűszerkert Bisztró:** fűszeres nyitó jelenet és egy konyhai jelenet (videóra vár).
+  - **Pixel Pont Játékterem:** nincs videó. A nyitókép a megrendelő saját (AI-generált) játékgépfotója, a képernyőjén villogó pixeles felirat. Kattintásra, Enterre, Space-re vagy görgetésre a kamera berepül a képernyőbe neon fénycsíkok között (Three.js, asztali gépen bloom), a végén villanás, és a képernyő lesz az oldal: retró játékmenü (Gépeink, Árak és zsetonok, Szülinapi bulik, Nyitvatartás, Hol vagyunk, High score, Kapcsolat), nyilakkal és Enterrel is kezelhető. A pixeles hangok alapból némák. Csökkentett mozgásnál rögtön a menü jelenik meg.
 - **Alap:** ugyanaz a tartalom görgetés-vezérelt videó, GSAP és Lenis nélkül, fotós nyitóképpel és egyszerű beúszással.
 - **Mindegyiken:** lebegő „Ez egy mintaoldal” sáv. Az „Ilyet szeretnék” gomb az ajánlatkérőre visz, előre kiválasztott csomaggal. Csökkentett mozgásnál nincs animáció, a videó helyén az utolsó képkocka látszik.
 
@@ -158,7 +158,7 @@ Két kitalált cég, mindkettő mindkét csomagban, ugyanazzal a tartalommal. A 
 
 ```bash
 npm run video-frames -- aurum-walk video.mp4 --desktop 144 --mobile 84 --provider "Saját felvétel" --note "…"
-npm run video-frames -- fuszerkert-spices video.mp4 --start 1 --end 9 --provider Pexels --page <URL> --author "Név"
+npm run video-frames -- <név> video.mp4 --start 1 --end 9 --provider Pexels --page <URL> --author "Név"
 ```
 
 A szkript:

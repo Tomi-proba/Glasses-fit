@@ -11,6 +11,12 @@ A példaoldalak (`/peldak/…`) fotói az [Unsplash](https://unsplash.com/licens
 | `aurum/p1-2` | A villa nappalija |  | Saját felvétel | Állókép az Aurum bemutatóvideóból (8.6 mp) |
 | `aurum/p1-3` | A villa terasza |  | Saját felvétel | Állókép az Aurum bemutatóvideóból (6.4 mp) |
 
+## Egyéb képek
+
+| Hely | Kép | Forrás | Megjegyzés |
+| --- | --- | --- | --- |
+| `arcade/arcade` | Pixel Pont: álló játékgép neonfényben (a Prémium nyitóképe és az Alap hero) | AI-generált (saját) | A megrendelő által adott, mesterséges intelligenciával készített saját kép (1456×819). A képernyő szövegét és a fényeffekteket kód rajzolja rá. |
+
 ## Videók
 
 A görgetés-vezérelt jelenetek (a Prémium példaoldalak) videói a megrendelő saját felvételei, vagy a [Pexels](https://www.pexels.com/license/), illetve a [Pixabay](https://pixabay.com/service/license-summary/) oldalról származnak, ingyenes licenccel. Képkockákra bontva szerepelnek az oldalon.
