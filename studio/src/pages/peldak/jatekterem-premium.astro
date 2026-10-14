@@ -1,9 +1,17 @@
 ---
 import ExampleLayout from '../../layouts/ExampleLayout.astro';
 import ArcadePremium from '../../examples/arcade/ArcadePremium.astro';
-import { brand } from '../../examples/arcade/content';
+import { arcadeLd } from '../../examples/arcade/ld';
+import { url } from '../../lib/url';
+
+const title = 'Pixel Pont Játékterem Budapest: 40 játékgép, flipper, szülinapi bulik';
+const description = 'Játékterem a VII. kerületben, a Nagy Diófa utca 9. alatt: 40 játékgép, flipperek, léghoki, autós szimulátorok. Egy zseton 200 Ft, szülinapi buli 39 900 Ft-tól. Minden nap nyitva.';
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = arcadeLd(pageUrl, new URL(url('images/og/jatekterem-premium.jpg'), Astro.site).href);
+const img = (w: number) => url(`examples/arcade/arcade-${w}.webp`);
+const preload = { href: img(1456), srcset: `${img(640)} 640w, ${img(960)} 960w, ${img(1456)} 1456w`, sizes: '(max-width: 760px) 200vw, 110vw' };
 ---
-<ExampleLayout title={`${brand.full} | Budapest`} description={brand.description} tier="premium" slug="jatekterem-premium" themeColor="#05040b"
+<ExampleLayout {title} {description} {jsonLd} tier="premium" slug="jatekterem-premium" themeColor="#05040b" preloadImage={preload}
   fonts="https://fonts.googleapis.com/css2?family=Tiny5&family=VT323&family=Geist:wght@400;500&display=swap">
   <script is:inline slot="head">document.documentElement.classList.add('pp-js');</script>
   <ArcadePremium />

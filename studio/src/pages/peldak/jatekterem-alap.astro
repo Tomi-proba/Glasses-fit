@@ -1,9 +1,17 @@
 ---
 import ExampleLayout from '../../layouts/ExampleLayout.astro';
 import ArcadeBasic from '../../examples/arcade/ArcadeBasic.astro';
-import { brand } from '../../examples/arcade/content';
+import { arcadeLd } from '../../examples/arcade/ld';
+import { url } from '../../lib/url';
+
+const title = 'Pixel Pont Játékterem: árak, nyitvatartás, szülinap foglalás';
+const description = 'Pixel Pont Játékterem, 1072 Budapest, Nagy Diófa utca 9. Zsetonárak, korlátlan játék 5900 Ft-tól, szülinapi csomagok 8-30 főre, nyitvatartás és megközelítés. Telefon: +36 1 555 0187.';
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = arcadeLd(pageUrl, new URL(url('images/og/jatekterem-alap.jpg'), Astro.site).href);
+const img = (w: number) => url(`examples/arcade/arcade-${w}.webp`);
+const preload = { href: img(1456), srcset: `${img(640)} 640w, ${img(960)} 960w, ${img(1456)} 1456w`, sizes: '(max-width: 760px) 200vw, 110vw' };
 ---
-<ExampleLayout title={`${brand.full} | Budapest`} description={brand.description} tier="alap" slug="jatekterem-alap" themeColor="#05040b"
+<ExampleLayout {title} {description} {jsonLd} tier="alap" slug="jatekterem-alap" themeColor="#05040b" preloadImage={preload}
   fonts="https://fonts.googleapis.com/css2?family=Tiny5&family=VT323&family=Geist:wght@400;500&display=swap">
   <ArcadeBasic />
 </ExampleLayout>

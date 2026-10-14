@@ -73,14 +73,11 @@ const base = url(`examples/seq/${name}/`);
   @keyframes seq-grain { 0% { transform: translate(0, 0); } 20% { transform: translate(-22px, 14px); } 40% { transform: translate(18px, -26px); } 60% { transform: translate(-10px, 30px); } 80% { transform: translate(28px, 8px); } 100% { transform: translate(0, 0); } }
   @media (prefers-reduced-motion: reduce) { .seq--grain .seq-media::after { animation: none; } }
 
-  .seq-loader {
-    position: fixed; inset: 0; z-index: 150; display: grid; place-content: center; justify-items: center; gap: 22px;
-    background: var(--bg, #0d0d0d); color: var(--text, #f2f2f2); transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.9s;
-  }
+  /* Non-blocking: a thin progress line above the sample strip while the frames load. */
+  .seq-loader { position: fixed; z-index: 85; left: 50%; bottom: 64px; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; color: #f2f2f2; pointer-events: none; transition: opacity 0.6s, visibility 0.6s; }
   .seq-loader.is-done { opacity: 0; visibility: hidden; }
-  .seq-loader-brand { font-family: var(--display, serif); font-size: clamp(2rem, 4.5vw, 3.4rem); line-height: 1; letter-spacing: -0.01em; }
-  .seq-loader-bar { display: block; width: min(240px, 60vw); height: 1px; background: color-mix(in srgb, currentColor 18%, transparent); overflow: hidden; }
+  .seq-loader-brand { display: none; }
+  .seq-loader-bar { display: block; width: min(160px, 40vw); height: 1px; background: rgba(255, 255, 255, 0.25); overflow: hidden; }
   .seq-loader-bar i { display: block; height: 100%; background: currentColor; transform-origin: left; transform: scaleX(0); transition: transform 0.25s linear; }
-  .seq-loader-pct { font-size: 12px; letter-spacing: 0.2em; font-variant-numeric: tabular-nums; opacity: 0.7; }
-  html.is-loading { overflow: hidden; }
+  .seq-loader-pct { font-size: 11px; letter-spacing: 0.2em; font-variant-numeric: tabular-nums; opacity: 0.7; }
 </style>

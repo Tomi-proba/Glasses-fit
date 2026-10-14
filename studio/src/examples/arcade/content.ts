@@ -74,3 +74,14 @@ export const scores = [
 
 export const ft = (n: number) => `${new Intl.NumberFormat('hu-HU').format(n).replace(/\s/g, ' ')} Ft`;
 export const pts = (n: number) => String(n).padStart(6, '0');
+
+// The questions people ask most (also written as FAQPage structured data).
+export const faq: [string, string][] = [
+  ['Mennyibe kerül a játék?', 'Egy zseton 200 Ft, a gépek többsége 1 vagy 2 zsetonos. 30 zseton 5000 Ft (5 ajándékkal), 60 zseton 9000 Ft (15 ajándékkal). Korlátlan játék 2 órára hétköznap 5900 Ft, hétvégén 7900 Ft.'],
+  ['Kell előre foglalni?', 'Játszani foglalás nélkül is be lehet jönni, nyitvatartási időben. Szülinapi bulit legalább egy héttel előtte érdemes foglalni, telefonon vagy az oldalon.'],
+  ['Mit tartalmaz a szülinapi csomag?', 'Kis kör: 8 főig, 2 óra, 40 zseton fejenként, 39 900 Ft. Nagy kör: 15 főig, 3 óra, korlátlan játék, pizza és üdítő, 79 900 Ft. Zárt terem: 30 főig, 3 óra, az egész terem, 189 000 Ft.'],
+  ['Hány éves kortól lehet jönni?', 'Bármilyen korban. 18 év alatt 20 óráig felnőtt nélkül is maradhatsz, utána csak felnőttel.'],
+  ['Lehet kártyával fizetni?', 'Igen, a pultnál és a bejáratnál álló zsetonautomatánál is. A megmaradt zseton nem jár le.'],
+  ['Hogyan jutok oda?', 'A terem a Nagy Diófa utca 9. alatt van, a VII. kerületben. Az M2 Blaha Lujza tér megállótól 5 perc gyalog, a 4-es és 6-os villamos Király utca megállójától 4 perc. Parkolni a Klauzál téri mélygarázsban lehet.'],
+  ['Akadálymentes a terem?', 'Igen, a bejárat utcafronti és lépcső nélküli, babakocsival és kerekesszékkel is bejárható.'],
+];

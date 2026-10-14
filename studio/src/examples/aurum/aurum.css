@@ -138,3 +138,10 @@
   .au-services { grid-template-columns: 1fr; gap: 14px; }
   .au-contact-list div { grid-template-columns: 1fr; gap: 2px; }
 }
+
+/* questions: plain hairline rows, the question in the text colour, the answer dimmed */
+.au-faq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 40px 72px; border-top: 1px solid var(--line); }
+.au-faq-list > div { display: grid; gap: 6px; padding: 20px 0; border-top: 1px solid var(--line); }
+.au-faq-list > div:last-child { border-bottom: 1px solid var(--line); }
+.au-faq-list dd { margin: 0; max-width: 40em; }
+@media (max-width: 860px) { .au-faq { grid-template-columns: 1fr; } }

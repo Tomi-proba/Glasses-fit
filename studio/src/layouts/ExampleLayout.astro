@@ -1,9 +1,19 @@
 ---
-// Shell of the example sites under /peldak/: their own fonts and styles, plus the sample strip.
+// Shell of the example sites under /peldak/: their own fonts and styles, SEO tags, structured data,
+// plus the sample strip. Indexing is off unless INDEX_EXAMPLES=1 (see src/lib/seo.ts).
 import SampleBar from '../components/examples/SampleBar.astro';
 import { url } from '../lib/url';
-interface Props { title: string; description: string; fonts: string; tier: 'premium' | 'alap'; slug: string; themeColor: string; favicon?: string }
-const { title, description, fonts, tier, slug, themeColor, favicon = 'favicon.svg' } = Astro.props;
+import { INDEX_EXAMPLES } from '../lib/seo';
+interface Props {
+  title: string; description: string; fonts: string; tier: 'premium' | 'alap'; slug: string; themeColor: string; favicon?: string;
+  /** schema.org objects, written as JSON-LD */
+  jsonLd?: object[];
+  /** fonts to preload (woff2 URLs are not known in advance, so this is for images) */
+  preloadImage?: { href: string; srcset?: string; sizes?: string };
+}
+const { title, description, fonts, tier, slug, themeColor, favicon = 'favicon.svg', jsonLd = [], preloadImage } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(url(`images/og/${slug}.jpg`), Astro.site).href;
 ---
 <!doctype html>
 <html lang="hu" data-tier={tier} data-base={url('')}>
@@ -12,12 +22,25 @@ const { title, description, fonts, tier, slug, themeColor, favicon = 'favicon.sv
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={canonical} />
+    {!INDEX_EXAMPLES && <meta name="robots" content="noindex, follow" />}
     <meta name="theme-color" content={themeColor} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="hu_HU" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href={url(favicon)} />
+    {preloadImage && <link rel="preload" as="image" href={preloadImage.href} imagesrcset={preloadImage.srcset} imagesizes={preloadImage.sizes} fetchpriority="high" />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href={fonts} />
+    <link rel="stylesheet" href={fonts} media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href={fonts} /></noscript>
+    {jsonLd.map((d) => <script type="application/ld+json" set:html={JSON.stringify(d)} />)}
     <slot name="head" />
   </head>
   <body>

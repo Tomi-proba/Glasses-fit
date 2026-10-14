@@ -72,7 +72,8 @@ export function initAurum({ viewTransitions = false } = {}) {
     const btn = e.target.closest('[data-open]');
     if (!btn) return;
     const tpl = document.getElementById(`tpl-${btn.dataset.open}`);
-    body.replaceChildren(tpl.content.cloneNode(true));
+    body.replaceChildren(...tpl.cloneNode(true).childNodes);
+    body.querySelector('h2').id = 'au-dialog-title';
     opener = btn;
     dialog.showModal();
     initGallery(body.querySelector('[data-gallery]'));

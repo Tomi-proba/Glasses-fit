@@ -132,3 +132,17 @@ export const FILTERS = {
 };
 
 export const formatHuf = (n: number) => `${new Intl.NumberFormat('hu-HU', { maximumFractionDigits: 0 }).format(Math.round(n / 1_000_000))} M Ft`;
+
+export const openingRows: [string, string][] = [
+  ['Hétfő', '09:00-18:00'], ['Kedd', '09:00-18:00'], ['Szerda', '09:00-18:00'], ['Csütörtök', '09:00-18:00'], ['Péntek', '09:00-18:00'],
+];
+
+// The questions sellers and buyers ask first (also written as FAQPage structured data).
+export const faq: [string, string][] = [
+  ['Mennyibe kerül az értékbecslés?', 'Semmibe, és nem kötelez megbízásra. Bejárjuk az ingatlant, és két munkanapon belül írásban elküldjük a becsült piaci árat, összehasonlító eladásokkal.'],
+  ['Mekkora a jutalék?', 'A vételár 2,5%-a, ÁFA-val együtt. Csak sikeres eladás után kell fizetni, a fotózás, a videó és a hirdetések ára benne van.'],
+  ['Mennyi idő alatt adják el az ingatlant?', 'Az elmúlt két évben átlagosan 41 nap telt el a megbízástól az adásvételi szerződésig.'],
+  ['Meg lehet hirdetés nélkül is eladni?', 'Igen. Ha nem szeretnéd, hogy nyilvános legyen, csak ellenőrzött vevőknek mutatjuk meg (off-market értékesítés).'],
+  ['Milyen környéken dolgoznak?', 'Budán, főleg a II., XI. és XII. kerületben, a Belvárosban, Budakeszin és a Balaton-felvidéken, Balatonfüredtől Tihanyig.'],
+  ['Segítenek az ügyvédben és a hitelben?', 'Igen. Az adásvételt ingatlanjogász ügyvéd készíti, a vevőknek független hitelszakértőt ajánlunk. Mindkettőt mi szervezzük.'],
+];

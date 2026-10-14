@@ -1,9 +1,9 @@
 ---
 // One content block of Pixel Pont, shared by the Prémium "game screens" and the Alap sections.
 // Rows are table-like lines with dotted leaders, the way an arcade lists its high scores.
-import { brand, machines, tokens, tokenNotes, parties, partyNote, hours, hoursNote, scores, ft, pts } from './content';
+import { brand, machines, tokens, tokenNotes, parties, partyNote, hours, hoursNote, scores, faq, ft, pts } from './content';
 
-interface Props { name: 'machines' | 'prices' | 'parties' | 'hours' | 'location' | 'contact' | 'scores'; id: string }
+interface Props { name: 'machines' | 'prices' | 'parties' | 'hours' | 'location' | 'contact' | 'scores' | 'faq'; id: string }
 const { name, id } = Astro.props;
 const { lat, lon } = brand.map;
 const bbox = [lon - 0.006, lat - 0.003, lon + 0.006, lat + 0.003].join(',');
@@ -104,4 +104,12 @@ const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&lay
       <p class="pp-ok" data-form-ok hidden>Köszönjük! Egy munkanapon belül visszahívunk. (Mintaoldal, nem küldtünk el semmit.)</p>
     </form>
   </div>
+)}
+
+{name === 'faq' && (
+  <dl class="pp-rows pp-faq">
+    {faq.map(([q, a]) => (
+      <div><dt class="pp-hi">{q}</dt><dd class="pp-dim">{a}</dd></div>
+    ))}
+  </dl>
 )}

@@ -1,4 +1,4 @@
-// Takes the screenshots of the example sites shown on the home page ("Munkáink"), with the 3D running.
+// Takes the screenshots of the example sites shown on the home page ("Munkáink") and their sharing images.
 //
 //   npm run build && npm run preview          (in another terminal)
 //   npm run example-shots -- [base-url]       default: http://127.0.0.1:4321/
@@ -17,6 +17,7 @@ const root = resolve(fileURLToPath(import.meta.url), '../..');
 const base = (process.argv[2] || 'http://127.0.0.1:4321/').replace(/\/?$/, '/');
 const out = resolve(root, 'public/images/examples');
 await mkdir(out, { recursive: true });
+await mkdir(resolve(root, 'public/images/og'), { recursive: true });
 
 const PAGES = ['ingatlan-premium', 'ingatlan-alap', 'jatekterem-premium', 'jatekterem-alap'];
 const browser = await chromium.launch({
@@ -36,6 +37,8 @@ for (const slug of PAGES) {
     const png = await page.screenshot({ type: 'png' });
     const widths = kind === 'desktop' ? [1280, 720] : [390];
     for (const w of widths) await sharp(png).resize(w).webp({ quality: 74 }).toFile(resolve(out, `${slug}-${kind}-${w}.webp`));
+    // the page's sharing image (Open Graph), 1200 x 630
+    if (kind === 'desktop') await sharp(png).resize(1200, 630, { fit: 'cover', position: 'centre' }).jpeg({ quality: 80, mozjpeg: true }).toFile(resolve(root, `public/images/og/${slug}.jpg`));
     console.log(`✓ ${slug} ${kind}`);
     await ctx.close();
   }

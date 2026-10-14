@@ -5,7 +5,7 @@
 // 2. Inside: the screen is the page, a game main menu. Each item opens a "game screen".
 // Without JavaScript both states are plain sections one after the other.
 import Block from './Block.astro';
-import { brand, scores, parties, ft } from './content';
+import { brand, scores, parties, faq, ft } from './content';
 import { url } from '../../lib/url';
 import './arcade.css';
 
@@ -16,6 +16,7 @@ const items = [
   { id: 'nyitvatartas', title: 'Nyitvatartás', hint: 'Minden nap nyitva', block: 'hours' },
   { id: 'hol', title: 'Hol vagyunk', hint: brand.addressShort, block: 'location' },
   { id: 'highscore', title: 'High score', hint: `1. ${scores[0]!.name} ${scores[0]!.score}`, block: 'scores' },
+  { id: 'gyik', title: 'GYIK', hint: `${faq.length} kérdés`, block: 'faq' },
   { id: 'kapcsolat', title: 'Kapcsolat', hint: brand.phone, block: 'contact' },
 ] as const;
 const img = (w: number) => url(`examples/arcade/arcade-${w}.webp`);

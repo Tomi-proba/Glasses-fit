@@ -41,10 +41,8 @@ studio/
 ├── src/layouts/Layout.astro    ← közös fejléc, lábléc, SEO, Lenis + GSAP
 ├── src/layouts/TemplatePage.astro ← a termék egy oldalának renderelése
 ├── src/pages/                  ← útvonalak (lásd fent), sitemap.xml, robots.txt
-├── src/components/StudioHero3D.astro ← a főoldal 3D eleme (a példaoldalaink lebegő böngészőablakokban)
-├── src/components/Showcase.astro ← „Munkáink”: a példaoldalak párban, Prémium 3D és Alap
 ├── src/examples/               ← A PÉLDAOLDALAK (Aurum Ingatlan, Pixel Pont Játékterem)
-│   ├── aurum/                  ← tartalom, oldal, stílus, villa.js (Three.js), szűrő és galéria
+│   ├── aurum/                  ← tartalom, oldal, stílus, szűrő és galéria, ld.ts (strukturált adat)
 │   ├── arcade/                 ← Pixel Pont: tartalom, Prémium (berepülés + játékmenü), Alap, warp.js (fénycsíkok), sound.js
 │   ├── motion-premium.js       ← Prémium: Lenis, GSAP reveal, számlálók, parallax, 3D döntés
 │   ├── motion-basic.js         ← Alap: egyszerű beúszás
@@ -52,6 +50,7 @@ studio/
 ├── src/lib/
 │   ├── configurator.js         ← a tervező
 │   ├── store.js                ← mentés a böngészőbe (terv, csomag, ajánlatkérő piszkozat)
+│   ├── seo.ts                  ← JSON-LD segédek, INDEX_EXAMPLES kapcsoló
 │   ├── quote.js                ← validateQuote(), buildQuoteRequest(), sendQuoteRequest(): IDE KERÜL az e-mail-küldés
 │   └── ai-copy.js              ← suggestCopy(): IDE KERÜL a Claude API (szerveren keresztül)
 ├── src/template/               ← AZ ÜGYFÉL-SABLON (a termék)
@@ -146,7 +145,7 @@ Két kitalált cég, mindkettő mindkét csomagban, ugyanazzal a tartalommal. A 
 
 - **Prémium:**
   - **Görgetés-vezérelt videó a heróban:** képkocka-sorozat canvasra rajzolva, a GSAP ScrollTrigger rögzíti (pin) a szekciót. Lefelé görgetve előre, felfelé visszafelé halad.
-  - **Betöltés:** a képkockák előre töltődnek, közben töltőképernyő látszik.
+  - **Betöltés:** a képkockák a háttérben töltődnek (előbb minden nyolcadik), közben vékony folyamatjelző látszik. Az oldalt nem tartja vissza: addig az első képkocka áll a helyén.
   - **Szövegrétegek:** görgetésre jelennek meg és tűnnek el.
   - **Fotók:** lassú zoom, parallax, maszkolt felfedés.
   - **Aurum Ingatlan:** a hero a megrendelő saját videója (a ház felé közelít, belép az ajtón, a nappaliba érkezik).
@@ -177,12 +176,70 @@ Csak Unsplash vagy Pexels kép használható. A helyük a `src/examples/photos.j
 2. `npm run example-photos`: letölti, WebP-be alakítja (640/1280 vagy 960/1600/2400 px), és megírja a `CREDITS.md`-t.
 3. `npm run build && npm run preview`, majd egy másik terminálban `npm run example-shots`: frissíti a főoldal képernyőképeit (Playwright kell hozzá).
 
+## Keresőoptimalizálás (Google és AI-keresők)
+
+### Ami a kódban kész
+
+- **Minden fontos adat valódi HTML-szöveg**, nem canvasban, képen vagy csak kattintás után betöltve: cégnév, cím, telefon, e-mail, nyitvatartás, árak, szolgáltatások, GYIK.
+  - Pixel Pont Prémium: a játékmenü minden „képernyője” benne van a HTML-ben. Animáció közben a menü rétege rejtett, a nem aktív képernyők `hidden`-ek, mint egy füles felületen. Ez ugyanaz a tartalom, amit a látogató a menüben lát, nem rejtett kulcsszó, így megfelel a Google irányelveinek.
+  - Aurum: az ingatlanok teljes leírása a HTML-ben van (rejtett `<article>`), a felugró ablak ebből készít másolatot. Korábban `<template>`-ben volt, azt a keresők nem olvassák.
+  - Görgetés-vezérelt videó alatt is valódi `<h1>` és szöveg van, a canvas csak a kép.
+- **Strukturált adat (schema.org, JSON-LD):**
+  - Főoldal: `ProfessionalService` a csomagokkal és a „-tól” árakkal (`OfferCatalog`), plus `FAQPage`.
+  - Aurum: `RealEstateAgent` címmel, koordinátával, nyitvatartással, munkatársakkal, az eladó ingatlanokkal (`Offer` + `SingleFamilyResidence`/`Apartment`, alapterület, szobaszám), plus `FAQPage`.
+  - Pixel Pont: `EntertainmentBusiness` címmel, koordinátával, nyitvatartással (`OpeningHoursSpecification`), zseton- és szülinapi árakkal (`OfferCatalog`), akadálymentességgel, plus `FAQPage`.
+  - Az adatok ugyanabból a `content.ts`-ből jönnek, amiből az oldal, ezért nem csúsznak el egymástól (`src/examples/*/ld.ts`, `src/lib/seo.ts`).
+- **Oldalanként egyedi** `<title>`, meta description, kanonikus URL, Open Graph és Twitter kártya. A megosztási képek mérete 1200×630 (`public/images/og/`, az `npm run example-shots` újragenerálja).
+- **`sitemap.xml`**, **`robots.txt`** és **`llms.txt`**. A robots.txt név szerint is engedi az AI-keresők robotjait (GPTBot, OAI-SearchBot, ChatGPT-User, PerplexityBot, ClaudeBot, Google-Extended, Applebot-Extended stb.), csak a tervező belső előnézeti oldalait és a köszönőoldalt zárja ki. Az `llms.txt` rövid, sima szöveges összefoglaló az AI-asszisztenseknek (csomagok, árak, oldalak).
+- **GYIK-szekció** mindhárom oldalon (főoldal, Aurum, Pixel Pont), a valószínű kérdésekkel.
+
+### A példaoldalak indexelése
+
+A két példacég kitalált, a címük és a telefonszámuk sem valódi. Ha a Google vagy egy AI-kereső indexelné őket, valódi embereket küldhetne egy nem létező játékterembe. Ezért élesben `noindex`-esek, és kimaradnak a sitemapből. A SEO-beállításuk ettől még teljes.
+
+Ügyféloldalnál (vagy a mérés kedvéért) így kapcsolható be az indexelés:
+
+```bash
+INDEX_EXAMPLES=1 BASE_PATH=/Glasses-fit/ npm run build
+```
+
+### Amit az ügyfélnek kell beállítania
+
+A kód csak a felét adja. Ezek nélkül a helyi keresésben (térkép, „játékterem a közelben”) nem fog megjelenni:
+
+1. **Saját domain.** A `robots.txt`-t és a `sitemap.xml`-t a keresők csak a domain gyökeréből olvassák (`https://pelda.hu/robots.txt`). GitHub Pages alútvonalon (`/Glasses-fit/`) ezek nem a gyökérben vannak, saját domainnel igen. A buildhez: `SITE_URL=https://pelda.hu BASE_PATH=/`.
+2. **Google Cégprofil** (business.google.com):
+   - Cégnév, cím és telefonszám betűre ugyanúgy, mint az oldalon és a JSON-LD-ben.
+   - Kategória (pl. „Játékterem”, „Ingatlaniroda”), nyitvatartás (ünnepnapokkal), fotók, weboldal-link.
+   - Ellenőrzés (képeslap, telefon vagy videó). Ez hozza a térképes és helyi találatokat, és a Gemini is innen veszi a helyi adatokat.
+3. **Google Search Console** (search.google.com/search-console):
+   - Tartomány-tulajdon hozzáadása DNS TXT rekorddal, a `sitemap.xml` beküldése.
+   - Az „URL-ellenőrzés” eszközzel a fő oldalak indexelésének kérése.
+   - Az „Bővített találatok” jelentés figyelése (strukturált adat hibák).
+4. **Bing Webmaster Tools** (bing.com/webmasters): a ChatGPT keresője és a Copilot a Bing indexére épül. A Search Console-ból egy kattintással importálható, plusz IndexNow.
+5. **Apple Business Connect** (Apple Térkép, Siri) és **Facebook/Instagram oldal**: ugyanazokkal az adatokkal. Ha megvan, a profil linkjei kerüljenek a `business.ts` `social` listájába, ezek bekerülnek a `sameAs` mezőbe.
+6. **Vélemények:** a Cégprofilban kérjen értékelést az ügyfeleitől, és válaszoljon rájuk. A helyi rangsorolásban ez az egyik legerősebb jel. Az oldalon lévő véleményekhez ne tegyünk `Review`/`AggregateRating` jelölést, mert a Google saját oldalon gyűjtött értékeléseknél nem ad ilyen találatot, és félrevezetőnek minősítheti.
+7. **Ha változik valami** (ár, nyitvatartás, cím): a `content.ts`-ben kell átírni, az oldal és a strukturált adat együtt frissül. A Cégprofilban külön is át kell írni.
+8. **Ellenőrzés élesítés után:** Google Rich Results Test (search.google.com/test/rich-results) és Schema Markup Validator (validator.schema.org).
+
+Megjegyzés: a Google 2023 óta csak kormányzati és egészségügyi oldalaknál mutat GYIK-bővített találatot. A `FAQPage` jelölés ettől még hasznos: az AI-keresők (Gemini, ChatGPT, Perplexity) és a Bing kérdés-válasz párként olvassák.
+
 ## Akadálymentesség és teljesítmény
 
 - Látható fókusz, skip link, ARIA címkék, alt szövegek, kontrasztos színek.
 - A `prefers-reduced-motion` és a „Nincs” animáció-beállítás kikapcsolja a mozgást és a 3D-t (ilyenkor az álló kép látszik).
 - 3D csak hardveres WebGL-en fut, mobilon könnyítve. Hibakereséshez: `?3d=force`.
-- Lighthouse (headless Chrome, `/Glasses-fit/` alútvonal, gzippel), teljesítmény / akadálymentesség / bevált gyakorlatok / SEO:
-  - Főoldal: mobilon 99/100/100/100, asztalin 100/100/100/100.
-  - Tervező: mobilon 97/100/100/100, asztalin 100/100/100/100.
-  - A minták SEO-pontja azért alacsonyabb, mert szándékosan `noindex`-esek.
+- Lighthouse 13.5 (headless Chrome, helyi `astro preview`, `/Glasses-fit/` alútvonal, `INDEX_EXAMPLES=1` build), teljesítmény / akadálymentesség / bevált gyakorlatok / SEO, 2026-10-14:
+
+  | Oldal | Mobil | Asztali | LCP (mobil) |
+  | --- | --- | --- | --- |
+  | Főoldal | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 1,0 s |
+  | Tervező | 99 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 2,0 s |
+  | Ajánlatkérés | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 1,0 s |
+  | Aurum Prémium | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 1,8 s |
+  | Aurum Alap | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 1,3 s |
+  | Pixel Pont Prémium | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 1,7 s |
+  | Pixel Pont Alap | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 1,2 s |
+
+  Az alapértelmezett (noindex-es) buildben a minták SEO-pontja 66: egyetlen hibás pont van, hogy az oldal nem indexelhető, és ez szándékos.
+- Ami a teljesítményhez kellett: a görgetés-vezérelt videó képkockái csak az oldal és a betűk betöltése után kezdenek letöltődni, és a töltőképernyő már nem tartja vissza az oldalt (vékony folyamatjelző lett belőle). A példaoldalak betűtípus-CSS-e nem blokkolja a megjelenést, a Pixel Pont nyitóképe előtöltődik.

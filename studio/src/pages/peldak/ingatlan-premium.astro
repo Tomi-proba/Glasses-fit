@@ -1,9 +1,15 @@
 ---
 import ExampleLayout from '../../layouts/ExampleLayout.astro';
 import AurumPage from '../../examples/aurum/AurumPage.astro';
-import { brand } from '../../examples/aurum/content';
+import { aurumLd } from '../../examples/aurum/ld';
+import { url } from '../../lib/url';
+
+const title = 'Aurum Ingatlan: eladó villák és lakások Budán és a Balatonnál';
+const description = 'Ingatlaniroda Budán és a Balaton-felvidéken. Eladó villák, penthouse-ok és családi házak videós bejárással, díjtalan értékbecslés két munkanapon belül. Hétfő-péntek 9-18.';
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = aurumLd(pageUrl, new URL(url('images/og/ingatlan-premium.jpg'), Astro.site).href);
 ---
-<ExampleLayout title={`${brand.name} | ${brand.tagline}`} description={brand.description} tier="premium" slug="ingatlan-premium" themeColor="#0e0d0b"
+<ExampleLayout {title} {description} {jsonLd} tier="premium" slug="ingatlan-premium" themeColor="#0e0d0b"
   fonts="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300..500&family=Instrument+Sans:wght@400;500&family=Geist:wght@400;500&display=swap">
   <AurumPage tier="premium" />
 </ExampleLayout>

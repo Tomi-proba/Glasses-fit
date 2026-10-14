@@ -1,6 +1,6 @@
 // Scroll-driven video, Apple style: a pinned section draws pre-extracted WebP frames on a canvas.
 // Scrolling down plays forward, scrolling up plays back. Frames load coarse-to-fine (every 8th first),
-// so scrubbing works early; the first sequence on the page shows a loading screen until it is ready.
+// so scrubbing works early; the first sequence on the page shows a small progress line meanwhile.
 
 const MOBILE = matchMedia('(max-width: 760px)').matches;
 
@@ -117,30 +117,28 @@ export function initScrollSequences({ gsap, ScrollTrigger, lenis, reduceMotion }
     });
     gsap.ticker.add(render);
 
-    const start = () => loadFrames(urls, (frac, list) => {
+    // Frames wait until the page itself (fonts, first picture) has loaded, so they never compete with it.
+    const afterLoad = new Promise((r) => (document.readyState === 'complete' ? r() : addEventListener('load', r, { once: true })))
+      .then(() => document.fonts?.ready)
+      .then(() => new Promise((r) => (window.requestIdleCallback ? requestIdleCallback(r, { timeout: 1200 }) : setTimeout(r, 200))));
+    const start = () => afterLoad.then(() => loadFrames(urls, (frac, list) => {
       imgs = list;
       if (loader) {
         loader.querySelector('[data-seq-bar]').style.transform = `scaleX(${frac})`;
         loader.querySelector('[data-seq-pct]').textContent = String(Math.round(frac * 100));
       }
-    });
+    }));
     if (loader) {
-      // The opening sequence: hold the page behind the loading screen until the frames are in.
-      // It moves to <body> so it also covers the fixed header (pinning can create stacking contexts).
+      // The opening sequence: a small progress line while the frames stream in. It never blocks the page:
+      // the poster (the first frame) is already on screen, and scrubbing uses the nearest loaded frame.
       document.body.append(loader);
-      loader.hidden = false; // hidden in the markup, so without JavaScript nothing covers the page
-      document.documentElement.classList.add('is-loading');
-      lenis?.stop();
+      loader.hidden = false; // hidden in the markup, so without JavaScript nothing shows
       const reveal = () => {
         if (loader.classList.contains('is-done')) return;
         loader.classList.add('is-done');
-        document.documentElement.classList.remove('is-loading');
-        lenis?.start();
-        ScrollTrigger.refresh();
         sec.dispatchEvent(new CustomEvent('seq:ready', { bubbles: true }));
       };
       start().then(reveal);
-      setTimeout(reveal, 9000); // never keep the visitor waiting on a slow connection
     } else {
       // Later sequences load when they get close.
       const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); start(); } }, { rootMargin: '150% 0px' });

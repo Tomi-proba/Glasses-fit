@@ -4,7 +4,7 @@
 // previews in the catalogue. Alap: the same scenes with still photos and a single fade.
 import Photo from '../../components/examples/Photo.astro';
 import ScrollSequence from '../../components/examples/ScrollSequence.astro';
-import { brand, properties, services, agents, testimonials, FILTERS, formatHuf } from './content';
+import { brand, properties, services, agents, testimonials, faq, FILTERS, formatHuf } from './content';
 import '../exhibit.css';
 import './aurum.css';
 
@@ -175,11 +175,21 @@ const pad = (n: number) => String(n).padStart(2, '0');
     </div>
   </section>
 
+  <section id="gyik" class="x-plate x-pad au-faq" aria-labelledby="au-faq-title">
+    <h2 id="au-faq-title" class="x-display" data-reveal>Kérdések</h2>
+    <dl class="au-faq-list">
+      {faq.map(([q, a]) => (
+        <div data-reveal><dt>{q}</dt><dd class="x-dim">{a}</dd></div>
+      ))}
+    </dl>
+  </section>
+
   <section id="kapcsolat" class="x-scene au-contact" aria-labelledby="au-contact-title">
     <iframe class="au-map" src={mapSrc} title={`${brand.name} irodája a térképen`} loading="lazy" referrerpolicy="no-referrer"></iframe>
     <div class="x-over x-pad au-contact-copy">
       <h2 id="au-contact-title" class="x-display" data-reveal>Kiss János altábornagy utca 27.</h2>
       <dl class="au-contact-list" data-reveal>
+        <div><dt class="x-label x-dim">Cím</dt><dd>{brand.address}</dd></div>
         <div><dt class="x-label x-dim">Telefon</dt><dd><a href={`tel:${brand.phone.replace(/\s/g, '')}`}>{brand.phone}</a></dd></div>
         <div><dt class="x-label x-dim">E-mail</dt><dd><a href={`mailto:${brand.email}`}>{brand.email}</a></dd></div>
         <div><dt class="x-label x-dim">Nyitva</dt><dd>{brand.hours}</dd></div>
@@ -198,8 +208,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
   <button class="x-close" type="button" data-close>Bezárás</button>
 </dialog>
 
+{/* Each property's full details, in the HTML for search engines; the dialog shows a copy. */}
 {properties.map((p, i) => (
-  <template id={`tpl-${p.id}`}>
+  <article id={`tpl-${p.id}`} class="au-source" aria-labelledby={`au-t-${p.id}`} hidden>
     <div class="au-gallery" data-gallery>
       <div class="au-slides" data-slides tabindex="0" aria-label={`${p.title} fotói`} role="region">
         {p.photos.map((ph, k) => <div class="au-slide" aria-label={`${k + 1}. kép a ${p.photos.length}-ből`} role="group"><Photo slot={ph} sizes="(max-width: 900px) 100vw, 62vw" /></div>)}
@@ -212,7 +223,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     </div>
     <div class="au-detail">
       <p class="x-label x-dim">{pad(i + 1)}, {p.type}, {p.location}</p>
-      <h2 id="au-dialog-title" class="x-display">{p.title}</h2>
+      <h2 id={`au-t-${p.id}`} class="x-display">{p.title}</h2>
       <dl class="au-specs">
         <div><dt class="x-dim">Ár</dt><dd>{formatHuf(p.price)}</dd></div>
         <div><dt class="x-dim">Alapterület</dt><dd>{p.area} m²</dd></div>
@@ -224,5 +235,5 @@ const pad = (n: number) => String(n).padStart(2, '0');
       <p class="x-dim">{p.features.join('. ')}.</p>
       <div class="x-actions"><a class="x-btn is-solid" href="#ertekbecsles" data-close>Bejárást kérek</a></div>
     </div>
-  </template>
+  </article>
 ))}
