@@ -1,0 +1,13 @@
+---
+import ExampleLayout from '../../layouts/ExampleLayout.astro';
+import AurumPage from '../../examples/aurum/AurumPage.astro';
+import { brand } from '../../examples/aurum/content';
+---
+<ExampleLayout title={`${brand.name} | ${brand.tagline}`} description={brand.description} tier="alap" slug="ingatlan-alap" themeColor="#0e0d0b"
+  fonts="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Hanken+Grotesk:wght@400;500&display=swap">
+  <AurumPage tier="alap" />
+</ExampleLayout>
+
+<script>
+  import '../../examples/aurum/basic.js';
+</script>

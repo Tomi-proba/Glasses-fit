@@ -1,0 +1,27 @@
+---
+// Shell of the example sites under /peldak/: their own fonts and styles, plus the sample strip.
+import SampleBar from '../components/examples/SampleBar.astro';
+import { url } from '../lib/url';
+interface Props { title: string; description: string; fonts: string; tier: 'premium' | 'alap'; slug: string; themeColor: string; favicon?: string }
+const { title, description, fonts, tier, slug, themeColor, favicon = 'favicon.svg' } = Astro.props;
+---
+<!doctype html>
+<html lang="hu" data-tier={tier} data-base={url('')}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content={themeColor} />
+    <link rel="icon" href={url(favicon)} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={fonts} />
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+    <SampleBar tier={tier} slug={slug} />
+  </body>
+</html>
