@@ -141,7 +141,7 @@ const radios = (name: string, list: string[][], err = name) => list.map(([v, t])
   .opts { display: flex; flex-wrap: wrap; gap: 8px; }
   .opts :global(.opt) { position: relative; }
   .opts :global(.opt input), .pkg-opt input, .check input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-  .opts :global(.opt span) { display: block; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 14.5px; cursor: pointer; transition: border-color 0.2s, background-color 0.2s; }
+  .opts :global(.opt span) { display: block; padding: 9px 16px; border-radius: 2px; border: 1px solid var(--line); background: var(--surface); font-size: 14.5px; cursor: pointer; transition: border-color 0.2s, background-color 0.2s; }
   .opts :global(.opt span:hover) { border-color: var(--line-strong); }
   .opts :global(.opt input:checked + span) { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.1); }
   .opts :global(.opt input:focus-visible + span) { outline: 2px solid var(--accent); outline-offset: 2px; }

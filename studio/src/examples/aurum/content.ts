@@ -2,8 +2,8 @@
 
 export const brand = {
   name: 'Aurum Ingatlan',
-  tagline: 'Kivételes otthonok, diszkrét képviselet.',
-  description: 'Prémium ingatlanok Budapesten és a Balaton-felvidéken. Értékbecslés 48 órán belül, diszkrét értékesítés, személyes tanácsadó.',
+  tagline: 'Ingatlaniroda Budán és a Balaton-felvidéken.',
+  description: 'Eladó otthonok Budán és a Balaton-felvidéken. Évente negyven megbízás, mindegyik személyesen bejárva. Értékbecslés két munkanapon belül.',
   phone: '+36 1 555 0142',
   email: 'iroda@aurum-ingatlan.example',
   address: '1126 Budapest, Kiss János altábornagy utca 27.',
@@ -107,10 +107,10 @@ export const properties: Property[] = [
 ];
 
 export const services = [
-  { icon: 'gauge', title: 'Értékbecslés 48 órán belül', text: 'Friss tranzakciós adatokból és személyes bejárás alapján, írásban.' },
-  { icon: 'cube', title: 'Fotó, videó és 3D bejárás', text: 'Profi fotós, drónfelvétel és virtuális bejárás minden megbízásnál.' },
-  { icon: 'lock', title: 'Diszkrét értékesítés', text: 'Off-market ajánlás ellenőrzött vevőknek, ha nem szeretnél nyilvános hirdetést.' },
-  { icon: 'key', title: 'Jogi és pénzügyi háttér', text: 'Partner ügyvédek és hitelszakértők a szerződéstől a birtokba adásig.' },
+  { text: 'Értékbecslés két munkanapon belül, írásban.' },
+  { text: 'Fotó, drónfelvétel és videós bejárás minden megbízáshoz.' },
+  { text: 'Ha nem szeretnéd nyilvánosan hirdetni, csak ellenőrzött vevőknek mutatjuk meg.' },
+  { text: 'Az ügyvédet és a hitelszakértőt is mi szervezzük.' },
 ];
 
 export const agents = [

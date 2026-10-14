@@ -43,8 +43,8 @@ for (const [slot, def] of Object.entries(manifest.slots)) {
 }
 
 const rows = Object.entries(manifest.slots)
-  .filter(([, d]) => d.source?.download)
-  .map(([slot, d]) => `| \`${slot}\` | ${d.alt} | [${d.source.author}](${d.source.authorUrl || d.source.page}) | ${d.source.provider} | ${d.source.page} |`);
+  .filter(([, d]) => d.source)
+  .map(([slot, d]) => `| \`${slot}\` | ${d.alt} | ${d.source.author ? `[${d.source.author}](${d.source.authorUrl || d.source.page})` : ''} | ${d.source.provider} | ${d.source.page || d.source.note || ''} |`);
 const sequences = JSON.parse(await readFile(resolve(root, 'src/examples/sequences.json'), 'utf8')).sequences;
 const videoRows = Object.entries(sequences)
   .filter(([, d]) => d.source)

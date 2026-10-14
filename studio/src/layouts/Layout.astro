@@ -11,19 +11,19 @@ interface Props {
   /** App-like pages (configurator) keep native scrolling for their inner panels. */
   app?: boolean;
   noindex?: boolean;
+  /** Full-screen pictures under a floating header (the home page). */
+  immersive?: boolean;
 }
-const { title, description = business.description, app = false, noindex = false } = Astro.props;
+const { title, description = business.description, app = false, noindex = false, immersive = false } = Astro.props;
 const fullTitle = title ? `${title} | ${business.name}` : `${business.name} | ${business.tagline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(url('images/og.png'), Astro.site).href;
 const path = Astro.url.pathname.replace(/\/$/, '');
-const fonts = 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&family=Onest:wght@400;500&family=Martian+Mono:wght@300;400&display=swap';
+const fonts = 'https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Geist:wght@400;500&family=Geist+Mono:wght@400&display=swap';
 const nav = [
-  ['#folyamat', 'Hogyan működik'],
-  ['#csomagok', 'Csomagok'],
   ['#munkaink', 'Munkáink'],
+  ['#csomagok', 'Csomagok'],
   ['tervezo', 'Tervező'],
-  ['#gyik', 'GYIK'],
   ['#kapcsolat', 'Kapcsolat'],
 ];
 const ld = {
@@ -64,7 +64,7 @@ const ld = {
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
     <slot name="head" />
   </head>
-  <body class={app ? 'is-app' : ''}>
+  <body class={[app && 'is-app', immersive && 'is-immersive'].filter(Boolean).join(' ')}>
     <a class="skip-link" href="#main">Ugrás a tartalomra</a>
     <header class="site-header">
       <nav class="container nav" aria-label="Fő navigáció">

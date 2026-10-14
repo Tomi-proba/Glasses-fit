@@ -1,185 +1,234 @@
 ---
+// Home: an exhibition of our work. The first scene is an example site's walkthrough video,
+// scrubbed by scroll; then quiet typographic scenes with 1px lines. Two text styles only.
 import Layout from '../layouts/Layout.astro';
-import StudioHero3D from '../components/StudioHero3D.astro';
+import ScrollSequence from '../components/examples/ScrollSequence.astro';
+import Photo from '../components/examples/Photo.astro';
 import { business } from '../config/business';
-import { PACKAGES, VAT_NOTE, MONTHLY_NOTE, priceFrom } from '../config/pricing';
-import Showcase from '../components/Showcase.astro';
+import { PACKAGES, VAT_NOTE, priceFrom } from '../config/pricing';
 import { url } from '../lib/url';
-import { icon } from '../lib/icon';
 
-const lowest = priceFrom(Math.min(...PACKAGES.map((p) => p.priceFrom)));
+const [alap, premium] = PACKAGES;
+const lowest = priceFrom(alap.priceFrom);
 const steps = [
-  ['Megtervezed vagy leírod, mit szeretnél', 'A tervezőben élő előnézettel összerakod, milyen legyen az oldal: színek, betűk, blokkok, szövegek. Ha nincs kedved tervezni, elég pár mondatban leírnod.'],
-  ['Személyre szabott ajánlatot kapsz', '24-48 órán belül átnézzük, amit küldtél, és pontos ajánlatot adunk. Az ajánlatkérés ingyenes, és nem kötelez semmire.'],
-  ['Elkészítjük az oldalad', 'A tervedből kiindulva mi készítjük el a végleges oldalt, és két körben finomítjuk a visszajelzéseid alapján.'],
-  ['Élesítjük', 'Beállítjuk a domaint és a tárhelyet, és élesítjük az oldalt. A kész oldal és a forrásfájlok is a tieid.'],
+  ['Megtervezed, vagy leírod', 'A tervezőben öt perc alatt összerakod, milyen legyen az oldal. Ha nincs kedved tervezni, pár mondat is elég.'],
+  ['Ajánlatot küldünk', 'Két munkanapon belül, fix árral. Az ajánlatkérés ingyenes, és semmire nem kötelez.'],
+  ['Elkészítjük', 'A tervedből indulunk, és két körben finomítjuk a visszajelzéseid alapján.'],
+  ['Élesítjük', 'Beállítjuk a domaint és a tárhelyet. Az oldal és a forrásfájlok a tieid.'],
+];
+const rows: [string, string, string][] = [
+  ['Ár', priceFrom(alap.priceFrom), priceFrom(premium.priceFrom)],
+  ['Havidíj', 'nincs', 'nincs'],
+  ...alap.features.map((f): [string, string, string] => [f, 'igen', 'igen']),
+  ...premium.features.map((f): [string, string, string] => [f, 'nem', 'igen']),
 ];
 const faq = [
-  ['Mennyibe kerül egy weboldal?', `${PACKAGES.map((p) => `${p.name}: ${priceFrom(p.priceFrom)}`).join(', ')}. A pontos árat az ajánlatban adjuk meg, attól függően, hány oldal kell és mi van már meg (szövegek, fotók, logó).`],
-  ['Kötelez valamire az ajánlatkérés?', 'Nem. Az ajánlatkérés és a tervező használata is ingyenes. Csak akkor kezdünk dolgozni, ha az ajánlatot elfogadtad.'],
-  ['Pontosan azt kapom, amit a tervezőben összeállítok?', 'A terv kiindulópont: megmutatja, milyen stílust, színeket és tartalmat szeretnél. A végleges oldalt mi készítjük el, így olyasmit is beleteszünk, amit a tervezőben nem lehet beállítani.'],
-  ['Mennyi idő alatt készül el az oldal?', 'Általában 1-2 hét az ajánlat elfogadásától, ha a szövegek és a képek megvannak. A pontos határidőt az ajánlatban rögzítjük.'],
-  ['Van havidíj, és kell ÁFA-t fizetni?', `Nincs havidíj. ${VAT_NOTE} A domain és a tárhely díját közvetlenül a szolgáltatónak fizeted, ebben segítünk.`],
-  ['Mi van, ha nincs saját fotóm vagy szövegem?', 'Segítünk: jogtiszta képeket választunk, és a szövegek megírásában is részt veszünk. Az ajánlatkérőben jelezheted, mi van már meg.'],
-  ['Az enyém lesz a weboldal?', 'Igen. A kész oldal és a forrásfájlok is a tieid, bármikor átviheted más tárhelyre.'],
+  ['Mennyibe kerül egy weboldal?', `Az Alap ${priceFrom(alap.priceFrom)}, a Prémium ${priceFrom(premium.priceFrom)}. A pontos árat az ajánlatban írjuk meg, attól függően, hány oldal kell, és megvannak-e már a szövegek és a fotók.`],
+  ['Kötelez valamire az ajánlatkérés?', 'Nem. Csak akkor kezdünk dolgozni, ha elfogadtad az ajánlatot.'],
+  ['Azt kapom, amit a tervezőben összeraktam?', 'A terv a kiindulás. A végleges oldalt mi készítjük el, olyan részletekkel is, amiket a tervezőben nem lehet beállítani.'],
+  ['Mennyi idő alatt készül el?', 'Általában egy-két hét az ajánlat elfogadásától, ha a szövegek és a képek megvannak.'],
+  ['Kell ÁFA-t fizetni?', `Nem. ${VAT_NOTE} Havidíj sincs. A domaint és a tárhelyet a szolgáltatónak fizeted, ebben segítünk.`],
+  ['Mi van, ha nincs saját fotóm?', 'Szerzünk jogtiszta képeket, vagy szervezünk fotózást. Az ajánlatkérőben jelezheted, mi van meg.'],
 ];
 ---
-<Layout>
-  <section class="hero container">
-    <div class="hero-copy">
-      <h1 class="display" data-split>Tervezd meg 5 perc alatt, a többit mi intézzük.</h1>
-      <p class="lede">Rakd össze élő előnézettel, milyen weboldalt szeretnél, vagy csak írd le pár mondatban. Személyre szabott ajánlatot küldünk, aztán elkészítjük és élesítjük. Weboldal {lowest}, havidíj nélkül.</p>
-      <div class="hero-actions">
-        <a class="btn btn-lg" href={url('tervezo')}>Tervezd meg a weboldalad <Fragment set:html={icon('next')} /></a>
-        <a class="btn btn-lg btn-ghost" href={url('ajanlatkeres')}>Ajánlatot kérek</a>
-      </div>
+<Layout immersive>
+  <ScrollSequence name="aurum-walk" fallback="aurum/hero" label="Munkáink: egy ingatlaniroda mintaoldalának bemutatója" length={3} grain class="h-seq">
+    <div class="h-frame" aria-hidden="true"></div>
+    <div class="seq-layer h-l1" data-in="0" data-out="0.3">
+      <h1 class="display">Weboldalak, amiket végignéznek.</h1>
+      <p class="h-small">Tervezd meg öt perc alatt, a többit mi intézzük. Weboldal {lowest}, havidíj nélkül.</p>
+      <p class="h-actions">
+        <a class="btn h-btn" href={url('tervezo')}>Tervezd meg</a>
+        <a class="link" href={url('ajanlatkeres')}>Ajánlatot kérek</a>
+      </p>
     </div>
-    <div class="hero-visual">
-      <StudioHero3D />
+    <div class="seq-layer h-l2" data-in="0.46" data-out="0.7">
+      <p class="display">Görgess, és belépsz a házba.</p>
     </div>
-  </section>
+    <div class="seq-layer h-l3" data-in="0.82" data-out="1" data-static>
+      <p class="label">Aurum Ingatlan, Prémium mintaoldal</p>
+      <p class="h-actions">
+        <a class="btn h-btn" href={url('peldak/ingatlan-premium')}>Megnézem</a>
+        <a class="link" href={url('ajanlatkeres?csomag=premium&minta=ingatlan-premium')}>Ilyet szeretnék</a>
+      </p>
+    </div>
+    <p class="h-corner l label" aria-hidden="true">01, Munkáink</p>
+    <p class="h-corner r label" aria-hidden="true">Görgess</p>
+  </ScrollSequence>
 
-  <section id="folyamat" class="section container steps" aria-labelledby="folyamat-title">
-    <div class="steps-head">
-      <h2 id="folyamat-title" class="display">Így működik.</h2>
-      <p class="muted steps-note">Te megmutatod, mit szeretnél. A végleges oldalt mi készítjük el neked.</p>
-      <a class="link" href={url('tervezo')}>Kezdd a tervezővel</a>
-    </div>
-    <ol class="steps-list" role="list" data-stagger>
-      {steps.map(([title, text], i) => (
-        <li>
-          <span class="step-num mono">0{i + 1}</span>
-          <div><h3>{title}</h3><p class="muted">{text}</p></div>
+  <section id="folyamat" class="container h-plate" aria-labelledby="folyamat-title">
+    <h2 id="folyamat-title" class="display" data-reveal>Négy lépés.</h2>
+    <ol class="h-steps" role="list">
+      {steps.map(([t, d], i) => (
+        <li data-reveal>
+          <span class="mono muted">0{i + 1}</span>
+          <h3>{t}</h3>
+          <p class="muted">{d}</p>
         </li>
       ))}
     </ol>
   </section>
 
-  <section id="csomagok" class="section container packages" aria-labelledby="csomagok-title">
-    <div class="packages-head">
-      <h2 id="csomagok-title" class="display" data-reveal>Két csomag, egyszeri díjjal.</h2>
-      <p class="lede" data-reveal>{MONTHLY_NOTE} {VAT_NOTE} A pontos árat az ajánlatban adjuk meg.</p>
-    </div>
-    <div class="pkg-grid" data-stagger>
-      {PACKAGES.map((p) => (
-        <article class={`pkg${p.highlight ? ' pkg-hi' : ''}`} aria-labelledby={`pkg-${p.id}`}>
-          <div class="pkg-top">
-            <h3 id={`pkg-${p.id}`}>{p.name}</h3>
-            <p class="pkg-price">{priceFrom(p.priceFrom)}</p>
-            <p class="pkg-note">{VAT_NOTE} {MONTHLY_NOTE}</p>
-            <p class="pkg-summary">{p.summary}</p>
-          </div>
-          <p class="pkg-ft">{p.featuresTitle}:</p>
-          <ul class="pkg-list" role="list">
-            {p.features.map((f) => <li><Fragment set:html={icon('check')} /><span>{f}</span></li>)}
-          </ul>
-          <a class="btn btn-lg pkg-btn" href={url(`ajanlatkeres?csomag=${p.id}`)}>Ajánlatot kérek <Fragment set:html={icon('next')} /></a>
-        </article>
-      ))}
-    </div>
+  <section id="munkaink" class="h-work" aria-labelledby="munkaink-title">
+    <h2 id="munkaink-title" class="sr-only">Munkáink</h2>
+    <article class="h-scene" aria-labelledby="w1">
+      <div class="h-bleed"><Photo slot="aurum/p1-3" sizes="100vw" /></div>
+      <div class="h-veil"></div>
+      <div class="h-frame" aria-hidden="true"></div>
+      <div class="container h-scene-copy">
+        <p class="label">02, Aurum Ingatlan</p>
+        <h3 id="w1" class="display">Ingatlaniroda Budán.</h3>
+        <p class="h-small">A Prémium változatban a ház bemutatóvideója görgetésre halad. Az Alap ugyanez állóképekkel.</p>
+        <p class="h-actions">
+          <a class="btn h-btn" href={url('peldak/ingatlan-premium')}>Prémium</a>
+          <a class="link" href={url('peldak/ingatlan-alap')}>Alap</a>
+        </p>
+      </div>
+    </article>
+    <article class="container h-exhibit" aria-labelledby="w2">
+      <a class="h-print" href={url('peldak/etterem-premium')} aria-label="Fűszerkert Bisztró, Prémium mintaoldal">
+        <img src={url('images/examples/etterem-premium-desktop-1280.webp')} srcset={`${url('images/examples/etterem-premium-desktop-720.webp')} 720w, ${url('images/examples/etterem-premium-desktop-1280.webp')} 1280w`} sizes="(max-width: 900px) 100vw, 62vw" width="1280" height="800" alt="" loading="lazy" decoding="async" />
+      </a>
+      <div class="h-exhibit-copy">
+        <p class="label">03, Fűszerkert Bisztró</p>
+        <h3 id="w2" class="display">Bisztró a Klauzál téren.</h3>
+        <p class="h-small muted">Étlap, napi ajánlat és asztalfoglalás. A Prémiumban görgetésre induló konyhai jelenetekkel.</p>
+        <p class="h-actions">
+          <a class="btn btn-ghost" href={url('peldak/etterem-premium')}>Prémium</a>
+          <a class="link" href={url('peldak/etterem-alap')}>Alap</a>
+        </p>
+      </div>
+    </article>
+    <p class="container h-note muted">Mindkét cég kitalált, az oldalakat mintának készítettük.</p>
   </section>
 
-  <Showcase />
+  <section id="csomagok" class="container h-plate" aria-labelledby="csomagok-title">
+    <h2 id="csomagok-title" class="display" data-reveal>Két csomag.</h2>
+    <table class="h-table">
+      <thead>
+        <tr><th scope="col"><span class="sr-only">Tartalom</span></th><th scope="col" class="label">{alap.name}</th><th scope="col" class="label">{premium.name}</th></tr>
+      </thead>
+      <tbody>
+        {rows.map(([k, a, p]) => <tr><th scope="row">{k}</th><td class={a === 'nem' ? 'muted' : ''}>{a}</td><td>{p}</td></tr>)}
+      </tbody>
+      <tfoot>
+        <tr><td></td><td><a class="link" href={url('ajanlatkeres?csomag=alap')}>Ajánlatot kérek</a></td><td><a class="link" href={url('ajanlatkeres?csomag=premium')}>Ajánlatot kérek</a></td></tr>
+      </tfoot>
+    </table>
+    <p class="muted h-small">{VAT_NOTE} A pontos árat az ajánlatban adjuk meg.</p>
+  </section>
 
-  <section id="gyik" class="section container faq" aria-labelledby="gyik-title">
-    <h2 id="gyik-title" class="display" data-reveal>Gyakori kérdések</h2>
-    <div class="faq-list" data-stagger>
+  <section id="gyik" class="container h-plate h-faq" aria-labelledby="gyik-title">
+    <h2 id="gyik-title" class="display" data-reveal>Kérdések.</h2>
+    <div class="h-faq-list">
       {faq.map(([q, a]) => (
         <details>
-          <summary><span>{q}</span><Fragment set:html={icon('plus')} /></summary>
+          <summary><span>{q}</span><span class="h-plus" aria-hidden="true">+</span></summary>
           <p class="muted">{a}</p>
         </details>
       ))}
     </div>
   </section>
 
-  <section id="kapcsolat" class="section container contact" aria-labelledby="kapcsolat-title">
-    <div class="contact-copy" data-reveal>
-      <h2 id="kapcsolat-title" class="display">Kérdésed van? Írj nekünk.</h2>
-      <p class="lede">Egy munkanapon belül válaszolunk. Ha inkább beszélnél, hívj nyugodtan.</p>
-      <dl class="contact-list">
-        <div><dt class="mono muted">E-mail</dt><dd><a class="link" href={`mailto:${business.email}`}>{business.email}</a></dd></div>
-        <div><dt class="mono muted">Telefon</dt><dd><a class="link" href={`tel:${business.phone.replace(/\s/g, '')}`}>{business.phone}</a></dd></div>
-      </dl>
+  <section id="kapcsolat" class="container h-plate h-contact" aria-labelledby="kapcsolat-title">
+    <div>
+      <h2 id="kapcsolat-title" class="display"><a href={`mailto:${business.email}`}>{business.email}</a></h2>
+      <p class="h-small muted">Egy munkanapon belül válaszolunk. Telefonon: <a class="link" href={`tel:${business.phone.replace(/\s/g, '')}`}>{business.phone}</a></p>
     </div>
-    <form class="contact-form panel" data-email={business.email} novalidate data-reveal>
+    <form class="contact-form" data-email={business.email} novalidate>
       <div class="field"><label for="c-name">Név</label><input id="c-name" name="name" autocomplete="name" required aria-describedby="c-name-err" /><p class="field-err" id="c-name-err"></p></div>
       <div class="field"><label for="c-email">E-mail</label><input id="c-email" name="email" type="email" autocomplete="email" required aria-describedby="c-email-err" /><p class="field-err" id="c-email-err"></p></div>
-      <div class="field"><label for="c-msg">Üzenet</label><textarea id="c-msg" name="message" rows="4" required aria-describedby="c-msg-err"></textarea><p class="field-err" id="c-msg-err"></p></div>
-      <button class="btn" type="submit">Üzenet küldése <Fragment set:html={icon('next')} /></button>
+      <div class="field"><label for="c-msg">Üzenet</label><textarea id="c-msg" name="message" rows="3" required aria-describedby="c-msg-err"></textarea><p class="field-err" id="c-msg-err"></p></div>
+      <p><button class="btn" type="submit">Küldés</button></p>
       <p class="hint" role="status" aria-live="polite"></p>
     </form>
   </section>
 </Layout>
 
-<style>
-  .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: center; gap: clamp(24px, 4vw, 64px); min-height: calc(100svh - var(--header-h)); padding-block: 48px; }
-  .hero h1 { max-width: 16ch; font-size: clamp(2.6rem, 5.3vw, 4.8rem); }
-  .hero .lede { margin-top: 28px; }
-  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
-  .hero-visual { width: 100%; justify-self: end; }
+<style is:global>
+  /* hero scene */
+  .h-seq .seq-shade { background: linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.1) 55%, transparent 75%), linear-gradient(0deg, rgba(0, 0, 0, 0.42) 0%, transparent 32%); }
+  .h-seq .seq-layer { color: #f4f3ee; padding: 0 clamp(32px, 4.4vw, 64px) clamp(84px, 11vh, 120px); }
+  .h-seq .h-l1, .h-seq .h-l3 { align-content: end; gap: 20px; }
+  .h-seq .h-l1 .display { max-width: 9.5em; }
+  .h-seq .h-l2 { align-content: center; justify-items: center; text-align: center; padding-bottom: 0; }
+  .h-frame { position: absolute; inset: clamp(12px, 1.6vw, 22px); z-index: 2; border: 1px solid rgba(255, 255, 255, 0.3); pointer-events: none; }
+  .h-corner { position: absolute; z-index: 3; bottom: clamp(28px, 3.4vw, 46px); color: rgba(244, 243, 238, 0.8); }
+  .h-corner.l { left: clamp(32px, 4.4vw, 64px); }
+  .h-corner.r { right: clamp(32px, 4.4vw, 64px); }
+  .h-small { max-width: 36em; }
+  .h-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; }
+  .h-btn { background: #f4f3ee; border-color: #f4f3ee; color: #0b0b0b; }
+  .h-btn:hover { background: transparent; color: #f4f3ee; }
+  .h-seq .link, .h-scene .link { color: #f4f3ee; }
 
-  .steps { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(40px, 6vw, 96px); border-top: 1px solid var(--line); }
-  .steps-head { position: sticky; top: calc(var(--header-h) + 32px); align-self: start; display: grid; gap: 28px; justify-items: start; }
-  .steps-list { display: grid; }
-  .steps-list li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; padding: 32px 0; border-top: 1px solid var(--line); }
-  .steps-list li:first-child { border-top: 0; padding-top: 8px; }
-  .step-num { color: var(--accent); padding-top: 6px; }
-  .steps-list h3 { font-size: clamp(1.4rem, 2.4vw, 2rem); margin-bottom: 10px; }
-  .steps-list p { max-width: 48ch; }
+  /* typographic scenes */
+  .h-plate { padding-block: clamp(110px, 16vh, 190px); border-top: 1px solid var(--line); }
+  .h-plate > .display { margin-bottom: clamp(48px, 7vw, 96px); }
+  .h-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
+  .h-steps li { display: grid; gap: 10px; align-content: start; padding-top: 18px; border-top: 1px solid var(--line); }
 
-  .steps-note { max-width: 34ch; }
-  .packages { border-top: 1px solid var(--line); }
-  .packages-head { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 24px 48px; align-items: end; margin-bottom: clamp(40px, 6vw, 72px); }
-  .packages-head h2 { max-width: 14ch; }
-  .pkg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
-  .pkg { display: grid; grid-template-rows: auto auto 1fr auto; gap: 18px; padding: clamp(28px, 4vw, 44px); border-radius: var(--r-panel); border: 1px solid var(--line); background: var(--surface); }
-  .pkg h3 { font-size: clamp(1.4rem, 2.2vw, 1.8rem); }
-  .pkg-price { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.4rem, 4.6vw, 3.8rem); letter-spacing: -0.04em; line-height: 1; margin-top: 18px; font-variant-numeric: tabular-nums; }
-  .pkg-note { margin-top: 10px; font-size: 14px; color: var(--muted); }
-  .pkg-summary { margin-top: 18px; max-width: 40ch; }
-  .pkg-ft { font-weight: 500; padding-top: 18px; border-top: 1px solid var(--line); }
-  .pkg-list { display: grid; gap: 12px; align-content: start; }
-  .pkg-list li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 12px; }
-  .pkg-list :global(.icon) { width: 20px; height: 20px; color: var(--accent); margin-top: 1px; }
-  .pkg-btn { justify-self: start; margin-top: 12px; }
-  .pkg-hi { border-color: transparent; background: radial-gradient(120% 90% at 100% 0%, #7ff0ff 0%, var(--accent) 40%, #009ec2 100%); color: var(--on-accent); }
-  .pkg-hi .pkg-note { color: inherit; opacity: 0.8; }
-  .pkg-hi .pkg-ft { border-color: rgba(0, 0, 0, 0.18); }
-  .pkg-hi .pkg-list :global(.icon) { color: var(--on-accent); }
-  .pkg-hi .pkg-btn { background: var(--on-accent); color: var(--text); }
-  .pkg-hi .pkg-btn:hover { background: #000; color: var(--accent); box-shadow: none; }
+  /* work: one full picture, one framed print */
+  .h-scene { position: relative; min-height: 100svh; display: grid; align-items: end; overflow: hidden; color: #f4f3ee; }
+  .h-bleed { position: absolute; inset: 0; }
+  .h-bleed .ph-img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: auto; }
+  .h-veil { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0, 0, 0, 0.58) 0%, rgba(0, 0, 0, 0.15) 55%, transparent 80%), linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, transparent 35%); }
+  .h-scene-copy { position: relative; z-index: 3; display: grid; gap: 20px; padding-block: 0 clamp(84px, 11vh, 120px); }
+  .h-scene-copy .display { font-size: clamp(2.6rem, 6vw, 5.8rem); max-width: 10em; }
+  .h-exhibit { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 48px 72px; align-items: end; padding-block: clamp(110px, 16vh, 190px); }
+  .h-print { display: block; border: 1px solid var(--line-strong); padding: clamp(10px, 1.2vw, 16px); transition: border-color 0.3s; }
+  .h-print:hover { border-color: var(--text); }
+  .h-print img { width: 100%; height: auto; }
+  .h-exhibit-copy { display: grid; gap: 20px; }
+  .h-exhibit-copy .display { font-size: clamp(2.4rem, 4.4vw, 4.2rem); }
+  .h-note { padding-bottom: 40px; }
 
-  .faq { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(40px, 6vw, 96px); border-top: 1px solid var(--line); }
-  .faq-list details { border-top: 1px solid var(--line); }
-  .faq-list details:last-child { border-bottom: 1px solid var(--line); }
-  .faq-list summary { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 0; cursor: pointer; list-style: none; font-family: var(--font-display); font-weight: 500; font-size: 1.2rem; letter-spacing: -0.015em; }
-  .faq-list summary::-webkit-details-marker { display: none; }
-  .faq-list summary :global(.icon) { width: 22px; height: 22px; color: var(--muted); transition: transform 0.4s var(--ease), color 0.3s; }
-  .faq-list details[open] summary :global(.icon) { transform: rotate(45deg); color: var(--accent); }
-  .faq-list details p { padding-bottom: 24px; max-width: 60ch; }
+  /* packages table */
+  .h-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  .h-table th, .h-table td { text-align: left; font-weight: 400; padding: 14px 16px 14px 0; border-top: 1px solid var(--line); vertical-align: top; }
+  .h-table thead th { border-top: 0; padding-bottom: 18px; }
+  .h-table tbody th { color: var(--muted); width: 46%; }
+  .h-table tfoot td { padding-top: 22px; }
 
-  .contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 96px); border-top: 1px solid var(--line); align-items: start; }
-  .contact .lede { margin-top: 24px; }
-  .contact-list { margin-top: 40px; display: grid; gap: 16px; }
-  .contact-list div { display: grid; grid-template-columns: 90px 1fr; gap: 16px; align-items: baseline; }
-  .contact-form { display: grid; gap: 20px; padding: clamp(24px, 3vw, 36px); }
-  .contact-form .btn { justify-self: start; }
+  /* faq */
+  .h-faq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 48px; }
+  .h-faq > .display { margin-bottom: 0; }
+  .h-faq-list details { border-top: 1px solid var(--line); }
+  .h-faq-list details:last-child { border-bottom: 1px solid var(--line); }
+  .h-faq-list summary { display: flex; justify-content: space-between; gap: 20px; padding: 18px 0; cursor: pointer; list-style: none; }
+  .h-faq-list summary::-webkit-details-marker { display: none; }
+  .h-plus { color: var(--muted); transition: transform 0.3s var(--ease); }
+  .h-faq-list details[open] .h-plus { transform: rotate(45deg); }
+  .h-faq-list details p { padding-bottom: 20px; max-width: 40em; }
+
+  /* contact */
+  .h-contact { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px 96px; align-items: end; }
+  .h-contact .display { margin-bottom: 20px; font-size: clamp(2.2rem, 5vw, 4.6rem); overflow-wrap: anywhere; }
+  .h-contact .display a { text-decoration: none; }
+  .h-contact .display a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em; }
+  .contact-form { display: grid; gap: 22px; }
+  .contact-form .field input, .contact-form .field textarea { border: 0; border-bottom: 1px solid var(--line-strong); border-radius: 0; background: transparent; padding: 10px 0; }
 
   @media (max-width: 900px) {
-    .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 24px; }
-    .hero-visual { order: -1; max-width: 560px; justify-self: center; }
-    .steps, .faq, .contact, .pkg-grid, .packages-head { grid-template-columns: 1fr; }
-    .steps-head { position: static; }
+    .h-steps { grid-template-columns: 1fr 1fr; }
+    .h-exhibit, .h-faq, .h-contact { grid-template-columns: 1fr; }
+    .h-seq .seq-shade, .h-veil { background: linear-gradient(0deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.25) 55%, rgba(0, 0, 0, 0.12) 100%); }
+    .h-corner.r { display: none; }
   }
-  @media (max-width: 600px) {
-    .pkg-btn { justify-self: stretch; }
-    .hero-visual { max-width: none; }
-    .hero-actions .btn { flex: 1 1 100%; }
+  @media (max-width: 560px) {
+    .h-steps { grid-template-columns: 1fr; }
+    .h-table th, .h-table td { padding-right: 10px; }
+    .h-table tbody th { width: 40%; }
   }
 </style>
 
 <script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { initScrollSequences } from '../examples/scroll-sequence.js';
+
+  initScrollSequences({ gsap, ScrollTrigger, lenis: null, reduceMotion: matchMedia('(prefers-reduced-motion: reduce)').matches });
+
   // Contact form: validates, then opens the visitor's mail app with the message (no backend yet).
   const form = document.querySelector<HTMLFormElement>('.contact-form');
   form?.addEventListener('submit', (e) => {
@@ -196,6 +245,6 @@ const faq = [
     const d = new FormData(form);
     const body = `${d.get('message')}\n\n${d.get('name')}\n${d.get('email')}`;
     location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent('Kérdés a weboldalról')}&body=${encodeURIComponent(body)}`;
-    form.querySelector('[role=status]')!.textContent = 'Megnyitottuk a levelezőprogramodat az üzenettel. Ha nem nyílt meg, írj közvetlenül a fenti címre.';
+    form.querySelector('[role=status]')!.textContent = 'Megnyitottuk a levelezőprogramodat. Ha nem nyílt meg, írj a fenti címre.';
   });
 </script>

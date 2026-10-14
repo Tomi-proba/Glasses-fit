@@ -1,0 +1,116 @@
+/* Exhibit: the shared visual grammar of the example sites.
+   The picture is the page. Two text styles only: .x-display (one size) and the small text (one size).
+   UI is 1px lines, small square buttons and underlined text links. No cards, pills, shadows, icons or blur.
+   Each site sets: --bg --ink --dim --line --accent --display --display-weight --display-tracking --small */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 var(--small-size, 14px)/1.65 var(--small); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+h1, h2, h3, p, dl, dd, ul, ol, figure, blockquote { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+img { max-width: 100%; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; letter-spacing: inherit; }
+[hidden] { display: none !important; }
+::selection { background: var(--ink); color: var(--bg); }
+:focus-visible { outline: 1px solid var(--ink); outline-offset: 4px; }
+.x-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* the two text styles */
+.x-display { font-family: var(--display); font-weight: var(--display-weight, 400); font-size: clamp(2.4rem, 5.4vw, 5.4rem); line-height: 1.02; letter-spacing: var(--display-tracking, -0.015em); text-wrap: balance; font-variation-settings: var(--display-axes, normal); }
+.x-label { text-transform: uppercase; letter-spacing: 0.16em; }
+.x-dim { color: var(--dim); }
+.x-measure { max-width: 34em; }
+
+/* layout */
+.x-pad { padding-inline: clamp(20px, 4.4vw, 64px); }
+.x-scene { position: relative; min-height: 100svh; overflow: hidden; }
+.x-plate { padding-block: clamp(96px, 16vh, 180px); }
+.x-rule { border: 0; border-top: 1px solid var(--line); margin: 0; }
+
+/* full-bleed picture with a quiet overlay for legibility */
+.x-bleed { position: absolute; inset: 0; }
+.x-bleed .ph-img, .x-bleed img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: auto; }
+.x-bleed .ph-empty { place-items: start end; padding: clamp(96px, 14vh, 140px) clamp(32px, 4.4vw, 64px); color: var(--ink); text-align: right; }
+.x-veil { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.12) 55%, rgba(0, 0, 0, 0) 75%), linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, transparent 35%); }
+.x-over { position: relative; z-index: 2; color: #f4f1ea; --btn-fill: #f4f1ea; --btn-text: #111; }
+
+/* the hairline frame, like a viewfinder */
+.x-frame { position: absolute; inset: clamp(12px, 1.6vw, 22px); z-index: 2; border: 1px solid rgba(255, 255, 255, 0.32); pointer-events: none; }
+
+/* header: tiny words in the corners, readable on any picture */
+.x-header { position: fixed; inset: 0 0 auto; z-index: 60; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: clamp(22px, 2.8vw, 38px) clamp(32px, 4.4vw, 64px) 0; color: #fff; mix-blend-mode: difference; pointer-events: none; }
+.x-header a, .x-header button { pointer-events: auto; text-decoration: none; }
+.x-mark { font-weight: 500; text-transform: uppercase; letter-spacing: 0.34em; }
+.x-nav { display: flex; gap: clamp(18px, 2.4vw, 36px); text-transform: uppercase; letter-spacing: 0.16em; }
+.x-nav a { opacity: 0.9; transition: opacity 0.2s; }
+.x-nav a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
+.x-header:has(.x-nav.is-open) { mix-blend-mode: normal; }
+.x-menu { display: none; border: 0; background: none; padding: 0; cursor: pointer; text-transform: uppercase; letter-spacing: 0.16em; color: inherit; }
+
+/* controls */
+.x-btn {
+  display: inline-flex; align-items: center; gap: 12px; padding: 13px 20px; border: 1px solid currentColor; border-radius: 0; background: transparent;
+  text-transform: uppercase; letter-spacing: 0.16em; text-decoration: none; cursor: pointer; transition: background-color 0.25s, color 0.25s;
+}
+.x-btn:hover { background: var(--btn-fill, var(--ink)); border-color: var(--btn-fill, var(--ink)); color: var(--btn-text, var(--bg)); }
+.x-btn.is-solid { background: var(--btn-fill, var(--ink)); border-color: var(--btn-fill, var(--ink)); color: var(--btn-text, var(--bg)); }
+.x-btn.is-solid:hover { background: transparent; color: var(--btn-fill, var(--ink)); }
+.x-btn[disabled] { opacity: 0.5; cursor: default; }
+.x-link { text-transform: uppercase; letter-spacing: 0.16em; text-decoration: underline; text-underline-offset: 7px; text-decoration-thickness: 1px; cursor: pointer; background: none; border: 0; padding: 0; color: inherit; }
+.x-link:hover { text-decoration-thickness: 2px; }
+.x-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px; }
+
+/* scene captions in the bottom corners */
+.x-corner { position: absolute; z-index: 3; bottom: clamp(28px, 3.4vw, 46px); text-transform: uppercase; letter-spacing: 0.16em; color: rgba(244, 241, 234, 0.8); }
+.x-corner.l { left: clamp(32px, 4.4vw, 64px); }
+.x-corner.r { right: clamp(32px, 4.4vw, 64px); }
+
+/* hotspot: a ring with a tiny label, placed in the picture */
+.x-hotspot { position: absolute; z-index: 3; display: flex; align-items: center; gap: 12px; color: #fff; text-transform: uppercase; letter-spacing: 0.16em; }
+.x-hotspot i { position: relative; width: 14px; height: 14px; border-radius: 50%; background: #fff; }
+.x-hotspot i::after { content: ''; position: absolute; inset: -9px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.7); animation: x-ring 2.6s ease-out infinite; }
+@keyframes x-ring { 0% { transform: scale(0.6); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
+
+/* forms: labels small, inputs are a single hairline */
+.x-form { display: grid; gap: 26px; }
+.x-row { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+.x-field { display: grid; gap: 6px; min-width: 0; }
+.x-field label { text-transform: uppercase; letter-spacing: 0.16em; color: var(--dim); }
+.x-field input, .x-field select, .x-field textarea { width: 100%; padding: 10px 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; outline: none; transition: border-color 0.2s; }
+.x-field select { appearance: none; background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='m1 1 4 4 4-4' fill='none' stroke='%23999' stroke-width='1'/%3E%3C/svg%3E") no-repeat right center / 10px; cursor: pointer; }
+.x-field select option { background: var(--bg); color: var(--ink); }
+.x-field textarea { resize: vertical; min-height: 44px; }
+.x-field input:focus, .x-field select:focus, .x-field textarea:focus { border-color: var(--ink); }
+.x-field input[type='date'] { color-scheme: dark; }
+.x-field [aria-invalid='true'] { border-color: var(--danger, #e8826f); }
+.x-err { color: var(--danger, #e8826f); }
+.x-err:empty { display: none; }
+.x-check { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+.x-check input { width: 16px; height: 16px; margin: 4px 0 0; accent-color: var(--ink); flex: none; }
+.x-status { color: var(--ink); }
+
+/* lists with hairlines */
+.x-list > li { border-top: 1px solid var(--line); }
+.x-list > li:last-child { border-bottom: 1px solid var(--line); }
+
+/* full-screen dialog */
+.x-dialog { position: fixed; inset: 0; width: 100%; max-width: none; height: 100%; max-height: none; margin: 0; padding: 0; border: 0; background: var(--bg); color: var(--ink); }
+.x-dialog::backdrop { background: var(--bg); }
+.x-dialog[open] { animation: x-fade 0.45s ease; }
+@keyframes x-fade { from { opacity: 0; } }
+.x-close { position: absolute; top: clamp(22px, 2.8vw, 38px); right: clamp(32px, 4.4vw, 64px); z-index: 4; border: 0; background: none; cursor: pointer; text-transform: uppercase; letter-spacing: 0.16em; text-decoration: underline; text-underline-offset: 7px; text-decoration-thickness: 1px; color: inherit; mix-blend-mode: difference; color: #fff; }
+
+/* the Alap tier: one quiet fade, nothing more */
+[data-tier='alap'] [data-reveal].is-pending { opacity: 0; }
+[data-tier='alap'] [data-reveal] { transition: opacity 0.9s ease; }
+
+@media (max-width: 860px) {
+  .x-nav { display: none; }
+  .x-menu { display: block; }
+  .x-nav.is-open { display: flex; position: fixed; inset: 0; z-index: 70; flex-direction: column; justify-content: center; gap: 22px; padding: 0 32px; background: #000; mix-blend-mode: normal; }
+  .x-row { grid-template-columns: 1fr; }
+  .x-veil { background: linear-gradient(0deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.25) 55%, rgba(0, 0, 0, 0.15) 100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

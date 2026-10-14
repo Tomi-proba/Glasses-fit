@@ -6,16 +6,22 @@ const DAYS = ['Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek
 const ft = (n) => `${new Intl.NumberFormat('hu-HU').format(n)} Ft`;
 
 export function initFuszerkert() {
-  /* header + menu */
-  const header = document.querySelector('[data-header]');
-  const onScroll = () => header?.classList.toggle('is-scrolled', scrollY > 24);
-  addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-  const menuBtn = document.querySelector('.fk-menu');
-  const links = document.getElementById('fk-links');
-  const setMenu = (open) => { menuBtn?.setAttribute('aria-expanded', String(open)); links?.classList.toggle('is-open', open); };
+  /* menu (phones) */
+  const menuBtn = document.querySelector('.x-menu');
+  const links = document.getElementById('fk-nav');
+  const setMenu = (open) => { menuBtn?.setAttribute('aria-expanded', String(open)); links?.classList.toggle('is-open', open); if (menuBtn) menuBtn.textContent = open ? 'Bezárás' : 'Menü'; };
   menuBtn?.addEventListener('click', () => setMenu(menuBtn.getAttribute('aria-expanded') !== 'true'));
   links?.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+
+  /* one review at a time */
+  const quotes = [...document.querySelectorAll('[data-quote]')];
+  let q = 0;
+  document.querySelector('[data-quote-next]')?.addEventListener('click', () => {
+    quotes[q].hidden = true;
+    q = (q + 1) % quotes.length;
+    quotes[q].hidden = false;
+    document.querySelector('[data-quote-count]').textContent = `${q + 1} / ${quotes.length}`;
+  });
 
   /* tabs (ARIA tabs pattern with arrow keys) */
   const tabs = [...document.querySelectorAll('[role=tab]')];
@@ -95,10 +101,10 @@ export function initFuszerkert() {
       document.getElementById(`b-${name}-err`).textContent = res === true ? '' : res;
       if (res !== true && !first) first = el;
     }
-    const status = form.querySelector('.fk-form-status');
+    const status = form.querySelector('.fk-status');
     if (first) { status.textContent = ''; first.focus(); return; }
     const d = new Date(`${form.elements.namedItem('date').value}T12:00`);
-    status.textContent = `Köszönjük! ${d.toLocaleDateString('hu-HU', { month: 'long', day: 'numeric' })}, ${form.elements.namedItem('time').value}: ${form.elements.namedItem('guests').value} főre foglaltunk. (Ez egy mintaoldal, a foglalás nem kerül elküldésre.)`;
+    status.textContent = `Köszönjük! ${d.toLocaleDateString('hu-HU', { month: 'long', day: 'numeric' })}, ${form.elements.namedItem('time').value}: ${form.elements.namedItem('guests').value} főre foglaltunk. (Ez mintaoldal, a foglalás nem megy el.)`;
     form.querySelector('button[type=submit]').disabled = true;
   });
 }

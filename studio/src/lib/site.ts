@@ -63,22 +63,6 @@ if (!reduce) {
   }
 }
 
-// Buttons: a soft sheen follows the pointer; large buttons lean towards it a little.
-if (!reduce && matchMedia('(pointer: fine)').matches) {
-  document.addEventListener('pointermove', (e) => {
-    const btn = (e.target as Element).closest<HTMLElement>('.btn');
-    if (!btn) return;
-    const r = btn.getBoundingClientRect();
-    btn.style.setProperty('--mx', `${e.clientX - r.left}px`);
-    btn.style.setProperty('--my', `${e.clientY - r.top}px`);
-    if (btn.classList.contains('btn-lg')) gsap.to(btn, { x: (e.clientX - r.left - r.width / 2) * 0.08, y: (e.clientY - r.top - r.height / 2) * 0.18, duration: 0.4, ease: 'power3.out' });
-  });
-  document.addEventListener('pointerout', (e) => {
-    const btn = (e.target as Element).closest<HTMLElement>('.btn-lg');
-    if (btn && !btn.contains(e.relatedTarget as Node)) gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.5)' });
-  });
-}
-
 // Scroll reveals: only content that starts below the fold is hidden first.
 if (!reduce) {
   const below = (el: Element) => el.getBoundingClientRect().top > innerHeight * 0.92;

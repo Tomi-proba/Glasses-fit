@@ -1,30 +1,24 @@
 # DESIGN.md – Vonal Stúdió
 
-Two visual systems live in this project:
+Direction (from the client's references, a surreal painted "pear" site and a photoreal showroom gallery):
+**the picture is the page.** Full-bleed photo or scroll-driven video, with the interface as a thin layer on top.
 
-## 1. The studio site (/, /tervezo, /ajanlatkeres, …)
-Direction chosen with the client: **Framer-style "working artboard"** (voltagent/awesome-design-md), with a neon blue accent.
+## Rules for every page
+- Two text styles only: one display serif in one size, and one small sans in one size (labels are the same size, uppercase and tracked). No third size, no bold emphasis, no italic headlines.
+- Interface: 1px lines (frames, dividers, hairline inputs), small square buttons, underlined text links, tiny words in the corners, an optional hotspot ring.
+- Never: cards, pills, shadows, glassmorphism, gradient text, icon rows, eyebrows above titles, three equal cards in a row.
+- Scroll moves from scene to scene (100svh pictures, pinned video sequences, a pinned film strip), with quiet typographic plates in between.
+- Copy: short, concrete sentences a local business would write. No slogans in threes, no dash constructions.
+- Every font was tested with "Őszi szőlőfürt, árvíztűrő tükörfúrógép".
 
-- Canvas `#090909`, surfaces `#121212` / `#1a1a1a`, hairlines `#262626`, ink `#f5f5f3`, muted `#a3a3a0`.
-- One accent: `#00d4ff`. It is used for links, focus, selection and progress, plus one drenched panel (the Prémium 3D package card on the home page). Primary buttons are off-white and turn accent on hover.
-- Type: Bricolage Grotesque 600 for display, tight tracking (-0.028em) and balanced headings; Onest for body; Martian Mono only for data (step numbers, figures).
-- Shape rule: buttons are pills, panels 20px, inputs 10px, media 14px.
-- Layout families on the home page: split hero with 3D, sticky heading + numbered steps (a real sequence), two package cards side by side (the Prémium one drenched), asymmetric 7/5 sample grid of live previews, FAQ accordion, contact split.
-- Motion: the hero is our own work in 3D (example sites as floating browser windows and a phone; pointer tilts, scroll fans them out); headlines reveal word by word behind a mask; buttons carry a pointer-following sheen and a slight magnetic lean; sections reveal once on scroll; reduced motion turns everything static.
+## Per site
+| Site | Display | Small | Colour |
+| --- | --- | --- | --- |
+| Vonal Stúdió (/, tervező, ajánlatkérés) | Instrument Serif | Geist (+ Geist Mono for step numbers) | near-black, neon blue only for links and focus |
+| Aurum Ingatlan | Newsreader, upright, light | Instrument Sans | warm near-black; the picture carries the colour |
+| Fűszerkert Bisztró | Fraunces Soft (WONK) | Figtree | deep olive; paprika red in small doses |
 
-## 3. The example sites (/peldak/)
-- Aurum Ingatlan: warm black, champagne gold, Cormorant Garamond (justified: luxury property, editorial) + Hanken Grotesk; crisp 4px media.
-- Fűszerkert Bisztró: deep olive, saffron and paprika, Young Serif (justified: homely bistro) + Figtree; soft 18px media.
-- Prémium and Alap share content and palette; Prémium adds the 3D hero, Lenis, GSAP reveals, parallax, tilt and counters.
+Shared grammar for the examples: `src/examples/exhibit.css`. Prémium adds the scroll-driven video, hover previews, the pinned film strip and slow zooms; Alap keeps the same scenes with still photos and one fade.
 
-## 2. The client template (the product)
-Every visual decision is a token generated from the site config, so each customer's site has its own identity. The defaults ("Kezdj üresen") are neutral dark with the studio accent.
-
-- Colours: primary (buttons, accent band), accent (links, icons, stars), background, text. Surface, line and muted tones are mixed from background and text, and the readable accent and primary tones are computed to reach WCAG AA.
-- Type: any two fonts from the list, optional uppercase tracked headings, and a global scale from 85 to 125%.
-- Shape and depth: one radius for media and cards, buttons as pill, rounded or square, shadows none, soft or strong, spacing compact, normal or airy.
-- Motion: none, subtle, normal or strong. This scales the reveal distance and duration, the parallax, and the smooth-scroll inertia.
-- Blocks keep consistent internals (section head, container widths, hairline rhythm), so any combination stays coherent.
-
-## Rules kept
-No eyebrows, no em dashes in visible copy, no gradient text, no glows, icons only from Phosphor (light), real labels above inputs, errors below inputs.
+## The client template (the product)
+Every visual decision is a token generated from the site config (see README). Unchanged by this direction.

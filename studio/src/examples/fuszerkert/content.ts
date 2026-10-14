@@ -3,8 +3,8 @@
 export const brand = {
   name: 'Fűszerkert Bisztró',
   short: 'Fűszerkert',
-  tagline: 'Szezonális konyha, a fűszerek szerelmeseinek.',
-  description: 'Szezonális bisztró a Klauzál tér mellett: saját fűszerkeverékek, helyi alapanyagok, napi ajánlat. Asztalfoglalás online.',
+  tagline: 'Bisztró a Klauzál téren.',
+  description: 'Bisztró a Klauzál téren. Minden nap más ebéd, a fűszereket mi őröljük. Kedd és vasárnap között délben és este.',
   phone: '+36 1 555 0187',
   email: 'asztal@fuszerkert.example',
   address: '1072 Budapest, Klauzál tér 9.',

@@ -1,10 +1,11 @@
 ---
-// Aurum Ingatlan example site. The same content renders as the Prémium or the Alap package sample;
-// Prémium opens with a scroll-driven video walkthrough and scroll effects on the photos.
+// Aurum Ingatlan example. Scenes instead of sections: the picture is the page, the interface is a
+// thin layer of small text and 1px lines. Prémium: the walkthrough video scrubbed by scroll, hover
+// previews in the catalogue. Alap: the same scenes with still photos and a single fade.
 import Photo from '../../components/examples/Photo.astro';
 import ScrollSequence from '../../components/examples/ScrollSequence.astro';
-import { brand, stats, properties, services, agents, testimonials, FILTERS, formatHuf } from './content';
-import { icon } from '../../lib/icon';
+import { brand, properties, services, agents, testimonials, FILTERS, formatHuf } from './content';
+import '../exhibit.css';
 import './aurum.css';
 
 interface Props { tier: 'premium' | 'alap' }
@@ -13,254 +14,215 @@ const premium = tier === 'premium';
 const { lat, lon } = brand.map;
 const bbox = [lon - 0.012, lat - 0.006, lon + 0.012, lat + 0.006].join(',');
 const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`;
-const nav = [['#ingatlanok', 'Ingatlanok'], ['#szolgaltatasok', 'Szolgáltatások'], ['#csapat', 'Csapat'], ['#ertekbecsles', 'Értékbecslés'], ['#kapcsolat', 'Kapcsolat']];
+const pad = (n: number) => String(n).padStart(2, '0');
 ---
-<a class="au-skip" href="#tartalom">Ugrás a tartalomra</a>
-<header class="au-header" data-header>
-  <div class="au-wrap au-nav">
-    <a class="au-logo" href="#" aria-label={`${brand.name}, vissza a lap tetejére`}>
-      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18.5" fill="none" stroke="currentColor" stroke-width="1.2" /><path d="M12 29V19a8 8 0 0 1 16 0v10" fill="none" stroke="var(--gold)" stroke-width="1.6" /><path d="M16.5 29v-7.5a3.5 3.5 0 0 1 7 0V29" fill="none" stroke="currentColor" stroke-width="1.2" /></svg>
-      <span>Aurum<small>Ingatlan</small></span>
-    </a>
-    <nav class="au-links" id="au-links" aria-label="Fő navigáció">
-      {nav.map(([href, label]) => <a href={href}>{label}</a>)}
-    </nav>
-    <a class="au-btn au-btn-sm au-nav-cta" href="#ertekbecsles">Értékbecslés</a>
-    <button class="au-menu" type="button" aria-expanded="false" aria-controls="au-links"><span class="au-sr">Menü</span><Fragment set:html={icon('menu')} /></button>
-  </div>
+<a class="x-sr" href="#tartalom">Ugrás a tartalomra</a>
+<header class="x-header">
+  <a class="x-mark" href="#" aria-label={`${brand.name}, vissza a lap tetejére`}>Aurum</a>
+  <nav class="x-nav" id="au-nav" aria-label="Fő navigáció">
+    <a href="#kinalat">Kínálat</a>
+    <a href="#iroda">Iroda</a>
+    <a href="#ertekbecsles">Értékbecslés</a>
+    <a href="#kapcsolat">Kapcsolat</a>
+  </nav>
+  <button class="x-menu" type="button" aria-expanded="false" aria-controls="au-nav">Menü</button>
 </header>
 
 <main id="tartalom">
   {premium ? (
-    <ScrollSequence name="aurum-walk" fallback="aurum/hero" label="Bemutatkozás: séta egy otthonba" brand="Aurum" length={3.4} loader grain class="au-seq">
+    <ScrollSequence name="aurum-walk" fallback="aurum/hero" label="Bemutató: séta egy eladó házban" brand="Aurum" length={3.4} loader grain class="au-seq">
+      <div class="x-frame" aria-hidden="true"></div>
       <div class="seq-layer au-l1" data-in="0" data-out="0.3">
-        <h1 id="au-title" class="au-display">Kivételes otthonok.<br /><em>Diszkrét képviselet.</em></h1>
-        <p class="au-lede">Prémium ingatlanok Budapesten és a Balaton-felvidéken. Személyes tanácsadó, értékbecslés 48 órán belül.</p>
-        <p class="au-scroll" aria-hidden="true"><span></span>Görgess, és lépj be</p>
+        <h1 id="au-title" class="x-display">Otthonok Budán és a Balaton-felvidéken.</h1>
+        <p class="x-measure">Évente negyven megbízást vállalunk. Mindegyik házat személyesen bejárjuk, mielőtt fotó készül róla.</p>
       </div>
       <div class="seq-layer au-l2" data-in="0.5" data-out="0.72">
-        <p class="au-seq-big">Lépj be<br /><em>az új otthonodba.</em></p>
+        <p class="x-display">Lépj be.</p>
       </div>
       <div class="seq-layer au-l3" data-in="0.84" data-out="1" data-static>
-        <p class="au-seq-small">Válogatott ingatlanok Budapesten és a Balaton-felvidéken, személyes bejárással.</p>
-        <div class="au-actions">
-          <a class="au-btn" href="#ingatlanok">Ingatlanok böngészése <Fragment set:html={icon('next')} /></a>
-          <a class="au-btn au-btn-ghost" href="#ertekbecsles">Ingyenes értékbecslés</a>
+        <p class="x-hotspot au-spot" aria-hidden="true"><i></i>Nappali, 64 m²</p>
+        <div class="x-actions">
+          <a class="x-btn is-solid" href="#kinalat">Kínálat</a>
+          <a class="x-link" href="#ertekbecsles">Értékbecslés kérése</a>
         </div>
       </div>
+      <p class="x-corner l" aria-hidden="true">Szépvölgy, Budapest II.</p>
+      <p class="x-corner r au-scroll-hint" aria-hidden="true">Görgess</p>
     </ScrollSequence>
   ) : (
-    <section class="au-hero au-hero-basic" aria-labelledby="au-title">
-      <div class="au-wrap au-hero-grid">
-        <div class="au-hero-copy">
-          <h1 id="au-title" class="au-display">Kivételes otthonok.<br /><em>Diszkrét képviselet.</em></h1>
-          <p class="au-lede">Prémium ingatlanok Budapesten és a Balaton-felvidéken. Személyes tanácsadó, értékbecslés 48 órán belül.</p>
-          <div class="au-actions">
-            <a class="au-btn" href="#ingatlanok">Ingatlanok böngészése <Fragment set:html={icon('next')} /></a>
-            <a class="au-btn au-btn-ghost" href="#ertekbecsles">Ingyenes értékbecslés</a>
-          </div>
+    <section class="x-scene au-hero" aria-labelledby="au-title">
+      <div class="x-bleed"><Photo slot="aurum/hero" eager sizes="100vw" /></div>
+      <div class="x-veil"></div>
+      <div class="x-frame" aria-hidden="true"></div>
+      <div class="x-over x-pad au-hero-copy">
+        <h1 id="au-title" class="x-display">Otthonok Budán és a Balaton-felvidéken.</h1>
+        <p class="x-measure">Évente negyven megbízást vállalunk. Mindegyik házat személyesen bejárjuk, mielőtt fotó készül róla.</p>
+        <div class="x-actions">
+          <a class="x-btn is-solid" href="#kinalat">Kínálat</a>
+          <a class="x-link" href="#ertekbecsles">Értékbecslés kérése</a>
         </div>
-        <div class="au-hero-photo"><Photo slot="aurum/hero" eager sizes="(max-width: 900px) 100vw, 55vw" /></div>
       </div>
+      <p class="x-corner l" aria-hidden="true">Szépvölgy, Budapest II.</p>
     </section>
   )}
 
-  <section class="au-stats" aria-label="Számokban">
-    <dl class="au-wrap au-stats-grid">
-      {stats.map((s) => (
-        <div data-reveal>
-          <dt>{s.label}</dt>
-          <dd><span data-count={s.value} data-decimals={s.decimals ?? 0}>{s.decimals ? s.value.toFixed(1).replace('.', ',') : s.value}</span>{s.suffix}</dd>
-        </div>
+  <section id="kinalat" class="x-plate x-pad au-catalogue" aria-labelledby="au-cat-title">
+    <div class="au-cat-head">
+      <h2 id="au-cat-title" class="x-display" data-reveal>Kínálat</h2>
+      <p class="x-dim au-cat-note" data-reveal>Hat ingatlan, mindegyiket bejártuk. A nem nyilvános ajánlatokról személyesen beszélünk.</p>
+    </div>
+    <form class="au-filter" aria-label="Szűrés" data-filter>
+      <fieldset class="au-types">
+        <legend class="x-sr">Típus</legend>
+        <label><input type="radio" name="type" value="" checked /><span class="x-label">Mind</span></label>
+        {FILTERS.type.map((t) => <label><input type="radio" name="type" value={t} /><span class="x-label">{t}</span></label>)}
+      </fieldset>
+      <label class="au-sel"><span class="x-label x-dim">Ár</span>
+        <select name="price"><option value="">Bármennyi</option>{FILTERS.price.map(([v, t]) => <option value={v}>{t}</option>)}</select>
+      </label>
+      <label class="au-sel"><span class="x-label x-dim">Szoba</span>
+        <select name="rooms"><option value="">Bármennyi</option>{FILTERS.rooms.map((r) => <option value={r}>{r} vagy több</option>)}</select>
+      </label>
+      <p class="x-label x-dim au-count" role="status" aria-live="polite" data-count-label>{properties.length} ingatlan</p>
+    </form>
+    <ol class="x-list au-rows" data-cards>
+      {properties.map((p, i) => (
+        <li class="au-card au-row" data-type={p.type} data-price={p.price} data-rooms={p.rooms} data-preview={p.id}>
+          <button class="au-row-btn" type="button" data-open={p.id} aria-haspopup="dialog">
+            <span class="au-c-n x-dim">{pad(i + 1)}</span>
+            {!premium && <span class="au-c-thumb"><Photo slot={p.photos[0]} sizes="120px" /></span>}
+            <span class="au-c-title">{p.title}</span>
+            <span class="au-c-loc x-dim">{p.location}</span>
+            <span class="au-c-size x-dim">{p.area} m², {p.rooms} szoba</span>
+            <span class="au-c-price">{formatHuf(p.price)}</span>
+          </button>
+        </li>
       ))}
-    </dl>
+    </ol>
+    <div class="au-empty" data-empty hidden>
+      <p>Ezekkel a feltételekkel most nincs ingatlanunk. Írj, és szólunk, ha lesz.</p>
+      <button class="x-link" type="button" data-reset>Szűrők törlése</button>
+    </div>
+    {premium && (
+      <div class="au-preview" aria-hidden="true" data-preview-box>
+        {properties.map((p) => <figure data-preview-img={p.id}><Photo slot={p.photos[0]} sizes="360px" alt="" /></figure>)}
+      </div>
+    )}
   </section>
 
-  <section id="ingatlanok" class="au-section au-listings" aria-labelledby="au-listings-title">
-    <div class="au-wrap">
-      <div class="au-head">
-        <h2 id="au-listings-title" class="au-h2" data-reveal>Kiemelt ingatlanok</h2>
-        <p class="au-muted" data-reveal>Válogatás a jelenlegi kínálatunkból. Minden ingatlant személyesen bejártunk és ellenőriztünk.</p>
-      </div>
-
-      <form class="au-filter" aria-label="Szűrés" data-filter data-reveal>
-        <fieldset class="au-chips">
-          <legend class="au-sr">Típus</legend>
-          <label><input type="radio" name="type" value="" checked /><span>Összes</span></label>
-          {FILTERS.type.map((t) => <label><input type="radio" name="type" value={t} /><span>{t}</span></label>)}
-        </fieldset>
-        <div class="au-selects">
-          <label class="au-select"><span>Ár</span>
-            <select name="price"><option value="">Bármennyi</option>{FILTERS.price.map(([v, t]) => <option value={v}>{t}</option>)}</select>
-          </label>
-          <label class="au-select"><span>Szobák</span>
-            <select name="rooms"><option value="">Bármennyi</option>{FILTERS.rooms.map((r) => <option value={r}>{r}+ szoba</option>)}</select>
-          </label>
-        </div>
-        <p class="au-count" role="status" aria-live="polite" data-count-label>{properties.length} ingatlan</p>
-      </form>
-
-      <ul class="au-cards" role="list" data-cards>
-        {properties.map((p) => (
-          <li class="au-card" data-type={p.type} data-price={p.price} data-rooms={p.rooms} style={`view-transition-name: card-${p.id}`}>
-            <button class="au-card-btn" type="button" data-open={p.id} aria-haspopup="dialog">
-              <span class="au-card-media" data-tilt data-zoom>
-                <Photo slot={p.photos[0]} sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" />
-                {p.badge && <span class="au-badge">{p.badge}</span>}
-                <span class="au-glare" aria-hidden="true"></span>
-              </span>
-              <span class="au-card-body">
-                <span class="au-card-top"><span class="au-type">{p.type}</span><span class="au-price">{formatHuf(p.price)}</span></span>
-                <span class="au-card-title">{p.title}</span>
-                <span class="au-card-loc"><Fragment set:html={icon('pin')} />{p.location}</span>
-                <span class="au-specs">
-                  <span><Fragment set:html={icon('bed')} />{p.rooms} szoba</span>
-                  <span><Fragment set:html={icon('bath')} />{p.baths} fürdő</span>
-                  <span><Fragment set:html={icon('ruler')} />{p.area} m²</span>
-                </span>
-              </span>
-            </button>
-          </li>
-        ))}
-      </ul>
-      <div class="au-empty" data-empty hidden>
-        <p>Ezekkel a feltételekkel most nincs ingatlan a kínálatban. Írj nekünk, és szólunk, ha jön ilyen.</p>
-        <button class="au-btn au-btn-ghost au-btn-sm" type="button" data-reset>Szűrők törlése</button>
-      </div>
+  <section id="iroda" class="x-scene au-office" aria-labelledby="au-office-title">
+    <div class="x-bleed" data-zoom><Photo slot="aurum/about" sizes="100vw" /></div>
+    <div class="x-veil"></div>
+    <div class="x-over x-pad au-office-copy">
+      <h2 id="au-office-title" class="x-display" data-reveal>Kevesebb ház, több idő mindegyikre.</h2>
+      <ol class="au-services" data-reveal>
+        {services.map((s, i) => <li><span class="x-dim">{pad(i + 1)}</span>{s.text}</li>)}
+      </ol>
     </div>
   </section>
 
-  <section id="szolgaltatasok" class="au-section au-about" aria-labelledby="au-about-title">
-    <div class="au-wrap au-about-grid">
-      <div class="au-about-photo" data-mask><Photo slot="aurum/about" sizes="(max-width: 900px) 100vw, 45vw" /></div>
-      <div class="au-about-copy">
-        <h2 id="au-about-title" class="au-h2" data-reveal>Egy tanácsadó, az első bejárástól a kulcsátadásig.</h2>
-        <p class="au-muted au-about-lede" data-reveal>Nem adunk el mindent. Évente legfeljebb negyven megbízást vállalunk, így minden ingatlanra és minden ügyfélre jut idő.</p>
-        <ul class="au-services" role="list">
-          {services.map((s) => (
-            <li data-reveal><span class="au-ic" set:html={icon(s.icon)} /><div><h3>{s.title}</h3><p class="au-muted">{s.text}</p></div></li>
-          ))}
-        </ul>
-      </div>
-    </div>
+  <section class="x-plate x-pad au-team" aria-labelledby="au-team-title">
+    <h2 id="au-team-title" class="x-display" data-reveal>Hárman vagyunk.</h2>
+    <ul class="x-list au-agents">
+      {agents.map((a) => (
+        <li class="au-agent" data-reveal>
+          <span class="au-a-photo"><Photo slot={a.photo} sizes="160px" /></span>
+          <span class="au-a-name">{a.name}</span>
+          <span class="x-dim">{a.area}</span>
+          <a class="au-a-phone" href={`tel:${a.phone.replace(/\s/g, '')}`}>{a.phone}</a>
+        </li>
+      ))}
+    </ul>
   </section>
 
-  <section id="csapat" class="au-section au-team" aria-labelledby="au-team-title">
-    <div class="au-wrap">
-      <div class="au-head">
-        <h2 id="au-team-title" class="au-h2" data-reveal>Ismerd meg a csapatot</h2>
-        <p class="au-muted" data-reveal>Mindegyikünk egy területre szakosodott, így olyan tanácsadóval dolgozol, aki ismeri a környéket.</p>
-      </div>
-      <ul class="au-agents" role="list">
-        {agents.map((a) => (
-          <li class="au-agent" data-reveal>
-            <div class="au-agent-photo" data-zoom><Photo slot={a.photo} sizes="(max-width: 700px) 100vw, 33vw" /></div>
-            <h3>{a.name}</h3>
-            <p class="au-muted">{a.role} · {a.area}</p>
-            <a class="au-link" href={`tel:${a.phone.replace(/\s/g, '')}`}>{a.phone}</a>
-          </li>
-        ))}
-      </ul>
-    </div>
+  <section class="x-plate x-pad au-quote" aria-label="Ügyfeleink mondták" data-quotes>
+    {testimonials.map((t, i) => (
+      <figure class="au-q" hidden={i !== 0} data-quote>
+        <blockquote><p class="x-display">„{t.quote}”</p></blockquote>
+        <figcaption class="x-dim">{t.name}, {t.role}</figcaption>
+      </figure>
+    ))}
+    <p class="au-q-nav">
+      <button class="x-link" type="button" data-quote-next>Következő vélemény</button>
+      <span class="x-label x-dim" data-quote-count>1 / {testimonials.length}</span>
+    </p>
   </section>
 
-  <section class="au-section au-quotes" aria-labelledby="au-quotes-title">
-    <div class="au-wrap">
-      <h2 id="au-quotes-title" class="au-h2" data-reveal>Ügyfeleink mondták</h2>
-      <ul class="au-quote-list" role="list">
-        {testimonials.map((t) => (
-          <li data-reveal>
-            <blockquote>
-              <span class="au-qmark" set:html={icon('quote')} />
-              <p>{t.quote}</p>
-              <footer><strong>{t.name}</strong><span class="au-muted">{t.role}</span></footer>
-            </blockquote>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
-
-  <section id="ertekbecsles" class="au-section au-valuation" aria-labelledby="au-val-title">
-    <div class="au-wrap au-val-grid">
-      <div class="au-val-copy">
-        <h2 id="au-val-title" class="au-h2" data-reveal>Mennyit ér az otthonod?</h2>
-        <p class="au-muted" data-reveal>Add meg az ingatlan adatait, és 48 órán belül írásos értékbecslést küldünk friss tranzakciós adatok alapján. Ingyenes, és nem kötelez semmire.</p>
-        <div class="au-val-photo" data-parallax><Photo slot="aurum/valuation" sizes="(max-width: 900px) 100vw, 40vw" /></div>
-      </div>
-      <form class="au-form" novalidate data-valuation data-reveal>
-        <div class="au-row">
-          <div class="au-field"><label for="v-name">Név</label><input id="v-name" name="name" autocomplete="name" required aria-describedby="v-name-err" /><p class="au-err" id="v-name-err"></p></div>
-          <div class="au-field"><label for="v-phone">Telefon</label><input id="v-phone" name="phone" type="tel" autocomplete="tel" required aria-describedby="v-phone-err" /><p class="au-err" id="v-phone-err"></p></div>
-        </div>
-        <div class="au-field"><label for="v-email">E-mail</label><input id="v-email" name="email" type="email" autocomplete="email" required aria-describedby="v-email-err" /><p class="au-err" id="v-email-err"></p></div>
-        <div class="au-field"><label for="v-address">Az ingatlan címe</label><input id="v-address" name="address" autocomplete="street-address" required aria-describedby="v-address-err" placeholder="Település, utca, házszám" /><p class="au-err" id="v-address-err"></p></div>
-        <div class="au-row">
-          <div class="au-field"><label for="v-type">Típus</label><select id="v-type" name="type" required aria-describedby="v-type-err"><option value="">Válassz</option>{FILTERS.type.map((t) => <option>{t}</option>)}<option>Telek</option></select><p class="au-err" id="v-type-err"></p></div>
-          <div class="au-field"><label for="v-area">Alapterület (m²)</label><input id="v-area" name="area" inputmode="numeric" required aria-describedby="v-area-err" /><p class="au-err" id="v-area-err"></p></div>
-        </div>
-        <div class="au-field"><label for="v-note">Megjegyzés <span class="au-muted">nem kötelező</span></label><textarea id="v-note" name="note" rows="3"></textarea></div>
-        <label class="au-check"><input type="checkbox" name="consent" required aria-describedby="v-consent-err" /><span>Hozzájárulok, hogy az értékbecsléshez felvegyék velem a kapcsolatot.</span></label>
-        <p class="au-err" id="v-consent-err"></p>
-        <button class="au-btn" type="submit">Értékbecslést kérek <Fragment set:html={icon('next')} /></button>
-        <p class="au-form-status" role="status" aria-live="polite"></p>
-      </form>
-    </div>
-  </section>
-
-  <section id="kapcsolat" class="au-section au-contact" aria-labelledby="au-contact-title">
-    <div class="au-wrap au-contact-grid">
+  <section id="ertekbecsles" class="x-scene au-val" aria-labelledby="au-val-title">
+    <div class="x-bleed"><Photo slot="aurum/valuation" sizes="100vw" /></div>
+    <div class="au-val-veil"></div>
+    <div class="x-over x-pad au-val-grid">
       <div>
-        <h2 id="au-contact-title" class="au-h2" data-reveal>Látogass meg az irodában</h2>
-        <dl class="au-contact-list" data-reveal>
-          <div><dt>Cím</dt><dd>{brand.address}</dd></div>
-          <div><dt>Telefon</dt><dd><a class="au-link" href={`tel:${brand.phone.replace(/\s/g, '')}`}>{brand.phone}</a></dd></div>
-          <div><dt>E-mail</dt><dd><a class="au-link" href={`mailto:${brand.email}`}>{brand.email}</a></dd></div>
-          <div><dt>Nyitvatartás</dt><dd>{brand.hours}</dd></div>
-        </dl>
+        <h2 id="au-val-title" class="x-display" data-reveal>Mennyit ér az otthonod?</h2>
+        <p class="x-measure" data-reveal>Két munkanapon belül írásban küldjük, friss eladási adatok alapján. Ingyenes.</p>
       </div>
-      <div class="au-map" data-reveal>
-        <iframe src={mapSrc} title={`${brand.name} irodája a térképen`} loading="lazy" referrerpolicy="no-referrer"></iframe>
-      </div>
+      <form class="x-form au-form" novalidate data-valuation>
+        <div class="x-row">
+          <div class="x-field"><label for="v-name">Név</label><input id="v-name" name="name" autocomplete="name" required aria-describedby="v-name-err" /><p class="x-err" id="v-name-err"></p></div>
+          <div class="x-field"><label for="v-phone">Telefon</label><input id="v-phone" name="phone" type="tel" autocomplete="tel" required aria-describedby="v-phone-err" /><p class="x-err" id="v-phone-err"></p></div>
+        </div>
+        <div class="x-field"><label for="v-email">E-mail</label><input id="v-email" name="email" type="email" autocomplete="email" required aria-describedby="v-email-err" /><p class="x-err" id="v-email-err"></p></div>
+        <div class="x-field"><label for="v-address">Az ingatlan címe</label><input id="v-address" name="address" autocomplete="street-address" required aria-describedby="v-address-err" /><p class="x-err" id="v-address-err"></p></div>
+        <div class="x-row">
+          <div class="x-field"><label for="v-type">Típus</label><select id="v-type" name="type" required aria-describedby="v-type-err"><option value="">Válassz</option>{FILTERS.type.map((t) => <option>{t}</option>)}<option>Telek</option></select><p class="x-err" id="v-type-err"></p></div>
+          <div class="x-field"><label for="v-area">Alapterület, m²</label><input id="v-area" name="area" inputmode="numeric" required aria-describedby="v-area-err" /><p class="x-err" id="v-area-err"></p></div>
+        </div>
+        <label class="x-check"><input type="checkbox" name="consent" required aria-describedby="v-consent-err" /><span>Felhívhattok az értékbecslés miatt.</span></label>
+        <p class="x-err" id="v-consent-err"></p>
+        <div class="x-actions"><button class="x-btn is-solid" type="submit">Kérem az értékbecslést</button></div>
+        <p class="x-status au-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <section id="kapcsolat" class="x-scene au-contact" aria-labelledby="au-contact-title">
+    <iframe class="au-map" src={mapSrc} title={`${brand.name} irodája a térképen`} loading="lazy" referrerpolicy="no-referrer"></iframe>
+    <div class="x-over x-pad au-contact-copy">
+      <h2 id="au-contact-title" class="x-display" data-reveal>Kiss János altábornagy utca 27.</h2>
+      <dl class="au-contact-list" data-reveal>
+        <div><dt class="x-label x-dim">Telefon</dt><dd><a href={`tel:${brand.phone.replace(/\s/g, '')}`}>{brand.phone}</a></dd></div>
+        <div><dt class="x-label x-dim">E-mail</dt><dd><a href={`mailto:${brand.email}`}>{brand.email}</a></dd></div>
+        <div><dt class="x-label x-dim">Nyitva</dt><dd>{brand.hours}</dd></div>
+      </dl>
     </div>
   </section>
 </main>
 
-<footer class="au-footer">
-  <div class="au-wrap au-footer-grid">
-    <p class="au-footer-brand">{brand.name}<span class="au-muted">{brand.tagline}</span></p>
-    <p class="au-muted">© {new Date().getFullYear()} {brand.name}. Kitalált cég, a weboldal minta.</p>
-  </div>
+<footer class="x-pad au-footer">
+  <p class="x-label">Aurum Ingatlan</p>
+  <p class="x-dim">Kitalált cég, ez a weboldal minta. © {new Date().getFullYear()}</p>
 </footer>
 
-<dialog class="au-dialog" aria-labelledby="au-dialog-title" data-dialog>
+<dialog class="x-dialog au-dialog" aria-labelledby="au-dialog-title" data-dialog>
   <div class="au-dialog-inner" data-dialog-body></div>
-  <button class="au-dialog-close" type="button" data-close aria-label="Bezárás"><Fragment set:html={icon('close')} /></button>
+  <button class="x-close" type="button" data-close>Bezárás</button>
 </dialog>
 
-{properties.map((p) => (
+{properties.map((p, i) => (
   <template id={`tpl-${p.id}`}>
     <div class="au-gallery" data-gallery>
       <div class="au-slides" data-slides tabindex="0" aria-label={`${p.title} fotói`} role="region">
-        {p.photos.map((ph, i) => <div class="au-slide" aria-label={`${i + 1}. kép a ${p.photos.length}-ből`} role="group"><Photo slot={ph} sizes="(max-width: 900px) 100vw, 60vw" /></div>)}
+        {p.photos.map((ph, k) => <div class="au-slide" aria-label={`${k + 1}. kép a ${p.photos.length}-ből`} role="group"><Photo slot={ph} sizes="(max-width: 900px) 100vw, 62vw" /></div>)}
       </div>
-      <button class="au-gal-btn au-gal-prev" type="button" data-step="-1" aria-label="Előző kép"><Fragment set:html={icon('caretLeft')} /></button>
-      <button class="au-gal-btn au-gal-next" type="button" data-step="1" aria-label="Következő kép"><Fragment set:html={icon('caretRight')} /></button>
-      <p class="au-gal-count" aria-hidden="true"><span data-current>1</span> / {p.photos.length}</p>
+      <p class="au-gal-nav">
+        <button class="x-link" type="button" data-step="-1">Előző</button>
+        <span class="x-label" aria-hidden="true"><span data-current>1</span> / {p.photos.length}</span>
+        <button class="x-link" type="button" data-step="1">Következő</button>
+      </p>
     </div>
     <div class="au-detail">
-      <p class="au-type">{p.type} · {p.location}</p>
-      <h2 id="au-dialog-title" class="au-h2">{p.title}</h2>
-      <p class="au-detail-price">{formatHuf(p.price)}</p>
-      <dl class="au-detail-specs">
-        <div><dt>Alapterület</dt><dd>{p.area} m²</dd></div>
-        {p.lot && <div><dt>Telek</dt><dd>{new Intl.NumberFormat('hu-HU').format(p.lot)} m²</dd></div>}
-        <div><dt>Szobák</dt><dd>{p.rooms}</dd></div>
-        <div><dt>Fürdők</dt><dd>{p.baths}</dd></div>
+      <p class="x-label x-dim">{pad(i + 1)}, {p.type}, {p.location}</p>
+      <h2 id="au-dialog-title" class="x-display">{p.title}</h2>
+      <dl class="au-specs">
+        <div><dt class="x-dim">Ár</dt><dd>{formatHuf(p.price)}</dd></div>
+        <div><dt class="x-dim">Alapterület</dt><dd>{p.area} m²</dd></div>
+        {p.lot && <div><dt class="x-dim">Telek</dt><dd>{new Intl.NumberFormat('hu-HU').format(p.lot)} m²</dd></div>}
+        <div><dt class="x-dim">Szobák</dt><dd>{p.rooms}</dd></div>
+        <div><dt class="x-dim">Fürdők</dt><dd>{p.baths}</dd></div>
       </dl>
-      {p.description.map((d) => <p class="au-muted">{d}</p>)}
-      <ul class="au-features" role="list">{p.features.map((f) => <li><Fragment set:html={icon('check')} />{f}</li>)}</ul>
-      <a class="au-btn" href="#ertekbecsles" data-close>Bejárást kérek</a>
+      {p.description.map((d) => <p>{d}</p>)}
+      <p class="x-dim">{p.features.join('. ')}.</p>
+      <div class="x-actions"><a class="x-btn is-solid" href="#ertekbecsles" data-close>Bejárást kérek</a></div>
     </div>
   </template>
 ))}

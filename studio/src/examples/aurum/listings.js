@@ -2,16 +2,42 @@
 // with gallery, and the valuation form (demo: validates, then thanks without sending anything).
 
 export function initAurum({ viewTransitions = false } = {}) {
-  /* header + menu */
-  const header = document.querySelector('[data-header]');
-  const onScroll = () => header?.classList.toggle('is-scrolled', scrollY > 24);
-  addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-  const menuBtn = document.querySelector('.au-menu');
-  const links = document.getElementById('au-links');
-  const setMenu = (open) => { menuBtn?.setAttribute('aria-expanded', String(open)); links?.classList.toggle('is-open', open); };
+  /* menu (phones) */
+  const menuBtn = document.querySelector('.x-menu');
+  const links = document.getElementById('au-nav');
+  const setMenu = (open) => { menuBtn?.setAttribute('aria-expanded', String(open)); links?.classList.toggle('is-open', open); if (menuBtn) menuBtn.textContent = open ? 'Bezárás' : 'Menü'; };
   menuBtn?.addEventListener('click', () => setMenu(menuBtn.getAttribute('aria-expanded') !== 'true'));
   links?.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+
+  /* one quote at a time */
+  const quotes = [...document.querySelectorAll('[data-quote]')];
+  let q = 0;
+  document.querySelector('[data-quote-next]')?.addEventListener('click', () => {
+    quotes[q].hidden = true;
+    q = (q + 1) % quotes.length;
+    quotes[q].hidden = false;
+    document.querySelector('[data-quote-count]').textContent = `${q + 1} / ${quotes.length}`;
+  });
+
+  /* Prémium: the property's photo follows the pointer over the list */
+  const box = document.querySelector('[data-preview-box]');
+  if (box && matchMedia('(pointer: fine)').matches) {
+    let x = 0, y = 0, cx = 0, cy = 0, raf = 0;
+    const move = () => {
+      cx += (x - cx) * 0.18;
+      cy += (y - cy) * 0.18;
+      box.style.transform = `translate3d(${cx + 28}px, ${cy - 110}px, 0)`;
+      raf = Math.abs(x - cx) + Math.abs(y - cy) > 0.5 ? requestAnimationFrame(move) : 0;
+    };
+    for (const row of document.querySelectorAll('[data-preview]')) {
+      row.addEventListener('pointerenter', () => {
+        box.classList.add('is-on');
+        box.querySelectorAll('figure').forEach((f) => f.classList.toggle('is-on', f.dataset.previewImg === row.dataset.preview));
+      });
+      row.addEventListener('pointerleave', () => box.classList.remove('is-on'));
+    }
+    addEventListener('pointermove', (e) => { x = e.clientX; y = e.clientY; if (!raf) raf = requestAnimationFrame(move); }, { passive: true });
+  }
 
   /* filter */
   const form = document.querySelector('[data-filter]');
@@ -78,9 +104,9 @@ export function initAurum({ viewTransitions = false } = {}) {
       err.textContent = res === true ? '' : res;
       if (res !== true && !first) first = el;
     }
-    const status = val.querySelector('.au-form-status');
+    const status = val.querySelector('.au-status');
     if (first) { status.textContent = ''; first.focus(); return; }
-    status.textContent = 'Köszönjük! Munkatársunk egy munkanapon belül hív. (Ez egy mintaoldal, az űrlap nem küld el semmit.)';
+    status.textContent = 'Köszönjük, egy munkanapon belül hívunk. (Ez mintaoldal, az űrlap nem küld el semmit.)';
     val.querySelector('button[type=submit]').disabled = true;
   });
 }

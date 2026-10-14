@@ -4,7 +4,12 @@ A példaoldalak (`/peldak/…`) fotói az [Unsplash](https://unsplash.com/licens
 
 | Hely | Kép | Fotós | Forrás | Eredeti |
 | --- | --- | --- | --- | --- |
-| | Még nincs letöltött kép. | | | |
+| `aurum/hero` | Modern villa alkonyatkor, kivilágított üvegfalakkal |  | Saját felvétel | Állókép az Aurum bemutatóvideóból (1.2 mp) |
+| `aurum/about` | Világos, tágas nappali nagy ablakokkal |  | Saját felvétel | Állókép az Aurum bemutatóvideóból (9.8 mp) |
+| `aurum/valuation` | Elegáns étkező és konyha |  | Saját felvétel | Állókép az Aurum bemutatóvideóból (7.4 mp) |
+| `aurum/p1-1` | Panorámás villa medencével |  | Saját felvétel | Állókép az Aurum bemutatóvideóból (0.4 mp) |
+| `aurum/p1-2` | A villa nappalija |  | Saját felvétel | Állókép az Aurum bemutatóvideóból (8.6 mp) |
+| `aurum/p1-3` | A villa terasza |  | Saját felvétel | Állókép az Aurum bemutatóvideóból (6.4 mp) |
 
 ## Videók
 

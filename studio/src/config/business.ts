@@ -2,7 +2,7 @@
 export const business = {
   name: 'Vonal Stúdió', // working name, replace with the final business name
   legalName: 'Vonal Stúdió (egyéni vállalkozó)',
-  tagline: 'Prémium weboldal napok alatt.',
+  tagline: 'Weboldalak kisvállalkozásoknak, Budapestről.',
   description:
     'Tervezd meg 5 perc alatt, milyen weboldalt szeretnél, a többit mi intézzük: személyre szabott ajánlat, elkészítés és élesítés. Alanyi adómentes, nincs ÁFA.',
   email: 'hello@example.com',

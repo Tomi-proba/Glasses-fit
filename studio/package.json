@@ -12,7 +12,8 @@
     "export-site": "node scripts/export-site.mjs",
     "example-photos": "node scripts/example-photos.mjs",
     "example-shots": "node scripts/example-shots.mjs",
-    "video-frames": "node scripts/video-frames.mjs"
+    "video-frames": "node scripts/video-frames.mjs",
+    "video-stills": "node scripts/video-stills.mjs"
   },
   "dependencies": {
     "astro": "7.3.5",

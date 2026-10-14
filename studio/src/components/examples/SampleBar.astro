@@ -18,34 +18,27 @@ const pkg = packageById(tier)!;
 </aside>
 
 <style is:global>
+  /* A thin strip, not a floating pill: it should read as a note on the sample, not part of it. */
   .sample-bar {
-    position: fixed; z-index: 90; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); transform: translateX(-50%);
-    display: flex; align-items: center; gap: 12px; padding: 6px 6px 6px 8px; max-width: calc(100% - 24px);
-    border-radius: 999px; background: rgba(12, 12, 12, 0.82); color: #f4f4f2; border: 1px solid rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(14px) saturate(1.3); -webkit-backdrop-filter: blur(14px) saturate(1.3);
-    box-shadow: 0 18px 50px -18px rgba(0, 0, 0, 0.6);
-    font: 400 13.5px/1.25 'Onest', ui-sans-serif, system-ui, sans-serif; letter-spacing: 0;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s;
+    position: fixed; z-index: 90; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 18px;
+    padding: 10px clamp(16px, 4.4vw, 64px) calc(10px + env(safe-area-inset-bottom)); background: #0b0b0b; color: #f2f2ef; border-top: 1px solid #2a2a2a;
+    font: 400 12px/1.4 'Geist', ui-sans-serif, system-ui, sans-serif; letter-spacing: 0.04em; transition: transform 0.4s, opacity 0.3s;
   }
   .sample-bar[hidden] { display: none; }
-  html.is-intro .sample-bar { opacity: 0; pointer-events: none; transform: translate(-50%, 20px); }
-  .sb-home { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: inherit; flex: none; }
-  .sb-home svg { width: 24px; height: 24px; }
-  .sb-text { display: grid; gap: 1px; margin: 0; min-width: 0; }
+  html.is-loading .sample-bar { opacity: 0; pointer-events: none; }
+  .sb-home { display: grid; place-items: center; width: 22px; height: 22px; color: inherit; flex: none; }
+  .sb-home svg { width: 20px; height: 20px; }
+  .sb-text { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0 auto 0 0; min-width: 0; }
   .sb-text strong { font-weight: 500; }
-  .sb-text span { color: #a8a8a3; font-size: 12px; white-space: nowrap; }
-  .sb-cta {
-    display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; flex: none;
-    background: #00d4ff; color: #041014; font-weight: 500; text-decoration: none; white-space: nowrap; transition: background-color 0.2s, transform 0.2s;
-  }
-  .sb-cta:hover { background: #fff; }
-  .sb-cta:active { transform: scale(0.97); }
-  .sb-cta .icon { width: 16px; height: 16px; }
-  .sb-close { display: grid; place-items: center; width: 30px; height: 30px; border: 0; border-radius: 50%; background: transparent; color: #a8a8a3; cursor: pointer; flex: none; }
-  .sb-close:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
-  .sb-close .icon { width: 15px; height: 15px; }
-  .sample-bar :focus-visible { outline: 2px solid #00d4ff; outline-offset: 2px; }
-  @media (max-width: 480px) { .sb-text span { display: none; } .sample-bar { gap: 8px; } }
+  .sb-text span { color: #9c9c97; }
+  .sb-cta { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px solid #00d4ff; color: #00d4ff; text-decoration: none; text-transform: uppercase; letter-spacing: 0.14em; white-space: nowrap; flex: none; }
+  .sb-cta:hover { background: #00d4ff; color: #041014; }
+  .sb-cta .icon { width: 14px; height: 14px; }
+  .sb-close { border: 0; background: none; color: #9c9c97; cursor: pointer; padding: 6px; display: grid; place-items: center; flex: none; }
+  .sb-close:hover { color: #fff; }
+  .sb-close .icon { width: 14px; height: 14px; }
+  .sample-bar :focus-visible { outline: 1px solid #00d4ff; outline-offset: 3px; }
+  @media (max-width: 480px) { .sb-text span { display: none; } }
 </style>
 
 <script>

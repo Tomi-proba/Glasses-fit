@@ -70,7 +70,7 @@ import { icon } from '../lib/icon';
   .pkg-pick input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
   .locked { display: grid; gap: 10px; justify-items: start; padding: 14px; border: 1px dashed var(--line-strong); border-radius: var(--r-input); }
   .locked p { font-size: 14px; color: var(--muted); }
-  .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: 12px; font-weight: 500; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 2px; background: var(--accent); color: var(--on-accent); font-size: 12px; font-weight: 500; }
 
   .cfg-progress { padding: 16px 20px 0; border-bottom: 1px solid var(--line); }
   .progress-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
@@ -79,7 +79,7 @@ import { icon } from '../lib/icon';
   .progress-track { height: 2px; background: var(--line); border-radius: 2px; margin-top: 10px; overflow: hidden; }
   .progress-track i { display: block; height: 100%; background: var(--accent); transition: width 0.5s var(--ease); }
   .steps { display: flex; gap: 2px; padding: 10px 0; min-height: 56px; overflow-x: auto; scrollbar-width: none; }
-  .steps button { display: flex; align-items: center; gap: 8px; padding: 7px 10px 7px 7px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font-size: 13.5px; cursor: pointer; white-space: nowrap; transition: background-color 0.2s, color 0.2s; }
+  .steps button { display: flex; align-items: center; gap: 8px; padding: 7px 10px 7px 7px; border: 0; border-radius: 2px; background: transparent; color: var(--muted); font-size: 13.5px; cursor: pointer; white-space: nowrap; transition: background-color 0.2s, color 0.2s; }
   .steps button:hover { color: var(--text); background: var(--surface); }
   .steps .num { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line-strong); font-family: var(--font-mono); font-size: 10px; }
   .steps .num .icon { width: 12px; height: 12px; }
@@ -98,10 +98,10 @@ import { icon } from '../lib/icon';
   .row > .field { min-width: 0; }
   .suggest { display: grid; gap: 8px; justify-items: start; padding: 14px; border: 1px dashed var(--line-strong); border-radius: var(--r-input); }
 
-  .segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
+  .segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 2px; background: var(--surface); border: 1px solid var(--line); }
   .segmented label { position: relative; }
   .segmented input { position: absolute; opacity: 0; }
-  .segmented span { display: block; text-align: center; padding: 8px; border-radius: 999px; cursor: pointer; color: var(--muted); font-size: 14px; }
+  .segmented span { display: block; text-align: center; padding: 8px; border-radius: 2px; cursor: pointer; color: var(--muted); font-size: 14px; }
   .segmented input:checked + span { background: var(--surface-2); color: var(--text); }
   .segmented input:focus-visible + span { outline: 2px solid var(--accent); }
 
@@ -184,7 +184,7 @@ import { icon } from '../lib/icon';
   /* pages and blocks */
   .pages-bar { display: flex; align-items: center; gap: 8px; }
   .page-tabs { display: flex; gap: 4px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; padding: 2px; }
-  .page-tab button { padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-size: 13.5px; white-space: nowrap; cursor: pointer; }
+  .page-tab button { padding: 7px 12px; border-radius: 2px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-size: 13.5px; white-space: nowrap; cursor: pointer; }
   .page-tab.on button { background: var(--text); color: var(--bg); border-color: var(--text); }
   .page-tab.dragging { opacity: 0.4; }
   .blk-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
@@ -223,18 +223,18 @@ import { icon } from '../lib/icon';
 
   .cfg-preview { display: grid; grid-template-rows: auto minmax(0, 1fr); min-width: 0; min-height: 0; background: radial-gradient(80% 60% at 50% 0%, #11181b, var(--bg) 70%); }
   .preview-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 20px; }
-  .devices { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
-  .devices button { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font-size: 13.5px; cursor: pointer; }
+  .devices { display: flex; gap: 4px; padding: 4px; border-radius: 2px; background: var(--surface); border: 1px solid var(--line); }
+  .devices button { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border: 0; border-radius: 2px; background: transparent; color: var(--muted); font-size: 13.5px; cursor: pointer; }
   .devices button[aria-pressed='true'] { background: var(--surface-2); color: var(--text); }
   .frame-wrap { justify-self: center; width: calc(100% - 40px); height: calc(100% - 20px); margin-bottom: 20px; border-radius: var(--r-media); overflow: hidden; border: 1px solid var(--line); background: #000; box-shadow: 0 40px 100px -30px rgba(0, 0, 0, 0.8); transition: width 0.5s var(--ease); }
   .frame-wrap[data-device='mobile'] { width: 390px; max-width: calc(100% - 40px); border-radius: 30px; border: 8px solid #1d1d1d; }
   .frame-wrap iframe { display: block; width: 100%; height: 100%; border: 0; }
 
   .cfg-switch { display: none; }
-  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 18px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line-strong); box-shadow: 0 20px 50px -20px #000; font-size: 14px; max-width: calc(100% - 32px); }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 18px; border-radius: 2px; background: var(--surface-2); border: 1px solid var(--line-strong); box-shadow: 0 20px 50px -20px #000; font-size: 14px; max-width: calc(100% - 32px); }
   .toast[hidden] { display: none; }
   .toast[data-kind='err'] { border-color: var(--danger); }
-  .toast-action { border: 0; border-radius: 999px; padding: 6px 12px; background: var(--text); color: var(--bg); font-weight: 500; cursor: pointer; white-space: nowrap; }
+  .toast-action { border: 0; border-radius: 2px; padding: 6px 12px; background: var(--text); color: var(--bg); font-weight: 500; cursor: pointer; white-space: nowrap; }
 
   @media (max-width: 960px) {
     .cfg { grid-template-columns: 1fr; height: calc(100dvh - var(--header-h) - 64px); }
@@ -245,7 +245,7 @@ import { icon } from '../lib/icon';
     .frame-wrap[data-device='mobile'] { width: 100%; max-width: none; border: 0; border-radius: 0; }
     .preview-bar { padding: 8px 12px; }
     .cfg-switch { position: fixed; inset: auto 0 0; z-index: 30; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; height: 64px; padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--line); }
-    .cfg-switch button { display: flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font-weight: 500; cursor: pointer; }
+    .cfg-switch button { display: flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 2px; background: transparent; color: var(--muted); font-weight: 500; cursor: pointer; }
     .cfg-switch button[aria-pressed='true'] { background: var(--surface); color: var(--text); }
     .toast { bottom: 84px; }
     body.is-app .site-footer { padding-bottom: 96px; }

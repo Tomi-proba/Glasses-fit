@@ -1,40 +1,341 @@
 {
   "_comment": "Photo slots of the example sites. Fill `source` for each slot (Unsplash or Pexels only), then run `npm run example-photos`: it downloads, converts to WebP in two sizes and writes CREDITS.md. Slots without a downloaded file render as a labelled placeholder.",
   "slots": {
-    "aurum/hero": { "alt": "Modern villa alkonyatkor, kivilágított üvegfalakkal", "ratio": [16, 10], "query": "luxury modern house dusk", "source": null },
-    "aurum/about": { "alt": "Világos, tágas nappali nagy ablakokkal", "ratio": [4, 5], "query": "luxury living room interior", "source": null },
-    "aurum/valuation": { "alt": "Elegáns étkező és konyha", "ratio": [4, 5], "query": "modern house interior kitchen", "source": null },
-    "aurum/p1-1": { "alt": "Panorámás villa medencével", "ratio": [4, 3], "query": "luxury villa pool", "source": null },
-    "aurum/p1-2": { "alt": "A villa nappalija", "ratio": [4, 3], "query": "luxury villa living room", "source": null },
-    "aurum/p1-3": { "alt": "A villa terasza", "ratio": [4, 3], "query": "villa terrace view", "source": null },
-    "aurum/p2-1": { "alt": "Penthouse nappali városi kilátással", "ratio": [4, 3], "query": "penthouse living room city view", "source": null },
-    "aurum/p2-2": { "alt": "A penthouse tetőterasza", "ratio": [4, 3], "query": "rooftop terrace", "source": null },
-    "aurum/p2-3": { "alt": "A penthouse fürdőszobája", "ratio": [4, 3], "query": "luxury bathroom", "source": null },
-    "aurum/p3-1": { "alt": "Mediterrán ház kerttel", "ratio": [4, 3], "query": "mediterranean house garden", "source": null },
-    "aurum/p3-2": { "alt": "Világos konyha étkezővel", "ratio": [4, 3], "query": "bright kitchen dining", "source": null },
-    "aurum/p3-3": { "alt": "Hálószoba tóra néző ablakkal", "ratio": [4, 3], "query": "bedroom lake view", "source": null },
-    "aurum/p4-1": { "alt": "Polgári lakás magas belmagassággal", "ratio": [4, 3], "query": "classic apartment high ceiling", "source": null },
-    "aurum/p4-2": { "alt": "Parkettás szalon stukkókkal", "ratio": [4, 3], "query": "parisian apartment interior", "source": null },
-    "aurum/p4-3": { "alt": "Felújított konyha", "ratio": [4, 3], "query": "renovated apartment kitchen", "source": null },
-    "aurum/p5-1": { "alt": "Modern ikerház kívülről", "ratio": [4, 3], "query": "modern house exterior", "source": null },
-    "aurum/p5-2": { "alt": "Nappali kertkapcsolattal", "ratio": [4, 3], "query": "modern living room garden", "source": null },
-    "aurum/p5-3": { "alt": "Gyerekszoba", "ratio": [4, 3], "query": "modern bedroom", "source": null },
-    "aurum/p6-1": { "alt": "Kőház szőlőbirtokon", "ratio": [4, 3], "query": "stone house vineyard", "source": null },
-    "aurum/p6-2": { "alt": "Borospince", "ratio": [4, 3], "query": "wine cellar", "source": null },
-    "aurum/p6-3": { "alt": "Kilátás a birtokról", "ratio": [4, 3], "query": "vineyard landscape lake", "source": null },
-    "aurum/agent-1": { "alt": "dr. Varga Eszter portréja", "ratio": [4, 5], "query": "professional woman portrait", "source": null },
-    "aurum/agent-2": { "alt": "Kiss-Halmi Bence portréja", "ratio": [4, 5], "query": "professional man portrait", "source": null },
-    "aurum/agent-3": { "alt": "Tóth Lilla portréja", "ratio": [4, 5], "query": "business woman portrait", "source": null },
-
-    "fuszerkert/hero": { "alt": "Meleg fényű étterem terített asztalokkal", "ratio": [16, 10], "query": "restaurant interior warm", "source": null },
-    "fuszerkert/spices": { "alt": "Színes fűszerek tálkákban", "ratio": [4, 5], "query": "spices", "source": null },
-    "fuszerkert/kitchen": { "alt": "Séf tálal a konyhában", "ratio": [4, 5], "query": "chef plating", "source": null },
-    "fuszerkert/daily": { "alt": "A napi ajánlat tányéron", "ratio": [4, 3], "query": "gourmet food plate", "source": null },
-    "fuszerkert/g1": { "alt": "Báránycsülök rozmaringgal", "ratio": [4, 5], "query": "gourmet lamb dish", "source": null },
-    "fuszerkert/g2": { "alt": "Az étterem belső tere", "ratio": [4, 3], "query": "restaurant interior", "source": null },
-    "fuszerkert/g3": { "alt": "Fűszerek közelről", "ratio": [4, 3], "query": "spices close up", "source": null },
-    "fuszerkert/g4": { "alt": "Desszert tányéron", "ratio": [4, 5], "query": "gourmet dessert", "source": null },
-    "fuszerkert/g5": { "alt": "Bor és előétel", "ratio": [4, 3], "query": "wine appetizer", "source": null },
-    "fuszerkert/g6": { "alt": "Leves fűszerekkel", "ratio": [4, 3], "query": "soup spices", "source": null }
+    "aurum/hero": {
+      "alt": "Modern villa alkonyatkor, kivilágított üvegfalakkal",
+      "ratio": [
+        16,
+        10
+      ],
+      "query": "luxury modern house dusk",
+      "source": {
+        "provider": "Saját felvétel",
+        "page": "",
+        "author": "",
+        "note": "Állókép az Aurum bemutatóvideóból (1.2 mp)"
+      }
+    },
+    "aurum/about": {
+      "alt": "Világos, tágas nappali nagy ablakokkal",
+      "ratio": [
+        4,
+        5
+      ],
+      "query": "luxury living room interior",
+      "source": {
+        "provider": "Saját felvétel",
+        "page": "",
+        "author": "",
+        "note": "Állókép az Aurum bemutatóvideóból (9.8 mp)"
+      }
+    },
+    "aurum/valuation": {
+      "alt": "Elegáns étkező és konyha",
+      "ratio": [
+        4,
+        5
+      ],
+      "query": "modern house interior kitchen",
+      "source": {
+        "provider": "Saját felvétel",
+        "page": "",
+        "author": "",
+        "note": "Állókép az Aurum bemutatóvideóból (7.4 mp)"
+      }
+    },
+    "aurum/p1-1": {
+      "alt": "Panorámás villa medencével",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "luxury villa pool",
+      "source": {
+        "provider": "Saját felvétel",
+        "page": "",
+        "author": "",
+        "note": "Állókép az Aurum bemutatóvideóból (0.4 mp)"
+      }
+    },
+    "aurum/p1-2": {
+      "alt": "A villa nappalija",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "luxury villa living room",
+      "source": {
+        "provider": "Saját felvétel",
+        "page": "",
+        "author": "",
+        "note": "Állókép az Aurum bemutatóvideóból (8.6 mp)"
+      }
+    },
+    "aurum/p1-3": {
+      "alt": "A villa terasza",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "villa terrace view",
+      "source": {
+        "provider": "Saját felvétel",
+        "page": "",
+        "author": "",
+        "note": "Állókép az Aurum bemutatóvideóból (6.4 mp)"
+      }
+    },
+    "aurum/p2-1": {
+      "alt": "Penthouse nappali városi kilátással",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "penthouse living room city view",
+      "source": null
+    },
+    "aurum/p2-2": {
+      "alt": "A penthouse tetőterasza",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "rooftop terrace",
+      "source": null
+    },
+    "aurum/p2-3": {
+      "alt": "A penthouse fürdőszobája",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "luxury bathroom",
+      "source": null
+    },
+    "aurum/p3-1": {
+      "alt": "Mediterrán ház kerttel",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "mediterranean house garden",
+      "source": null
+    },
+    "aurum/p3-2": {
+      "alt": "Világos konyha étkezővel",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "bright kitchen dining",
+      "source": null
+    },
+    "aurum/p3-3": {
+      "alt": "Hálószoba tóra néző ablakkal",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "bedroom lake view",
+      "source": null
+    },
+    "aurum/p4-1": {
+      "alt": "Polgári lakás magas belmagassággal",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "classic apartment high ceiling",
+      "source": null
+    },
+    "aurum/p4-2": {
+      "alt": "Parkettás szalon stukkókkal",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "parisian apartment interior",
+      "source": null
+    },
+    "aurum/p4-3": {
+      "alt": "Felújított konyha",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "renovated apartment kitchen",
+      "source": null
+    },
+    "aurum/p5-1": {
+      "alt": "Modern ikerház kívülről",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "modern house exterior",
+      "source": null
+    },
+    "aurum/p5-2": {
+      "alt": "Nappali kertkapcsolattal",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "modern living room garden",
+      "source": null
+    },
+    "aurum/p5-3": {
+      "alt": "Gyerekszoba",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "modern bedroom",
+      "source": null
+    },
+    "aurum/p6-1": {
+      "alt": "Kőház szőlőbirtokon",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "stone house vineyard",
+      "source": null
+    },
+    "aurum/p6-2": {
+      "alt": "Borospince",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "wine cellar",
+      "source": null
+    },
+    "aurum/p6-3": {
+      "alt": "Kilátás a birtokról",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "vineyard landscape lake",
+      "source": null
+    },
+    "aurum/agent-1": {
+      "alt": "dr. Varga Eszter portréja",
+      "ratio": [
+        4,
+        5
+      ],
+      "query": "professional woman portrait",
+      "source": null
+    },
+    "aurum/agent-2": {
+      "alt": "Kiss-Halmi Bence portréja",
+      "ratio": [
+        4,
+        5
+      ],
+      "query": "professional man portrait",
+      "source": null
+    },
+    "aurum/agent-3": {
+      "alt": "Tóth Lilla portréja",
+      "ratio": [
+        4,
+        5
+      ],
+      "query": "business woman portrait",
+      "source": null
+    },
+    "fuszerkert/hero": {
+      "alt": "Meleg fényű étterem terített asztalokkal",
+      "ratio": [
+        16,
+        10
+      ],
+      "query": "restaurant interior warm",
+      "source": null
+    },
+    "fuszerkert/spices": {
+      "alt": "Színes fűszerek tálkákban",
+      "ratio": [
+        4,
+        5
+      ],
+      "query": "spices",
+      "source": null
+    },
+    "fuszerkert/kitchen": {
+      "alt": "Séf tálal a konyhában",
+      "ratio": [
+        4,
+        5
+      ],
+      "query": "chef plating",
+      "source": null
+    },
+    "fuszerkert/daily": {
+      "alt": "A napi ajánlat tányéron",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "gourmet food plate",
+      "source": null
+    },
+    "fuszerkert/g1": {
+      "alt": "Báránycsülök rozmaringgal",
+      "ratio": [
+        4,
+        5
+      ],
+      "query": "gourmet lamb dish",
+      "source": null
+    },
+    "fuszerkert/g2": {
+      "alt": "Az étterem belső tere",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "restaurant interior",
+      "source": null
+    },
+    "fuszerkert/g3": {
+      "alt": "Fűszerek közelről",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "spices close up",
+      "source": null
+    },
+    "fuszerkert/g4": {
+      "alt": "Desszert tányéron",
+      "ratio": [
+        4,
+        5
+      ],
+      "query": "gourmet dessert",
+      "source": null
+    },
+    "fuszerkert/g5": {
+      "alt": "Bor és előétel",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "wine appetizer",
+      "source": null
+    },
+    "fuszerkert/g6": {
+      "alt": "Leves fűszerekkel",
+      "ratio": [
+        4,
+        3
+      ],
+      "query": "soup spices",
+      "source": null
+    }
   }
 }
